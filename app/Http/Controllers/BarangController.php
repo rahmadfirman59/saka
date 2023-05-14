@@ -23,7 +23,7 @@ class BarangController extends Controller
     public function store_update(Request $request){
         $validator = Validator::make($request->all(), [
             'nama_barang' => 'required',
-            'no_batch' => 'required|numeric',
+            'no_batch' => 'required',
             'jenis' => 'required',
             'satuan' => 'required',
             'stok_minim' => 'required|numeric',
@@ -39,16 +39,15 @@ class BarangController extends Controller
             'stok_minim.numeric' => 'Stok Minim Harus Angka'
         ]);
 
-        if(isset($request->id)){
-            $request->request->add(['updated_by' => Session::get('useractive')->id]);
-        }
-
-
         if($validator->fails()){
             return [
                 'status' => 300,
                 'message' => $validator->errors()
             ];
+        }
+        
+        if(isset($request->id)){
+            $request->request->add(['updated_by' => Session::get('useractive')->id]);
         }
         
         Barang::updateOrCreate(['id' => $request->id],$request->all() );

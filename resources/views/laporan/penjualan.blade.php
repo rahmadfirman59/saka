@@ -125,7 +125,7 @@
                                     <button type="submit" class="btn btn-success">Tampilkan</button>
                             </form>
 
-                            <a href="/saka/laporan/penjualan/pdf" class="mx-3">
+                            <a href="/saka/laporan/penjualan/pdf" target="_blank" class="mx-3">
                                 <button type="submit" class="btn btn-warning">Print PDF</button>
                             </a>
                         </div>
@@ -153,7 +153,7 @@
                             </tbody>
                             <tfoot>
                                 <tr class="footer">
-                                    <td style="background: rgb(241 248 255) !important" colspan="4"><div align="center"><strong>TOTAL PEMBELIAN</strong></div></td>
+                                    <td style="background: rgb(241 248 255) !important" colspan="4"><div align="center"><strong>TOTAL PENJUALAN</strong></div></td>
                                     <td style="background: rgb(241 248 255) !important" align="right"><strong><?php echo "Rp.&nbsp" . number_format($Totalpenjualan,2,'.',','); ?></strong></td>
                                 </tr>
                             </tfoot>

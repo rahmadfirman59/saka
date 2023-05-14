@@ -158,6 +158,102 @@
        </div>
     </div>
 </div>
+
+<div class="modal fade" role="dialog" id="modal_edit" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-xl" role="document">
+       <div class="modal-content">
+          <div class="modal-header br">
+             <h5 class="modal-title"></h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+             </button>
+          </div>
+          <form id="form_upload_edit" action="/saka/master/barang/store-update" method="POST" autocomplete="off">
+             @csrf
+             <div class="modal-body">
+                <div class="row">
+                    <input type="text" hidden class="form-control" name="id" id="id">
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <div class="form-group">
+                            <label>Nama Barang</label>
+                              <input class="form-control" type="text" id="nama_barang" name="nama_barang" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-nama_barang-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label>No. Batch</label>
+                              <input class="form-control" type="text" id="no_batch" name="no_batch" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-no_batch-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Jenis</label>
+                            <select id='jenis' name="jenis" class="form-control form-select">
+                                <option value='' selected>-Pilih Jenis-</option>
+                                <option value='Alkes'>Alkes</option>
+                                <option value='Generik'>Generik</option>
+                                <option value='Paten'>Paten</option>
+                                <option value='Salep'>Salep</option>
+                                <option value='Oral'>Oral</option>
+                                <option value='Narkotik'>Narkotik</option>
+                                <option value='Pisikotropik'>Psikotropik</option>
+                            </select>
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-jenis-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Satuan</label>
+                            <select id='satuan' name="satuan" class="form-control form-select">
+                                <option value='' selected>-Pilih Satuan-</option>
+                                <option value='pcs'>PCS</option>
+                                <option value='Tablet'>Tablet</option>
+                                <option value='Ampul'>Ampul</option>
+                                <option value='Tube'>Tube</option>
+                                <option value='Flabot'>Flabot</option>
+                                <option value='Botol'>Botol</option>
+                                <option value='BOX'>BOX</option>
+                            </select>
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-satuan-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Stok Minim</label>
+                              <input class="form-control" type="text" id="stok_minim" name="stok_minim" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-stok_minim-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Kadaluarsa</label>
+                            <input type="date" name="ed" id="ed" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Harga Beli</label>
+                            <input type="text" readonly name="harga_beli" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Harga Jual</label>
+                            <input type="text" name="harga_jual" id="harga_jual" class="form-control">
+                        </div>
+                    </div>
+                </div>
+             </div>
+             <div class="modal-footer bg-whitesmoke br">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-warning">Simpan</button>
+             </div>
+          </form>
+       </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
@@ -188,6 +284,54 @@
 		});
 	});
 
+     $('#form_upload_edit').submit(function(e){
+       e.preventDefault();
+
+       swal({
+             title: 'Yakin?',
+             text: 'Apakah anda yakin akan menyimpan data ini?',
+             icon: 'warning',
+             buttons: true,
+             dangerMode: true,
+       })
+       .then((willDelete) => {
+             if (willDelete) {
+                $("#modal_loading").modal('show');
+                $.ajax({
+                   url:  $('#form_upload_edit').attr('action'),
+                   type: $('#form_upload_edit').attr('method'),
+                   enctype: 'multipart/form-data',
+                   data: new FormData($('#form_upload_edit')[0]),
+                   cache: false,
+                   contentType: false,
+                   processData: false,
+                   success: function(response) {
+                      setTimeout(function () {  $('#modal_loading').modal('hide'); }, 500);
+                      if(response.status == 200){
+                         $("#form_upload_edit")[0].reset();
+                         $("#path_file_text").text("");
+                         $("#modal").modal('hide');
+                         swal(response.message, { icon: 'success', }).then(function() {
+                           location.reload();
+                         });
+                        //  tb.ajax.reload(null, false);
+                      }else {
+                        Object.keys(response.message).forEach(function (key) {
+                              var elem_name = $('[name=' + key + ']');
+                              var elem_feedback = $('[id=invalid-' + key + '-feedback' + ']');
+                              elem_name.addClass('is-invalid');
+                              elem_feedback.text(response.message[key]);
+                        });
+                     }
+                   },error: function (jqXHR, textStatus, errorThrown){
+                      setTimeout(function () {  $('#modal_loading').modal('hide'); }, 500);
+                      swal("Oops! Terjadi kesalahan segera hubungi tim IT (" + errorThrown + ")", {  icon: 'error', });
+                   }
+                });
+             }
+       });
+   })
+
     function add(){
         $("#modal").modal('show');
         $(".modal-title").text('Tambah Barang');
@@ -198,8 +342,45 @@
     }
 
     function edit(url){
-        edit_action(url, 'Edit Barang');
-        $("#type").val('update');
+       save_method = 'edit';
+       $("#modal_edit").modal('show');
+       $(".modal-title").text('Edit Barang');
+       $("#modal_loading").modal('show');
+       $.ajax({
+          url : url,
+          type: "GET",
+          dataType: "JSON",
+          success: function(response){
+             setTimeout(function () {  $('#modal_loading').modal('hide'); }, 500);
+             Object.keys(response).forEach(function (key) {
+                 var elem_name = $('[name=' + key + ']');
+                 console.log(elem_name.val(response[key]));
+                if (elem_name.hasClass('selectric')) {
+                   elem_name.val(response[key]).change().selectric('refresh');
+                }else if(elem_name.hasClass('select2')){
+                   elem_name.select2("trigger", "select", { data: { id: response[key] } });
+                }else if(elem_name.hasClass('selectgroup-input')){
+                   $("input[name="+key+"][value=" + response[key] + "]").prop('checked', true);
+                }else if(elem_name.hasClass('my-ckeditor')){
+                   CKEDITOR.instances[key].setData(response[key]);
+                }else if(elem_name.hasClass('summernote')){
+                  elem_name.summernote('code', response[key]);
+                }else if(elem_name.hasClass('custom-control-input')){
+                   $("input[name="+key+"][value=" + response[key] + "]").prop('checked', true);
+                }else if(elem_name.hasClass('time-format')){
+                   elem_name.val(response[key].substr(0, 5));
+                }else if(elem_name.hasClass('format-rp')){
+                   var nominal = response[key].toString();
+                   elem_name.val(nominal.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1."));
+                }else{
+                   elem_name.val(response[key]);
+                }
+             });
+          },error: function (jqXHR, textStatus, errorThrown){
+             setTimeout(function () {  $('#modal_loading').modal('hide'); }, 500);
+             swal("Oops! Terjadi kesalahan segera hubungi tim IT (" + errorThrown + ")", {  icon: 'error', });
+          }
+       });
     }
 </script>
     

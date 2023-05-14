@@ -52,7 +52,7 @@
             </tbody>
             <tfoot>
                 <tr class="footer">
-                    <td style="background: rgb(241 248 255) !important" colspan="4"><div align="center"><strong>TOTAL PEMBELIAN</strong></div></td>
+                    <td style="background: rgb(241 248 255) !important" colspan="4"><div align="center"><strong>TOTAL PENJUALAN</strong></div></td>
                     <td style="background: rgb(241 248 255) !important" align="right"><strong><?php echo "Rp." . number_format($Totalpenjualan,2,'.',','); ?></strong></td>
                 </tr>
             </tfoot>

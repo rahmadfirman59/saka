@@ -124,7 +124,7 @@
                                 ?>
                                     <button type="submit" class="btn btn-success">Tampilkan</button>
                                 </form>
-                                <a href="/saka/laporan/pembelian/pdf" class="mx-3">
+                                <a href="/saka/laporan/pembelian/pdf" target="_blank" class="mx-3">
                                     <button type="submit" class="btn btn-warning">Print PDF</button>
                                 </a>
                         </div>
