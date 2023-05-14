@@ -1,179 +1,196 @@
 @extends('layouts.layouts')
 @section('content')
-         <div class="container-fluid">
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Buttons</h1>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <!-- Circle Buttons -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Circle Buttons</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>Use Font Awesome Icons (included with this theme package) along with the circle
-                                        buttons as shown in the examples below!</p>
-                                    <!-- Circle Buttons (Default) -->
-                                    <div class="mb-2">
-                                        <code>.btn-circle</code>
-                                    </div>
-                                    <a href="#" class="btn btn-primary btn-circle">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-success btn-circle">
-                                        <i class="fas fa-check"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-info btn-circle">
-                                        <i class="fas fa-info-circle"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-warning btn-circle">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-danger btn-circle">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                    <!-- Circle Buttons (Small) -->
-                                    <div class="mt-4 mb-2">
-                                        <code>.btn-circle .btn-sm</code>
-                                    </div>
-                                    <a href="#" class="btn btn-primary btn-circle btn-sm">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-success btn-circle btn-sm">
-                                        <i class="fas fa-check"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-info btn-circle btn-sm">
-                                        <i class="fas fa-info-circle"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-warning btn-circle btn-sm">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-danger btn-circle btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                    <!-- Circle Buttons (Large) -->
-                                    <div class="mt-4 mb-2">
-                                        <code>.btn-circle .btn-lg</code>
-                                    </div>
-                                    <a href="#" class="btn btn-primary btn-circle btn-lg">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-success btn-circle btn-lg">
-                                        <i class="fas fa-check"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-info btn-circle btn-lg">
-                                        <i class="fas fa-info-circle"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-warning btn-circle btn-lg">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-danger btn-circle btn-lg">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </div>
 
-                            <!-- Brand Buttons -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Brand Buttons</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>Google and Facebook buttons are available featuring each company's respective
-                                        brand color. They are used on the user login and registration pages.</p>
-                                    <p>You can create more custom buttons by adding a new color variable in the
-                                        <code>_variables.scss</code> file and then using the Bootstrap button variant
-                                        mixin to create a new style, as demonstrated in the <code>_buttons.scss</code>
-                                        file.</p>
-                                    <a href="#" class="btn btn-google btn-block"><i class="fab fa-google fa-fw"></i>
-                                        .btn-google</a>
-                                    <a href="#" class="btn btn-facebook btn-block"><i
-                                            class="fab fa-facebook-f fa-fw"></i> .btn-facebook</a>
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div class="pagetitle">
+            <h1 class="h3 mb-0">Dashboard</h1>
+        </div>
+        {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
+    </div>
 
-                                </div>
-                            </div>
+    <!-- Content Row -->
+    <div class="row">
 
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2 penjualan-card">
+                <div class="card-body">
+                    <h5 class="card-title2">Transaksi</h5>
+
+                    <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-cart"></i>
                         </div>
+                        <div class="pl-3">
+                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/transaksi/penjualan" style="color: #012970" class="penjualan-href">Penjualan</a></h6>
 
-                        <div class="col-lg-6">
-
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Split Buttons with Icon</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>Works with any button colors, just use the <code>.btn-icon-split</code> class and
-                                        the markup in the examples below. The examples below also use the
-                                        <code>.text-white-50</code> helper class on the icons for additional styling,
-                                        but it is not required.</p>
-                                    <a href="#" class="btn btn-primary btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-flag"></i>
-                                        </span>
-                                        <span class="text">Split Button Primary</span>
-                                    </a>
-                                    <div class="my-2"></div>
-                                    <a href="#" class="btn btn-success btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-check"></i>
-                                        </span>
-                                        <span class="text">Split Button Success</span>
-                                    </a>
-                                    <div class="my-2"></div>
-                                    <a href="#" class="btn btn-info btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-info-circle"></i>
-                                        </span>
-                                        <span class="text">Split Button Info</span>
-                                    </a>
-                                    <div class="my-2"></div>
-                                    <a href="#" class="btn btn-warning btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                        </span>
-                                        <span class="text">Split Button Warning</span>
-                                    </a>
-                                    <div class="my-2"></div>
-                                    <a href="#" class="btn btn-danger btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-trash"></i>
-                                        </span>
-                                        <span class="text">Split Button Danger</span>
-                                    </a>
-                                    <div class="my-2"></div>
-                                    <a href="#" class="btn btn-secondary btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </span>
-                                        <span class="text">Split Button Secondary</span>
-                                    </a>
-                                    <div class="my-2"></div>
-                                    <a href="#" class="btn btn-light btn-icon-split">
-                                        <span class="icon text-gray-600">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </span>
-                                        <span class="text">Split Button Light</span>
-                                    </a>
-                                    <div class="mb-4"></div>
-                                    <p>Also works with small and large button classes!</p>
-                                    <a href="#" class="btn btn-primary btn-icon-split btn-sm">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-flag"></i>
-                                        </span>
-                                        <span class="text">Split Button Small</span>
-                                    </a>
-                                    <div class="my-2"></div>
-                                    <a href="#" class="btn btn-primary btn-icon-split btn-lg">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-flag"></i>
-                                        </span>
-                                        <span class="text">Split Button Large</span>
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- /.container-fluid -->
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2 pembelian-card">
+                <div class="card-body">
+                    <h5 class="card-title2">Pembelian</h5>
 
+                    <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                        <div class="pl-3">
+                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/transaksi/pembelian" style="color: #012970" class="pembelian-href">Penjualan</a></h6>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2 laporan-card">
+                <div class="card-body">
+                    <h5 class="card-title2">Laporan</h5>
+
+                    <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-book"></i>
+                        </div>
+                        <div class="pl-3">
+                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/laporan/rugi-laba" style="color: #012970" class="llb-href">Rugi/Laba</a></h6>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2 grafik-card">
+                <div class="card-body">
+                    <h5 class="card-title2">Grafik</h5>
+
+                    <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                        </div>
+                        <div class="pl-3">
+                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/grafik" style="color: #012970" class="grafik-href">Grafik</a></h6>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+
+    <div class="row">
+        <!-- Operasional Table -->
+        <div class="col-md-5 col-sm-12 col-xs-12">
+            <div class="card recent-sales overflow-auto">
+
+                <div class="card-body">
+                    <h5 class="card-title2">Biaya Operasional</h5>
+
+                    <table class="table table-borderless tb-false datatable-primary">
+                        <thead>
+                            <tr>
+                                <th scope="col" align="center"><div align="center">Kode Akun</div></th>
+                                <th scope="col">Keterangan</th>
+                                <th scope="col">Masa</th>
+                                <th scope="col">Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($akuns as $akun)
+                            <tr>
+                                <td ><div align="center">{{ $akun->kode_akun }}</div></td>
+                                <td>{{ $akun->nama_akun }}</td>
+                                <td>1 Bln</td>
+                                <td>{{ 'Rp. ' .  number_format($akun->jumlah,2,'.',',');}}</td>
+                            </tr>
+                            @endforeach
+                            <tr>
+                                <td colspan="3"><div align="center"><strong>TOTAL Penyesuaian</strong></div></td>
+                                <td style="display: none"></td>
+                                <td style="display: none"></td>
+                                <td><strong>{{ 'Rp. ' .  number_format($total,2,'.',',');}}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div><!-- End Operasional Table -->
+
+        <!-- Hutang Table -->
+        <div class="col-md-7 col-sm-12 col-xs-12">
+            <div class="card recent-sales overflow-auto">
+
+                <div class="card-body">
+                    <h5 class="card-title2">Hutang Dagang</h5>
+
+                    <table class="table table-borderless datatable-jquery datatable-primary">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tanggal</th>
+                                <th scope="col">No. Faktur</th>
+                                <th scope="col">Keterangan</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Bayar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $total_hutang = 0 ?>
+                            @foreach ($hutangDagang as $data)
+                            <tr>
+                                <td>{{ $data->tanggal }}</td>
+                                <td>{{ $data->pembelian[0]->no_faktur }}</td>
+                                <td>1 Bln</td>
+                                <td>{{ 'Rp. ' .  number_format($data->debt,2,'.',',');}}</td>
+                                <td>
+                                    <button class='btn btn-info btn-sm mr-1'><a style='color: white' href='/saka/jurnal/jurnal-pembelian/detail-pembelian/{{ $data->id }}'>
+                                        <i class='bi bi-credit-card-2-back-fill'></i>
+                                    </a></button>
+                                </td>
+                            </tr>
+                            <?php $total_hutang += $data->debt ?>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"><div align="center"><strong>TOTAL Hutang</strong></div></td>
+                                <td align="right"><strong><?php echo number_format($total_hutang,2,'.',','); ?></strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+
+            </div>
+        </div><!-- End Hutang Table -->
+    </div>
+
+</div> 
+
+@endsection
+
+@section('script')
+<script>
+    $(document).ready(function () {
+		$tb = $('.datatable-jquery').dataTable({
+			sDom: 'lBfrtip',
+			columnDefs: [{
+					className: 'text-center',
+					targets: [0,1,2,3,4]				}
+			],
+		});
+	});
+</script>
 @endsection

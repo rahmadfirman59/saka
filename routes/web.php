@@ -4,6 +4,17 @@ use App\Http\Controllers\AkunController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\DokterController;
+use App\Http\Controllers\GrafikController;
+use App\Http\Controllers\JurnalPembelianController;
+use App\Http\Controllers\JurnalPenjualanController;
+use App\Http\Controllers\JurnalPenyesuaianController;
+use App\Http\Controllers\JurnalUmumController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransaksiPembelianController;
+use App\Http\Controllers\TransaksiPenjualanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +31,119 @@ Route::post('login', [AuthController::class, 'login'])->name('post.login');
 Route::get('login', [AuthController::class, 'index'])->name('login');
 
 Route::group(['middleware' => ['ceklogin']], function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', function(){
+        return redirect()->route('dashboard');
+    });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/akun', [AkunController::class, 'index'])->name('akun');
-    Route::get('/akun/edit/{id}', [AkunController::class, 'edit'])->name('akun.edit');
+    Route::get('/grafik', [GrafikController::class, 'index'])->name('grafik');
+
+    Route::prefix('master')->group(function () {
+
+        Route::prefix('akun')->group(function () {
+            Route::get('/', [AkunController::class, 'index'])->name('akun');
+            Route::post('/store-update', [AkunController::class, 'store_update']);
+            Route::get('/detail/{id}', [AkunController::class, 'detail']);
+            Route::delete('/delete/{id}', [AkunController::class, 'delete']);
+        });
+
+        Route::prefix('barang')->group(function () {
+            Route::get('/', [BarangController::class, 'index'])->name('barang');
+            Route::post('/store-update', [BarangController::class, 'store_update']);
+            Route::get('/detail/{id}', [BarangController::class, 'detail']);
+            Route::delete('/delete/{id}', [BarangController::class, 'delete']);
+        });
+
+        Route::prefix('supplier')->group(function () {
+            Route::get('/', [SupplierController::class, 'index'])->name('supplier');
+            Route::post('/store-update', [SupplierController::class, 'store_update']);
+            Route::get('/detail/{id}', [SupplierController::class, 'detail']);
+            Route::delete('/delete/{id}', [SupplierController::class, 'delete']);
+        });
+
+        Route::prefix('dokter')->group(function () {
+            Route::get('/', [DokterController::class, 'index'])->name('dokter');
+            Route::post('/store-update', [DokterController::class, 'store_update']);
+            Route::get('/detail/{id}', [DokterController::class, 'detail']);
+            Route::delete('/delete/{id}', [DokterController::class, 'delete']);
+        });
+    });
+
+    Route::prefix('transaksi')->group(function () {
+        Route::prefix('penjualan')->group(function () {
+            Route::get('/', [TransaksiPenjualanController::class, 'index'])->name('transaksi.penjualan');
+            Route::post('/add-keranjang', [TransaksiPenjualanController::class, 'add_keranjang']);
+            Route::get('/delete-keranjang/{id}', [TransaksiPenjualanController::class, 'delete_keranjang']);
+
+            Route::post('/store', [TransaksiPenjualanController::class, 'store']);
+        });
+
+        Route::prefix('pembelian')->group(function () {
+            Route::get('/', [TransaksiPembelianController::class, 'index'])->name('transaksi.pembelian');
+            Route::post('/add-keranjang', [TransaksiPembelianController::class, 'add_keranjang']);
+            Route::get('/delete-keranjang/{id}', [TransaksiPembelianController::class, 'delete_keranjang']);
+
+            Route::post('/store', [TransaksiPembelianController::class, 'store']);
+        });
+    });
+
+    Route::prefix('jurnal')->group(function () {
+        Route::prefix('jurnal-umum')->group(function () {
+            Route::get('/', [JurnalUmumController::class, 'index'])->name('jurnal.umum');
+            Route::post('/change_priode', [JurnalUmumController::class, 'change_priode']);
+        });
+
+        Route::prefix('jurnal-penjualan')->group(function () {
+            Route::get('/', [JurnalPenjualanController::class, 'index'])->name('jurnal.penjualan');
+            Route::get('/detail-penjualan/{id}', [JurnalPenjualanController::class, 'detail_penjualan']);
+            Route::get('/cetak-penjualan/{id}', [JurnalPenjualanController::class, 'cetak_penjualan']);
+        });
+
+        Route::prefix('jurnal-pembelian')->group(function () {
+            Route::get('/', [JurnalPembelianController::class, 'index'])->name('jurnal.pembelian');
+            Route::get('/detail-pembelian/{id}', [JurnalPembelianController::class, 'detail_pembelian']);
+            Route::get('/cetak-pembelian/{id}', [JurnalPembelianController::class, 'cetak_pembelian']);
+        });
+
+        Route::prefix('jurnal-penyesuaian')->group(function () {
+            Route::get('/', [JurnalPenyesuaianController::class, 'index'])->name('jurnal.penyesuaian');
+            Route::post('/store-update', [JurnalPenyesuaianController::class, 'store_update']);
+        });
+    });
+
+    Route::prefix('laporan')->group(function () {
+        Route::prefix('rugi-laba')->group(function () {
+            Route::get('/', [LaporanController::class, 'rugi_laba'])->name('laporan.rugiLaba');
+            Route::post('/change_priode', [LaporanController::class, 'change_priode']);
+        });
+        Route::prefix('neraca')->group(function () {
+            Route::get('/', [LaporanController::class, 'neraca'])->name('laporan.neraca');
+        });
+        Route::prefix('persediaan')->group(function () {
+            Route::get('/', [LaporanController::class, 'persediaan'])->name('laporan.persediaan');
+            Route::get('/pdf', [LaporanController::class, 'persediaan_pdf']);
+        });
+        Route::prefix('perubahan-modal')->group(function () {
+            Route::get('/', [LaporanController::class, 'perubahan_modal'])->name('laporan.perubahan-modal');
+        });
+        Route::prefix('hutang')->group(function () {
+            Route::get('/', [LaporanController::class, 'hutang'])->name('laporan.hutang');
+        });
+        Route::prefix('pembelian')->group(function () {
+            Route::get('/', [LaporanController::class, 'pembelian'])->name('laporan.pembelian');
+            Route::post('/change-priode', [LaporanController::class, 'pembelian_change_priode']);
+            Route::get('/pdf', [LaporanController::class, 'pembelian_pdf']);
+        });
+
+        Route::prefix('penjualan')->group(function () {
+            Route::get('/', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
+            Route::post('/change-priode', [LaporanController::class, 'penjualan_change_priode']);
+            Route::get('/pdf', [LaporanController::class, 'penjualan_pdf']);
+        });
+    });
+
     // Route::get('/akun', [DashboardController::class, 'index'])->name('akun');
+
+
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });

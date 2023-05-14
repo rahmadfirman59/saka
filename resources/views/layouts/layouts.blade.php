@@ -7,20 +7,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta name="author" content="">
 
     <title>SB Admin 2 - Buttons</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('public/sbadmin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('public/plugins/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,500&display=swap" rel="stylesheet">
+    
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('public/sbadmin/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <!-- Custom styles for this page -->
     <link href="{{ asset('public/sbadmin/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/plugins/simple-datatables/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('public/sbadmin/css/style-additional.css') }}">
+
+    @yield('css')
+
 
 </head>
 
@@ -33,19 +42,24 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/saka/dashboard">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
                 <div class="sidebar-brand-text mx-3">Apotik Saka Sasmitra</div>
             </a>
 
+
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
+            <?php
+            $url_menu = Request::segment(1);
+            $url_submenu = Request::segment(2);
+            ?>
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
+            <li class="nav-item @if($url_menu == "dashboard") active @endif">
+                <a class="nav-link" href="/saka/dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -53,76 +67,88 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-         
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Grafik
+            </div>
+
+            <li class="nav-item @if($url_menu == "grafik") active @endif">
+                <a class="nav-link" href="/saka/grafik">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                    <span>Grafik</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Addons
+                Data Master
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+            <li class="nav-item @if($url_menu == "master") active @endif">
+                <a class="nav-link @if($url_menu == "master") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="bi bi-menu-button-wide"></i>
                     <span>Master</span>
                 </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div id="collapsePages" class="collapse  @if($url_menu == "master") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('akun') }}">Akun</a>
-                        <a class="collapse-item" href="login.html">Barang</a>
-                        <a class="collapse-item" href="register.html">Supllier</a>
-                        <a class="collapse-item" href="forgot-password.html">Dokter</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'akun') active @endif" href="{{ route('akun') }}">Akun</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'barang') active @endif" href="{{ route('barang') }}">Barang</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'supplier') active @endif" href="{{ route('supplier') }}">Supplier</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'dokter') active @endif" href="{{ route('dokter') }}">Dokter</a>
                     </div>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages2"
+            <li class="nav-item @if($url_menu == "transaksi") active @endif">
+                <a class="nav-link collapsed @if($url_menu == "transaksi") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages2"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="bi bi-cart"></i>
                     <span>Transaksi</span>
                 </a>
-                <div id="collapsePages2" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div id="collapsePages2" class="collapse @if($url_menu == "transaksi") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="login.html">Pembelian</a>
-                        <a class="collapse-item" href="login.html">Penjualan</a>
+                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'penjualan') active @endif" href="{{ route('transaksi.penjualan') }}">Penjualan</a>
+                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'pembelian') active @endif" href="{{ route('transaksi.pembelian') }}">Pembelian</a>
                         
                     </div>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages3"
+            <li class="nav-item @if($url_menu == "jurnal") active @endif">
+                <a class="nav-link collapsed @if($url_menu == "jurnal") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages3"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="bi bi-journal-bookmark-fill"></i>
                     <span>Jurnal</span>
                 </a>
-                <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div id="collapsePages3" class="collapse @if($url_menu == "jurnal") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="login.html">Jurnal Umum</a>
-                        <a class="collapse-item" href="login.html">Jurnal Pembelian</a>
-                        <a class="collapse-item" href="login.html">Jurnal Penjualan</a>
-                        <a class="collapse-item" href="login.html">Jurnal Penyesuaian</a>
+                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-umum') active @endif" href="{{ route('jurnal.umum') }}">Jurnal Umum</a>
+                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penjualan') active @endif" href="{{ route('jurnal.penjualan') }}">Jurnal Penjualan</a>
+                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-pembelian') active @endif" href="{{ route('jurnal.pembelian') }}">Jurnal Pembelian</a>
+                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penyesuaian') active @endif" href="{{ route('jurnal.penyesuaian') }}">Jurnal Penyesuaian</a>
                         
                     </div>
                 </div>
             </li>
            
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages4"
+            <li class="nav-item @if($url_menu == "laporan") active @endif">
+                <a class="nav-link collapsed @if($url_menu == "laporan") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages4"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Jurnal</span>
+                    <i class="bi bi-book"></i>
+                    <span>Laporan</span>
                 </a>
-                <div id="collapsePages4" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div id="collapsePages4" class="collapse @if($url_menu == "laporan") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="login.html">Laporan Rugi Laba</a>
-                        <a class="collapse-item" href="login.html">Laporan Neraca</a>
-                        <a class="collapse-item" href="login.html">Laporan Perubahan Modal</a>
-                        <a class="collapse-item" href="login.html">Laporan Penjualan</a>
-                        <a class="collapse-item" href="login.html">Laporan Pembelian</a>
-                        <a class="collapse-item" href="login.html">Laporan Retur Penjualan</a>
-                        <a class="collapse-item" href="login.html">Laporan Hutang</a>
-                        <a class="collapse-item" href="login.html">Laporan Persediaan</a>
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'rugi-laba') active @endif" href="{{ route('laporan.rugiLaba') }}">Laporan Rugi Laba</a>
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'neraca') active @endif" href="{{ route('laporan.neraca') }}">Laporan Neraca</a>
+                        {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'perubahan-modal') active @endif" href="{{ route('laporan.perubahanModal') }}">Laporan Perubahan Modal</a> --}}
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'hutang') active @endif" href="{{ route('laporan.hutang') }}">Laporan Hutang</a>
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'penjualan') active @endif" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a>
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'pembelian') active @endif" href="{{ route('laporan.pembelian') }}">Laporan Pembelian</a>
+                        {{-- {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'retur-pembelian') active @endif" href="{{ route('laporan.retur-pembelian') }}">Laporan Retur Penjualan</a> --}}
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'perubahan-modal') active @endif" href="{{ route('laporan.perubahan-modal') }}">Laporan Perubahan Modal</a>
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'persediaan') active @endif" href="{{ route('laporan.persediaan') }}">Laporan Persediaan</a>
                     </div>
                 </div>
             </li>
@@ -148,19 +174,6 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-                    <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -253,7 +266,7 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_1.svg"
+                                        <img class="rounded-circle" src="{{ asset('public/sbadmin/img/undraw_profile_1.svg') }}"
                                             alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
@@ -265,7 +278,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                                        <img class="rounded-circle" src="{{ asset('public/sbadmin/img/undraw_profile_2.svg') }}"
                                             alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
@@ -277,7 +290,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_3.svg"
+                                        <img class="rounded-circle" src="{{ asset('public/sbadmin/img/undraw_profile_3.svg') }}"
                                             alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
@@ -309,9 +322,9 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Session::get('useractive')->name }}</span>
                                 <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                    src="{{ asset('public/sbadmin/img/undraw_profile.svg') }}">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -346,10 +359,10 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
+            <footer class="sticky-footer bg-white mt-5">
                 <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
+                    <div class="copyright text-center my-auto" style="font-size: .9rem">
+                        <span>&copy;<a href="#">SAKA SASMITRA</a></span>
                     </div>
                 </div>
             </footer>
@@ -364,6 +377,7 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+    
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -378,9 +392,24 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="logout">Logout</a>
                 </div>
             </div>
+        </div>
+    </div>
+  
+    @yield('modal')
+    <!-- Modal Load-->
+    <div class="modal fade" role="dialog" id="modal_loading" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body pt-0" style="background-color: #FAFAF8; border-radius: 6px;">
+                <div class="text-center">
+                    <img style="border-radius: 4px; height: 140px;" src="{{ asset('public/sbadmin/img/icon/loader.gif') }}" alt="Loading">
+                    <h6 style="position: absolute; bottom: 10%; left: 37%;" class="pb-2">Mohon Tunggu..</h6>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -392,16 +421,22 @@
     <script src="{{ asset('public/sbadmin/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="{{ asset('public/sbadmin.js/sb-admin-2.min.j') }}s"></script>
+    <script src="{{ asset('public\sbadmin\js\sb-admin-2.min.js') }}"></script>
 
     <!-- Page level plugins -->
     <script src="{{ asset('public/sbadmin/vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('public/sbadmin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset("public/sbadmin/vendor/apexcharts/apexcharts.min.js") }}"></script>
+    <script src="{{ asset("public/plugins/sweetalert/sweetalert.min.js") }}"></script>
 
+    
     <!-- Page level custom scripts -->
     <script src="{{ asset('public/sbadmin/js/demo/datatables-demo.js') }}"></script>
+    <script src="{{ asset('public/plugins/simple-datatables/simple-datatables.js') }}"></script>
+    @include('scriptjs')
     
-    
+    @yield('script')
+
 
 </body>
 

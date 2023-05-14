@@ -1,0 +1,185 @@
+.card .card-icon {
+  font-size: 32px;
+  line-height: 0;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.card-title2{
+    padding: 0px 0 10px 0;
+    font-size: 20px;
+    color: #012970;
+    font-family: "Poppins", sans-serif;
+}
+
+.card.penjualan-card .card-icon {
+  color: #4154f1;
+  background: #f6f6fe;
+}
+
+table td {
+  color: black;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.datatable-jquery tr td, .datatable-jquery th{
+  padding: .8rem;
+}
+
+.card-header .card-title{
+    font-size: 20px;
+    color: #012970;
+    font-family: "Poppins", sans-serif;
+}
+
+.breadcrumb{
+  background: unset!important;
+  padding: 0;
+  font-size: 16px;
+  font-family: "Nunito", sans-serif;
+  color: #899bbd;
+  font-weight: 600;
+}
+
+.form-control:focus{
+  color: black;
+}
+
+.dataTables_length{
+  display: inline;
+}
+
+.section-badge-success::before {
+    content: '';
+    border-radius: 5px;
+    height: 8px;
+    width: 30px;
+    background-color: #198754;
+    display: inline-block;
+    margin-top: 6px;
+    margin-right: 15px;
+    float: left;
+}
+
+.btn-success{
+  box-shadow: 0 2px 6px #81d694;
+    background-color: #47c363;
+    border-color: #47c363;
+    color: white;
+    font-size: 13px;
+}
+
+.invoice-detail-name{
+  font-weight: 700;
+    font-family: "Nunito", "Segoe UI", arial;
+    color: #6c757d;
+    font-size: 1.3rem;
+}
+
+.invoice-detail-value{
+  color: #34395e;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.topbar .topbar-divider{
+  margin: auto .5rem;
+}
+
+.pagetitle h1{
+  margin: 0!important;
+}
+
+.dataTables_filter{
+  float: right;
+  margin-bottom: 15px;
+}
+
+.breadcrumb a {
+  color: #899bbd;
+  transition: 0.3s;
+}
+
+.modal-title{
+    font-size: 20px;
+    font-weight: 700;
+    color: #012970;
+}
+
+label{
+    font-size: 15px;
+    margin-bottom: 4px;
+    font-family: "Nunito";
+    color: black;
+}
+
+.form-control{
+  color: #212529;
+  border: 1px solid #ced4da;
+}
+
+.btn-warning{
+  margin-right: 10px;
+  box-shadow: 0 2px 6px #ffc473;
+  background: #ffa426;
+  color: white;
+  font-size: 15px;
+}
+
+@media (min-width: 768px){
+  .sidebar {
+    width: 20rem!important;
+  }
+
+  .sidebar .nav-item .nav-link{
+    width: 16rem;
+  }
+
+  .sidebar .nav-item .nav-link span{
+    font-size: 1rem;
+  }
+}
+
+.breadcrumb-item.active a {
+  color: #51678f!important;
+}
+
+.btn-sm{
+    --bs-btn-padding-y: 0.25rem;
+    --bs-btn-padding-x: 0.5rem;
+    --bs-btn-font-size: 0.875rem;
+    --bs-btn-border-radius: 0.25rem;
+}
+
+.card.pembelian-card .card-icon {
+  color: #2eca6a;
+  background: #e0f8e9;
+}
+
+.card.laporan-card .card-icon {
+  color: #ff771d;
+  background: #ffecdf;
+}
+
+.card.grafik-card .card-icon {
+  color: #F0433D;
+  background: #f25f5a42;
+}
+
+table.datatable-primary thead tr{
+  background-color: rgb(65, 84, 241) !important;
+  color: white!important;
+}
+
+.sidebar .nav-item .collapse .collapse-inner .collapse-item.active, .sidebar .nav-item .collapsing .collapse-inner .collapse-item.active{
+  background: #ededed96;
+}
+
+.pagetitle h1 {
+    font-size: 24px;
+    margin-bottom: 0;
+    font-weight: 600;
+    color: #012970;
+}
