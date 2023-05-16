@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\Akun;
+use App\Models\Barang;
+use Carbon\Carbon;
 use App\Models\MasterTransaksi;
 
 class DashboardController extends Controller
@@ -13,6 +15,7 @@ class DashboardController extends Controller
         $data['hutangDagang'] = MasterTransaksi::with(['pembelian' => function ($query) {
             $query->select('no_faktur', 'id_transaksi', 'id_supplier', 'status');
         }])->where('type', 1)->get();
+        $data['barang_ed'] = Barang::where('ed', '<=', Carbon::today()->format('Y-m-d'))->orderBy('nama_barang')->get();
         return view('dashboard.dashboard', $data);
     }
 }

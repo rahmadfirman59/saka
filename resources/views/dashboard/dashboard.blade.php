@@ -127,6 +127,35 @@
                 </div>
 
             </div>
+
+            <div class="card recent-sales overflow-auto mt-5">
+
+                <div class="card-body">
+                    <h5 class="card-title2">Peringatan Barang Telah Expired</h5>
+
+                    <table class="table table-borderless datatable-jquery-barang datatable-primary" style="border-left: 1px solid #00000033; border-right: 1px solid #00000033; border-bottom: 1px solid #00000033">
+                        <thead>
+                            <tr>
+                                <th scope="col" align="center"><div align="center">Nama Barang</div></th>
+                                <th scope="col">Expired Date</th>
+                                <th scope="col">Stok</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($barang_ed as $barang)
+                            <tr>
+                                <td ><div>{{ $barang->nama_barang }}</div></td>
+                                <td>{{ $barang->ed }}</td>
+                                <td>{{ $barang->stok }}</td>
+                                {{-- <td>{{ 'Rp. ' .  number_format($barang->jumlah,2,'.',',');}}</td> --}}
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
         </div><!-- End Operasional Table -->
 
         <!-- Hutang Table -->
@@ -189,6 +218,16 @@
 			columnDefs: [{
 					className: 'text-center',
 					targets: [0,1,2,3,4]				}
+			],
+		});
+
+        $tb2 = $('.datatable-jquery-barang').dataTable({
+			sDom: 'lBfrtip',
+            pageLength : 5,
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']],
+			columnDefs: [{
+					className: 'text-center',
+					targets: [1,2]				}
 			],
 		});
 	});

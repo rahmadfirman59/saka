@@ -443,7 +443,7 @@
                         }, 500);
                         if (response.status === 200) {
                              swal(response.message, { icon: 'success', }).then(function() {
-                            location.reload();
+                            window.location.href = '/saka/jurnal/jurnal-pembelian/detail-pembelian/' + response.id
                             });
                         } else {
                             swal(response.message, {

@@ -201,8 +201,12 @@
                                 <td>{{ $item->harga_jual }}</td>                           
                                 <td>{{ $item->stok }}</td>                           
                                 <td>{{ $item->satuan }}</td>                           
-                                <td>{{ $item->ed }}</td>                           
+                                <td>{{ $item->ed }}</td>           
+                                @if($item->ed >= \Carbon\Carbon::today()->format('Y-m-d'))                
                                 <td><button class='btn btn-info btn-sm mr-1 mx-3'><a style='color: white;' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><i class='fa fa-plus'></i></a></button></td>                           
+                                @else
+                                <td><p class="text-danger"; style="font-size: .9rem">Barang Sudah Expired</p></td>
+                                @endif
                             </tr>
                             @endforeach
                         </tbody>
@@ -303,7 +307,7 @@
 
         swal({
              title: 'Yakin?',
-             text: 'Apakah anda yakin akan menyimpan data ini?',
+             text: 'Apakah anda yakin akan menghapus data ini?',
              icon: 'warning',
              buttons: true,
              dangerMode: true,
@@ -400,9 +404,10 @@
                         setTimeout(function () {
                             $('#modal_loading').modal('hide');
                         }, 500);
+                        console.log(response);
                         if (response.status === 200) {
                              swal(response.message, { icon: 'success', }).then(function() {
-                            location.reload();
+                            window.location.href = '/saka/jurnal/jurnal-penjualan/detail-penjualan/' + response.id
                             });
                         } else {
                             swal(response.message, {

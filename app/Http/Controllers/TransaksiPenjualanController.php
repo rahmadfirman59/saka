@@ -55,33 +55,6 @@ class TransaksiPenjualanController extends Controller
 
         $sub_total = 0;
         $barang = Barang::all();
-
-        $transaksi = MasterTransaksi::create([
-            'kode_akun' => '411',
-            'keterangan' => 'Penjualan Barang',
-            'kredit' => $request->total_belanja,
-            'type' => 2,
-            'tanggal' => date('Y-m-d'),
-            'kode' => $request->kode_transaksi
-        ]);
-
-        $akun = Akun::where('kode_akun', 111)->first();
-        $akun->jumlah += $request->total_belanja;
-        $akun->save();
-
-        $akun1 = Akun::where('kode_akun', 411)->first();
-        $akun1->jumlah += $request->total_belanja;
-        $akun1->save();
-
-        Log::create([
-            'user_id' => Session::get('useractive')->id,
-            'nomor_transaksi' => $request->kode_transaksi,
-            'waktu' => date('Y-m-d H:i:s'),
-            'keterangan' => 'Penjualan Barang Dari Transaksi ' . $request->kode_transaksi,
-            'jumlah' => $request->total_belanja
-        ]);
-
-        Keranjang::where('created_by', Session::get('useractive')->id)->where('type', 2)->whereIn('id_barang', $request->idbarang)->delete();
         
         DB::beginTransaction();
 
@@ -91,10 +64,28 @@ class TransaksiPenjualanController extends Controller
                 if($barang->firstWhere('id', $item)->stok < $request->qty[$key]){
                     return [
                         'status' => 300,
-                        'message' => "Transaksi Tidak Bisa Dilakukan Karena Stok Habis"
+                        'message' => "Transaksi Tidak Bisa Dilakukan Karena Stok " . $barang->firstWhere('id', $item)->nama_barang . " Telah Habis"
                     ];
                 }
 
+                if($barang->firstWhere('id', $item)->ed <= Carbon::today()->format('Y-m-d')){
+                    return [
+                        'status' => 300,
+                        'message' => "Transaksi Tidak Bisa Dilakukan Karena Barang " . $barang->firstWhere('id', $item)->nama_barang . " Telah Expired"
+                    ];
+                }
+            }
+
+            $transaksi = MasterTransaksi::create([
+                'kode_akun' => '411',
+                'keterangan' => 'Penjualan Barang',
+                'kredit' => $request->total_belanja,
+                'type' => 2,
+                'tanggal' => date('Y-m-d'),
+                'kode' => $request->kode_transaksi
+            ]);
+
+            foreach($request->idbarang as $key => $item){
                 //Ubah Stok Barang
                 $barang_single = $barang->firstWhere('id', $item);
                 $stok = $barang_single->stok - $request->qty[$key];
@@ -114,7 +105,6 @@ class TransaksiPenjualanController extends Controller
                     'id_transaksi' => $transaksi->id
                 ]);  
             }
-
             DB::commit();
             
             MasterTransaksi::create([
@@ -125,11 +115,29 @@ class TransaksiPenjualanController extends Controller
                 'kode' => $request->kode_transaksi,
                 'tanggal' => date('Y-m-d'),
             ]);
-            
+
+            $akun = Akun::where('kode_akun', 111)->first();
+            $akun->jumlah += $request->total_belanja;
+            $akun->save();
+
+            $akun1 = Akun::where('kode_akun', 411)->first();
+            $akun1->jumlah += $request->total_belanja;
+            $akun1->save();
+
+            Log::create([
+                'user_id' => Session::get('useractive')->id,
+                'nomor_transaksi' => $request->kode_transaksi,
+                'waktu' => date('Y-m-d H:i:s'),
+                'keterangan' => 'Penjualan Barang Dari Transaksi ' . $request->kode_transaksi,
+                'jumlah' => $request->total_belanja
+            ]);
+
+            Keranjang::where('created_by', Session::get('useractive')->id)->where('type', 2)->whereIn('id_barang', $request->idbarang)->delete();
             
             return [
                 'status' => 200,
-                'message' => 'Transaksi Berhasil Dilakukan'
+                'message' => 'Transaksi Berhasil Dilakukan',
+                'id' => $transaksi->id
             ];
         }
 

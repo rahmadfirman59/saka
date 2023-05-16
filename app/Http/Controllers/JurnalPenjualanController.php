@@ -10,7 +10,7 @@ use App\Models\User;
 class JurnalPenjualanController extends Controller
 {
     public function index(){
-        $transaksi = MasterTransaksi::where('type', 2)->get();
+        $transaksi = MasterTransaksi::where('type', 2)->orderBy('created_at', 'desc')->get();
         return view('jurnal.jurnal-penjualan')
             ->with('transaksi', $transaksi);
     }

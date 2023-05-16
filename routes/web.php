@@ -13,6 +13,7 @@ use App\Http\Controllers\JurnalPenyesuaianController;
 use App\Http\Controllers\JurnalUmumController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransaksiPembelianController;
 use App\Http\Controllers\TransaksiPenjualanController;
 
@@ -66,6 +67,14 @@ Route::group(['middleware' => ['ceklogin']], function () {
             Route::post('/store-update', [DokterController::class, 'store_update']);
             Route::get('/detail/{id}', [DokterController::class, 'detail']);
             Route::delete('/delete/{id}', [DokterController::class, 'delete']);
+        });
+
+        Route::prefix('user')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('user');
+            Route::post('/store', [UserController::class, 'store']);
+            Route::post('/update', [UserController::class, 'update']);
+            Route::get('/detail/{id}', [UserController::class, 'detail']);
+            Route::delete('/delete/{id}', [UserController::class, 'delete']);
         });
     });
 

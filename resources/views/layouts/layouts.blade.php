@@ -98,6 +98,7 @@
                         <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'barang') active @endif" href="{{ route('barang') }}">Barang</a>
                         <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'supplier') active @endif" href="{{ route('supplier') }}">Supplier</a>
                         <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'dokter') active @endif" href="{{ route('dokter') }}">Dokter</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'user') active @endif" href="{{ route('user') }}">User</a>
                     </div>
                 </div>
             </li>
@@ -392,7 +393,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="logout">Logout</a>
+                    <a class="btn btn-primary" href="/saka/logout">Logout</a>
                 </div>
             </div>
         </div>

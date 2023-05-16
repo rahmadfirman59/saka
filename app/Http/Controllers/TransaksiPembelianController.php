@@ -173,7 +173,8 @@ class TransaksiPembelianController extends Controller
             
             return [
                 'status' => 200,
-                'message' => 'Transaksi Berhasil Dilakukan'
+                'message' => 'Transaksi Berhasil Dilakukan',
+                'id' => $transaksi->id
             ];
         }
 
