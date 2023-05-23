@@ -159,7 +159,16 @@
                                 @foreach ($transaksi as $item )
                                 <tr>
                                     <td>{{ $item->tanggal }}</td>
-                                    <td>{{ $item->kode }}</td>
+                                    <td>
+                                        @if($item->type == 1)
+                                        <a href="/saka/jurnal/jurnal-pembelian/detail-pembelian/{{ $item->id }}" target="_blank">{{ $item->kode }}</a>
+                                        @elseif($item->type == 2)
+                                        <a href="/saka/jurnal/jurnal-penjualan/detail-penjualan/{{ $item->id }}" target="_blank">{{ $item->kode }}</a>
+                                        @else
+                                        {{ $item->kode }}
+                                        @endif
+                                    </td>
+                                    
                                     <td>{{ $item->kode_akun }}</td>
                                     <td>{{ $item->keterangan }}</td>
                                     <td style="text-align: end"><?php echo "Rp. ".number_format($item->debt, 2 , ',' , '.' ) ?></td>

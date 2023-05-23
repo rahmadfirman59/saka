@@ -4,6 +4,14 @@
     .modal-body{
         padding: 1.4em;
     }
+
+    .swal-text{
+        text-align: center;
+    }
+
+    td{
+        font-size: .9rem;
+    }
 </style>
 @endsection
 @section('content')
@@ -25,9 +33,14 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 card-title">Tabel Barang</h6>
-            <button type="button" style="position: absolute;right: 12px;top: 13px;font-size: 13px" class="btn btn-warning"
-						onclick="add();"><i class="fa fa-plus mr-1"></i>
-						Tambah Barang</button>
+            <div style="position: absolute;right: 12px;top: 13px;font-size: 13px!important">
+                <button type="button" class="btn btn-success mr-2"
+                            onclick="$('#modal_restore').modal('show');"><i class="fas fa-history mr-1"></i>
+                            Restore Barang</button>
+                <button type="button" style="font-size: 13px" class="btn btn-warning"
+                            onclick="add();"><i class="fa fa-plus mr-1"></i>
+                            Tambah Barang</button>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -39,11 +52,11 @@
                             <th>Jenis</th>
                             <th>Satuan</th>
                             <th>No. Batch</th>
-                            <th>Harga Beli</th>
-                            <th>Harga Jual</th>
+                            <th style="white-space: nowrap">Harga Beli</th>
+                            <th style="white-space: nowrap">Harga Jual</th>
                             <th>Stok</th>
-                            <th>Dibuat Oleh</th>
-                            <th>Aksi</th>
+                            <th>Dibuat</th>
+                            <th style="width: 10%">Aksi</th>
                         </tr>
                     </thead>
 
@@ -55,8 +68,8 @@
                             <td>{{ $item->jenis }}</td>
                             <td>{{ $item->satuan }}</td>
                             <td>{{ $item->no_batch }}</td>
-                            <td>{{ "Rp. ".number_format($item->harga_beli, 2 , ',' , '.' ) }}</td>
-                            <td>{{ "Rp. ".number_format($item->harga_jual, 2 , ',' , '.' ) }}</td>
+                            <td>{{ "Rp. ".number_format($item->harga_beli, 0 , ',' , '.' ) }}</td>
+                            <td>{{ "Rp. ".number_format($item->harga_jual, 0 , ',' , '.' ) }}</td>
                             <td>{{ $item->stok }}</td>
                             <td>{{ $item->user->name }}</td>
                             <td>
@@ -254,6 +267,63 @@
        </div>
     </div>
 </div>
+
+<div class="modal fade" role="dialog" id="modal_restore" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-xl" role="document">
+       <div class="modal-content">
+            <div class="modal-header br">
+                <h5 class="modal-title">Restore Deleted Barang</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table datatable-primary table-striped table-hover datatable-jquery2" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Jenis</th>
+                                <th>Satuan</th>
+                                <th>No. Batch</th>
+                                <th>Harga Beli</th>
+                                <th>Harga Jual</th>
+                                <th>Stok</th>
+                                <th>Restore</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if(!empty($deleted_barang))
+                            @foreach ($deleted_barang as $key=> $item )
+                            <tr>
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $item->nama_barang }}</td>
+                                <td>{{ $item->jenis }}</td>
+                                <td>{{ $item->satuan }}</td>
+                                <td>{{ $item->no_batch }}</td>
+                                <td>{{ "Rp. ".number_format($item->harga_beli, 2 , ',' , '.' ) }}</td>
+                                <td>{{ "Rp. ".number_format($item->harga_jual, 2 , ',' , '.' ) }}</td>
+                                <td>{{ $item->stok }}</td>
+                                <td>
+                                    <button class='btn btn-info btn-sm'><a style='color: white'; Onclick="restore_barang('barang/restore/{{ $item->id }}', '{{ $item->nama_barang }}')"><i class='fas fa-history'></i></a></button>
+                                </td>
+                            </tr>
+                            @endforeach
+                            @else
+                            <tr>
+                                <td colspan="9" class="text-center">Data Kosong</td>
+                            </tr>
+                            @endif
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+       </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
@@ -266,11 +336,34 @@
     });
 
 	$(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        let searchInput = urlParams.get('search');
 		$('.datatable-jquery').dataTable({
 			sDom: 'lBfrtip',
 			columnDefs: [{
 					className: 'text-center',
 					targets: [0, 3, 4, 7, 8, 9]
+				},
+				{
+					width: "7%",
+					targets: [0]
+				},
+				{
+					orderable: false,
+					targets: [9]
+				},
+			],
+            search: {
+                search: searchInput,
+                
+            }
+		});
+
+        $('.datatable-jquery2').dataTable({
+			sDom: 'lBfrtip',
+			columnDefs: [{
+					className: 'text-center',
+					targets: [0, 3, 4, 7, 8]
 				},
 				{
 					width: "7%",
@@ -380,6 +473,47 @@
              setTimeout(function () {  $('#modal_loading').modal('hide'); }, 500);
              swal("Oops! Terjadi kesalahan segera hubungi tim IT (" + errorThrown + ")", {  icon: 'error', });
           }
+       });
+    }
+
+    function restore_barang(url, nama){
+        swal({
+             title: 'Yakin?',
+             text: `Apakah Anda Yakin Ingin Mengembalikan Data ${nama} ke Tabel Barang ?`,
+             icon: 'warning',
+             buttons: true,
+             dangerMode: true,
+       })
+       .then((willDelete) => {
+            if (willDelete) {
+            $("#modal_loading").modal('show');
+            $.ajax({
+                url: '/saka/master/' + url,
+                type: "GET",
+                success: function (response) {
+                    setTimeout(function () {
+                        $('#modal_loading').modal('hide');
+                    }, 500);
+                    if (response.status === 200) {
+                        swal(response.message, { icon: 'success', }).then(function() {
+                           location.reload();
+                        });
+                    } else {
+                        swal(response.message, {
+                            icon: 'error',
+                        });
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    setTimeout(function () {
+                        $('#modal_loading').modal('hide');
+                    }, 500);
+                    swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
+                        icon: 'error',
+                    });
+                }
+            })
+            }
        });
     }
 </script>

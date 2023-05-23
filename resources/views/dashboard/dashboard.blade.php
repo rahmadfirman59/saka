@@ -128,7 +128,7 @@
 
             </div>
 
-            <div class="card recent-sales overflow-auto mt-5">
+            <div class="card recent-sales overflow-auto mt-5" id="expired_barang_table">
 
                 <div class="card-body">
                     <h5 class="card-title2">Peringatan Barang Telah Expired</h5>
@@ -147,7 +147,6 @@
                                 <td ><div>{{ $barang->nama_barang }}</div></td>
                                 <td>{{ $barang->ed }}</td>
                                 <td>{{ $barang->stok }}</td>
-                                {{-- <td>{{ 'Rp. ' .  number_format($barang->jumlah,2,'.',',');}}</td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -222,13 +221,14 @@
 		});
 
         $tb2 = $('.datatable-jquery-barang').dataTable({
-			sDom: 'lBfrtip',
             pageLength : 5,
+            ordering: false,
             lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']],
 			columnDefs: [{
 					className: 'text-center',
 					targets: [1,2]				}
 			],
+            "bInfo" : false
 		});
 	});
 </script>

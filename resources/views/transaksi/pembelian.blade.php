@@ -81,7 +81,7 @@
                                     <input type="hidden" value="{{ $item->barang->id }}" name="idbarang[]">
                                     <td>{{ $key+1 }}</td>
                                     <td style="white-space: nowrap">{{ $item->barang->nama_barang }}</td>
-                                    <td><input type="text" class="form-control" style="font-size: .9rem" name="no_batch[]"></td>
+                                    <td><input type="text" class="form-control" style="font-size: .9rem" value="{{ $item->barang->no_batch }}" name="no_batch[]"></td>
                                     <td>
                                         <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->barang->stok }}, {{ $item->barang->harga_jual }})">
                                     </td>
@@ -121,7 +121,7 @@
                             <div class="form-group">
                                 <label>Supplier</label>
                                 <select name="nm_supplier" class="form-control">
-									<option value="0" selected>- Pilih Supplier -</option>
+									<option value="" selected>- Pilih Supplier -</option>
                                     @foreach ($suppliers as $supplier)
                                     <option value="{{ $supplier->id }}">{{ $supplier->nama_supplier }}</option>
                                     @endforeach
@@ -201,7 +201,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Barang</th>
-                                <th>Harga</th>
+                                <th>No. Batch</th>
                                 <th>Stok</th>
                                 <th>Satuan</th>
                                 <th>Kadaluarsa</th>
@@ -214,11 +214,11 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>         
                                 <td>{{ $item->nama_barang }}</td>                           
-                                <td>{{ $item->harga }}</td>                           
+                                <td>{{ $item->no_batch }}</td>                           
                                 <td>{{ $item->stok }}</td>                           
                                 <td>{{ $item->satuan }}</td>                           
                                 <td>{{ $item->ed }}</td>                           
-                                <td><button class='btn btn-info btn-sm mr-1 mx-3'><a style='color: white;' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><i class='fa fa-plus'></i></a></button></td>                           
+                                <td><button onclick="add_barang({{ $item->id }}, {{ $item->stok }})" class='btn btn-info btn-sm mr-1 mx-3'><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
                             </tr>
                             @endforeach
                         </tbody>
@@ -290,6 +290,7 @@
     }
 
     function add_barang(id, stok){
+        $('#modal_loading').modal('show');
         $.ajax({
             url: '/saka/transaksi/pembelian/add-keranjang',
             type: "POST",

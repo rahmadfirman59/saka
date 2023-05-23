@@ -78,6 +78,11 @@ table td {
     font-size: 1.3rem;
 }
 
+.topbar .dropdown-list .dropdown-header{
+  background-color: #DC3545;
+  border-color: #DC3545;
+}
+
 .invoice-detail-value{
   color: #34395e;
     font-size: 1.3rem;

@@ -5,6 +5,10 @@
         padding: 1.4em;
     }
 
+    .table tr td{
+        vertical-align: middle!important;
+    }
+
     @media(min-width: 600px){
         #DataTables_Table_0_filter{
             position: absolute;
@@ -86,8 +90,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-									<td align='right' colspan='6' style="background:rgb(63 84 251 / 86%); color: white; padding: 0.25em; vertical-align: middle"><b>Total<b></td>
-                                    <td id="total" colspan="2" style="background:rgb(63 84 251 / 86%); color: white; font-weight: bold" price="<?php echo $total ?>"><b><?php echo "Rp. ".number_format($total, 2 , ',' , '.' ) ?></b></td>
+									<td align='right' colspan='6' style="background:rgb(249 249 249 / 86%); padding: 0.25em; vertical-align: middle"><b>Total<b></td>
+                                    <td id="total" colspan="2" style="background:rgb(249 249 249 / 86%); font-weight: bold" price="<?php echo $total ?>"><b><?php echo "Rp. ".number_format($total, 2 , ',' , '.' ) ?></b></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -138,6 +142,17 @@
                                     <option value="" selected>- Pilih Dokter -</option>
                                     @foreach ($dokters as $dokter)
                                     <option value={{ $dokter->id }}>{{ $dokter->nama_dokter }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label>Pasien</label>
+                                <select name="nm_pasien" class="form-control">
+                                    <option value="" selected>- Pilih Pasien -</option>
+                                    @foreach ($pasiens as $pasien)
+                                    <option value={{ $pasien->id }}>{{ $pasien->nama_pasien }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -202,8 +217,8 @@
                                 <td>{{ $item->stok }}</td>                           
                                 <td>{{ $item->satuan }}</td>                           
                                 <td>{{ $item->ed }}</td>           
-                                @if($item->ed >= \Carbon\Carbon::today()->format('Y-m-d'))                
-                                <td><button class='btn btn-info btn-sm mr-1 mx-3'><a style='color: white;' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><i class='fa fa-plus'></i></a></button></td>                           
+                                @if($item->ed > \Carbon\Carbon::today()->addDays(30)->format('Y-m-d'))                
+                                <td><button class='btn btn-info btn-sm mr-1 mx-3' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
                                 @else
                                 <td><p class="text-danger"; style="font-size: .9rem">Barang Sudah Expired</p></td>
                                 @endif
@@ -276,6 +291,7 @@
             });
             return;
         }
+        $('#modal_loading').modal('show');
         $.ajax({
             url: '/saka/transaksi/penjualan/add-keranjang',
             type: "POST",

@@ -45,6 +45,7 @@ class AuthController extends Controller
     public function logout()
     {
         Session::forget('useractive');
+        Session::forget('admin_temporary');
         return redirect('/login');
     }
 }

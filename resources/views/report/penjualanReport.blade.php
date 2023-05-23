@@ -13,6 +13,10 @@
 		font-weight:  700;
 	}
 
+	.swal-text{
+		text-align: center;
+	}
+
 	.section-badge::before {
 		content: '';
 		border-radius: 5px;
@@ -73,8 +77,14 @@
 											<?php echo"<p style='font-size: 1rem; margin-top: 8px; font-family: \"Nunito\"'>$perusahaan->nm_perusahaan<br>$perusahaan->alamat</p>"; ?>
 										</div>
 										<div class="col-6" style="color: #5e666d">
-											<strong>Petugas:</strong><br>
-											<p style='font-size: 1rem; margin-top: 8px; font-family: "Nunito"'>{{ $petugas->name }}</p>
+											<p style="margin-bottom: .6rem">
+												<strong>Petugas :&nbsp;</strong>
+												<span style='font-size: 1rem; margin-top: 8px; font-family: "Nunito"'>{{ $petugas->name }}</span>
+											</p>
+											<p>
+												<strong>Pasien :&nbsp;</strong>
+												<span style='font-size: 1rem; margin-top: 8px; font-family: "Nunito"'>{{ $pasien->pasien->nama_pasien }}</span>
+											</p>
 										</div>
 									</address>
 								</div>
@@ -119,10 +129,10 @@
 						</div>
 						<p style="color: red; font-family: 'nunito', arial; font-size: .9rem; margin-bottom: 50px; display: block; width: 100%">*barang yang sudah dibeli tidak bisa dikembalikan</p>
 						<div class="d-flex justify-content-between" style="width: 100%">
-							<button class="btn btn-danger btn-icon icon-left">
-								<a href="batalpnj.<?php echo"";?>" style="color: white">
+							<button class="btn btn-danger btn-icon icon-left" onclick="batal_penjualan({{ $transaksi->id }}, '{{ Session::get('useractive')->level }}')">
+								<p style="color: white; margin: 0">
 									<i class="bi bi-x-circle-fill"></i> Batal
-								</a>
+								</p>
 							</button>
 							<button class="btn btn-warning btn-icon icon-left" <?= "onclick=\"window.open('/saka/jurnal/jurnal-penjualan/cetak-penjualan/$transaksi->id','Print','menubar=no,navigator=no,width=500,height=450,left=200,top=150,toolbar=no')\";" ?>><i class="bi bi-printer-fill"></i></i> Print</button>
 						</div>
@@ -133,4 +143,168 @@
 		</div>
 	</div>
 </div>
+@endsection
+
+@section('modal')
+<div class="modal fade" role="dialog" id="modal_admin" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+          <div class="modal-header br">
+			<div>
+				<h5 class="modal-title">Login Admin</h5>
+				<p style="margin-bottom: -5px; font-size: .9rem">Enter your email & password to login</p>
+			</div>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+             </button>
+          </div>
+          <form id="form_admin" action="/saka/jurnal/jurnal-penjualan/login-admin" method="POST" autocomplete="off">
+             @csrf
+             <div class="modal-body">
+                <div class="row">
+                    <input type="text" hidden class="form-control" name="id" id="transaksi_id_admin" value="{{ $transaksi->id }}">
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>Email</label>
+                              <input class="form-control" type="text" id="email" name="email" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-email-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>Password</label>
+                              <input class="form-control" type="password" id="password" name="password" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-password-feedback"></span>
+                        </div>
+                    </div>
+                </div>
+             </div>
+             <div class="modal-footer bg-whitesmoke br">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-warning">Simpan</button>
+             </div>
+          </form>
+       </div>
+    </div>
+</div>
+@endsection
+
+@section('script')
+<script>
+	function batal_penjualan(id, level){
+		if(level !== 'superadmin'){
+			swal({
+				title: 'Peringatan',
+				text: 'Anda Harus Login Sebagai Admin Untuk Menghapus Transaksi',
+				icon: 'info',
+			})
+			.then((willDelete) => {
+				$('#modal_admin').modal('show');
+			});
+		}else{
+			batal_penjualan_function(id);
+		}
+
+	}
+
+	function batal_penjualan_function(id){
+		swal({
+             title: 'Yakin?',
+             text: 'Apakah anda yakin akan menghapus transaksi ini?',
+             icon: 'warning',
+             showCancelButton: true,
+			 buttons: true,
+             dangerMode: true,
+			 confirmButtonText: 'Yes, delete it!'
+       })
+       .then((willDelete) => {
+		   if(willDelete){
+			   $("#modal_loading").modal('show');
+			   $.ajax({
+				   url: '/saka/jurnal/jurnal-penjualan/batal-penjualan',
+				   data: {id: id},
+				   type: "POST",
+				   success: function (response) {
+					   setTimeout(function () {
+						   $('#modal_loading').modal('hide');
+					   }, 500);
+					   if (response.status === 200) {
+						   swal(response.message, { icon: 'success', }).then(function() {
+							   window.location.href = "/saka/transaksi/penjualan";
+						   });
+					   } else{
+						   swal(response.message, { icon: 'error', })
+					   }
+				   },
+				   error: function (jqXHR, textStatus, errorThrown) {
+					   setTimeout(function () {
+						   $('#modal_loading').modal('hide');
+					   }, 500);
+					   swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
+						   icon: 'error',
+					   });
+				   }
+			   })
+		   } else {
+				$("#modal_loading").modal('show');
+				$.ajax({
+					url: '/saka/jurnal/jurnal-penjualan/clear-session',
+					type: "POST",
+					success: function (response) {
+						setTimeout(function () {
+							$('#modal_loading').modal('hide');
+						}, 500);
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						setTimeout(function () {
+							$('#modal_loading').modal('hide');
+						}, 500);
+						swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
+							icon: 'error',
+						});
+					}
+				})
+		   }
+	   });
+	}
+
+	$('#modal_admin').submit(function(e){
+		e.preventDefault();
+		$("#modal_loading").modal('show');
+		$.ajax({
+			url: $('#form_admin').attr('action'),
+			data: $('#form_admin').serialize(),
+			type: "POST",
+			success: function (response) {
+				setTimeout(function () {
+					$('#modal_loading').modal('hide');
+				}, 500);
+				if (response.status === 200) {
+					swal(response.message, { icon: 'success', }).then(function() {
+						$("#modal_admin").modal('hide');
+				        $("#form_admin")[0].reset();
+						batal_penjualan_function($('#transaksi_id_admin').val());
+					});
+				} else if(response.status == 300){
+					swal(response.message, { icon: 'error', })
+				} else {
+					Object.keys(response.message).forEach(function (key) {
+						var elem_name = $('[name=' + key + ']');
+						var elem_feedback = $('[id=invalid-' + key + '-feedback' + ']');
+						elem_name.addClass('is-invalid');
+						elem_feedback.text(response.message[key]);
+					});
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				setTimeout(function () {
+					$('#modal_loading').modal('hide');
+				}, 500);
+				swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
+					icon: 'error',
+				});
+			}
+		})
+	})
+</script>
 @endsection

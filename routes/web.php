@@ -12,6 +12,7 @@ use App\Http\Controllers\JurnalPenjualanController;
 use App\Http\Controllers\JurnalPenyesuaianController;
 use App\Http\Controllers\JurnalUmumController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PasienController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransaksiPembelianController;
@@ -52,6 +53,7 @@ Route::group(['middleware' => ['ceklogin']], function () {
             Route::get('/', [BarangController::class, 'index'])->name('barang');
             Route::post('/store-update', [BarangController::class, 'store_update']);
             Route::get('/detail/{id}', [BarangController::class, 'detail']);
+            Route::get('/restore/{id}', [BarangController::class, 'restore']);
             Route::delete('/delete/{id}', [BarangController::class, 'delete']);
         });
 
@@ -67,6 +69,13 @@ Route::group(['middleware' => ['ceklogin']], function () {
             Route::post('/store-update', [DokterController::class, 'store_update']);
             Route::get('/detail/{id}', [DokterController::class, 'detail']);
             Route::delete('/delete/{id}', [DokterController::class, 'delete']);
+        });
+
+        Route::prefix('pasien')->group(function () {
+            Route::get('/', [PasienController::class, 'index'])->name('pasien');
+            Route::post('/store-update', [PasienController::class, 'store_update']);
+            Route::get('/detail/{id}', [PasienController::class, 'detail']);
+            Route::delete('/delete/{id}', [PasienController::class, 'delete']);
         });
 
         Route::prefix('user')->group(function () {
@@ -106,12 +115,18 @@ Route::group(['middleware' => ['ceklogin']], function () {
             Route::get('/', [JurnalPenjualanController::class, 'index'])->name('jurnal.penjualan');
             Route::get('/detail-penjualan/{id}', [JurnalPenjualanController::class, 'detail_penjualan']);
             Route::get('/cetak-penjualan/{id}', [JurnalPenjualanController::class, 'cetak_penjualan']);
+            Route::post('/login-admin', [JurnalPenjualanController::class, 'login_admin']);
+            Route::post('/batal-penjualan', [JurnalPenjualanController::class, 'batal_penjualan'])->middleware('ceklevel');
+            Route::post('/clear-session', [JurnalPenjualanController::class, 'clear_session']);
         });
 
         Route::prefix('jurnal-pembelian')->group(function () {
             Route::get('/', [JurnalPembelianController::class, 'index'])->name('jurnal.pembelian');
             Route::get('/detail-pembelian/{id}', [JurnalPembelianController::class, 'detail_pembelian']);
             Route::get('/cetak-pembelian/{id}', [JurnalPembelianController::class, 'cetak_pembelian']);
+            Route::post('/login-admin', [JurnalPembelianController::class, 'login_admin']);
+            Route::post('/batal-pembelian', [JurnalPembelianController::class, 'batal_pembelian'])->middleware('ceklevel');
+            Route::post('/clear-session', [JurnalPembelianController::class, 'clear_session']);
         });
 
         Route::prefix('jurnal-penyesuaian')->group(function () {

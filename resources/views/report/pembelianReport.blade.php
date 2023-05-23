@@ -176,11 +176,11 @@
                                         <i class="bi bi-arrow-counterclockwise"></i> Retur
                                     </a>
                                 </button>
-                                <button class="btn btn-danger btn-icon icon-left">
-                                    <a href="" style="color: white">
-                                        <i class="bi bi-x-circle-fill"></i> Batal
-                                    </a>
-                                </button>
+                                <button class="btn btn-danger btn-icon icon-left" onclick="batal_pembelian({{ $transaksi->id }}, '{{ Session::get('useractive')->level }}')">
+									<p style="color: white; margin: 0">
+										<i class="bi bi-x-circle-fill"></i> Batal
+									</p>
+								</button>
                             </div>
                             <button class="btn btn-success btn-icon icon-left">
                                 <a href="" style="color: white">
@@ -196,4 +196,170 @@
 		</div>
 	</div>
 </div>
+@endsection
+
+
+@section('modal')
+<div class="modal fade" role="dialog" id="modal_admin" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+          <div class="modal-header br">
+			<div>
+				<h5 class="modal-title">Login Admin</h5>
+				<p style="margin-bottom: -5px; font-size: .9rem">Enter your email & password to login</p>
+			</div>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+             </button>
+          </div>
+          <form id="form_admin" action="/saka/jurnal/jurnal-pembelian/login-admin" method="POST" autocomplete="off">
+             @csrf
+             <div class="modal-body">
+                <div class="row">
+                    <input type="text" hidden class="form-control" name="id" id="transaksi_id_admin" value="{{ $transaksi->id }}">
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>Email</label>
+                              <input class="form-control" type="text" id="email" name="email" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-email-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>Password</label>
+                              <input class="form-control" type="password" id="password" name="password" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-password-feedback"></span>
+                        </div>
+                    </div>
+                </div>
+             </div>
+             <div class="modal-footer bg-whitesmoke br">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-warning">Simpan</button>
+             </div>
+          </form>
+       </div>
+    </div>
+</div>
+@endsection
+
+
+@section('script')
+<script>
+	function batal_pembelian(id, level){
+		if(level !== 'superadmin'){
+			swal({
+				title: 'Peringatan',
+				text: 'Anda Harus Login Sebagai Admin Untuk Menghapus Transaksi',
+				icon: 'info',
+			})
+			.then((willDelete) => {
+				$('#modal_admin').modal('show');
+			});
+		}else{
+			batal_pembelian_function(id);
+		}
+
+	}
+
+	function batal_pembelian_function(id){
+		swal({
+             title: 'Yakin?',
+             text: 'Apakah anda yakin akan menghapus transaksi ini?',
+             icon: 'warning',
+             showCancelButton: true,
+			 buttons: true,
+             dangerMode: true,
+			 confirmButtonText: 'Yes, delete it!'
+       })
+       .then((willDelete) => {
+		   if(willDelete){
+			   $("#modal_loading").modal('show');
+			   $.ajax({
+				   url: '/saka/jurnal/jurnal-pembelian/batal-pembelian',
+				   data: {id: id},
+				   type: "POST",
+				   success: function (response) {
+					   setTimeout(function () {
+						   $('#modal_loading').modal('hide');
+					   }, 500);
+					   if (response.status === 200) {
+						   swal(response.message, { icon: 'success', }).then(function() {
+							   window.location.href = "/saka/transaksi/pembelian";
+						   });
+					   } else{
+						   swal(response.message, { icon: 'error', })
+					   }
+				   },
+				   error: function (jqXHR, textStatus, errorThrown) {
+					   setTimeout(function () {
+						   $('#modal_loading').modal('hide');
+					   }, 500);
+					   swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
+						   icon: 'error',
+					   });
+				   }
+			   })
+		   } else {
+				$("#modal_loading").modal('show');
+				$.ajax({
+					url: '/saka/jurnal/jurnal-pembelian/clear-session',
+					type: "POST",
+					success: function (response) {
+						setTimeout(function () {
+							$('#modal_loading').modal('hide');
+						}, 500);
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						setTimeout(function () {
+							$('#modal_loading').modal('hide');
+						}, 500);
+						swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
+							icon: 'error',
+						});
+					}
+				})
+		   }
+	   });
+	}
+
+	$('#modal_admin').submit(function(e){
+		e.preventDefault();
+		$("#modal_loading").modal('show');
+		$.ajax({
+			url: $('#form_admin').attr('action'),
+			data: $('#form_admin').serialize(),
+			type: "POST",
+			success: function (response) {
+				setTimeout(function () {
+					$('#modal_loading').modal('hide');
+				}, 500);
+				if (response.status === 200) {
+					swal(response.message, { icon: 'success', }).then(function() {
+						$("#modal_admin").modal('hide');
+				        $("#form_admin")[0].reset();
+						batal_pembelian_function($('#transaksi_id_admin').val());
+					});
+				} else if(response.status == 300){
+					swal(response.message, { icon: 'error', })
+				} else {
+					Object.keys(response.message).forEach(function (key) {
+						var elem_name = $('[name=' + key + ']');
+						var elem_feedback = $('[id=invalid-' + key + '-feedback' + ']');
+						elem_name.addClass('is-invalid');
+						elem_feedback.text(response.message[key]);
+					});
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				setTimeout(function () {
+					$('#modal_loading').modal('hide');
+				}, 500);
+				swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
+					icon: 'error',
+				});
+			}
+		})
+	})
+</script>
 @endsection

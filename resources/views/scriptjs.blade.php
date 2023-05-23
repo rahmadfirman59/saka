@@ -1,4 +1,10 @@
 <script type="text/javascript">
+$.ajaxSetup({
+   headers: {
+         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+         // 'Authorization': '{{session()->get('token_jwt')}}',
+   }
+});
 
     function check_required(form_id = ""){
        var process_required = true;

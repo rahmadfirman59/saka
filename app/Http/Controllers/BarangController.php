@@ -12,8 +12,10 @@ class BarangController extends Controller
     public function index()
     {
         $barang = Barang::with('user')->where('is_delete', 0)->orderBy('nama_barang', 'asc')->get();
+        $barang_deleted = Barang::where('is_delete', 1)->orderBy('nama_barang', 'asc')->get();
         return view('barang.index')
-            ->with('barang', $barang);
+            ->with('barang', $barang)
+            ->with('deleted_barang', $barang_deleted);
     }
 
     public function detail($id){
@@ -55,6 +57,26 @@ class BarangController extends Controller
         return [
             'status' => 200,
             'message' => 'Data Berhasil Disimpan',
+        ];
+    }
+
+    public function restore($id){
+        $delete = Barang::find($id);
+
+        if($delete <> ""){
+            // $delete->delete();
+            $delete->update([
+                'is_delete' => 0
+            ]);
+            return [
+                'status' => 200,
+                'message' => 'Data berhasil Direstore'
+            ];
+        }
+
+        return [
+            'status' => 300,
+            'message' => 'Data tidak ditemukan'
         ];
     }
 

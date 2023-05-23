@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Penjualan;
 use App\Models\Akun;
+use App\Models\HistoryPasien;
 use App\Models\Log;
+use App\Models\Pasien;
 use Carbon\Carbon;
 
 
@@ -20,8 +22,9 @@ class TransaksiPenjualanController extends Controller
 {
     public function index(){
         $data['dokters'] = Dokter::all();
+        $data['pasiens'] = Pasien::all();
         $data['count_penjualan'] = Penjualan::count() + 1;
-        $data['barang'] = Barang::orderBy('nama_barang', 'asc')->get();
+        $data['barang'] = Barang::where('is_delete', 0)->orderBy('nama_barang', 'asc')->get();
         $data['keranjang'] = Keranjang::with('barang')->where('created_by', Session::get('useractive')->id)->where('type', 2)->get();
         return view('transaksi.penjualan', $data);
     }
@@ -30,6 +33,7 @@ class TransaksiPenjualanController extends Controller
         $validator = Validator::make($request->all(), [
             'uang' => 'required',
             'nm_dokter' => 'required',
+            'nm_pasien' => 'required',
             'idbarang' => 'required',
             'qty' => 'required',
             'kode_transaksi' => 'required',
@@ -37,6 +41,7 @@ class TransaksiPenjualanController extends Controller
         ],[
             'uang.required' => 'Uang Belum Diisi',
             'nm_dokter.required' => 'Dokter Belum Dipilih',
+            'nm_pasien.required' => 'Pasien Belum Dipilih',
         ]);
 
         if($validator->fails()){
@@ -68,7 +73,7 @@ class TransaksiPenjualanController extends Controller
                     ];
                 }
 
-                if($barang->firstWhere('id', $item)->ed <= Carbon::today()->format('Y-m-d')){
+                if($barang->firstWhere('id', $item)->ed <= Carbon::today()->addDays(30)->format('Y-m-d')){
                     return [
                         'status' => 300,
                         'message' => "Transaksi Tidak Bisa Dilakukan Karena Barang " . $barang->firstWhere('id', $item)->nama_barang . " Telah Expired"
@@ -105,7 +110,6 @@ class TransaksiPenjualanController extends Controller
                     'id_transaksi' => $transaksi->id
                 ]);  
             }
-            DB::commit();
             
             MasterTransaksi::create([
                 'kode_akun' => '111',
@@ -116,14 +120,20 @@ class TransaksiPenjualanController extends Controller
                 'tanggal' => date('Y-m-d'),
             ]);
 
+            HistoryPasien::create([
+                'id_pasien' => $request->nm_pasien,
+                'id_transaksi' => $transaksi->id,
+                'tanggal' => date('Y-m-d'),
+            ]);
+            
             $akun = Akun::where('kode_akun', 111)->first();
             $akun->jumlah += $request->total_belanja;
             $akun->save();
-
+            
             $akun1 = Akun::where('kode_akun', 411)->first();
             $akun1->jumlah += $request->total_belanja;
             $akun1->save();
-
+            
             Log::create([
                 'user_id' => Session::get('useractive')->id,
                 'nomor_transaksi' => $request->kode_transaksi,
@@ -131,9 +141,11 @@ class TransaksiPenjualanController extends Controller
                 'keterangan' => 'Penjualan Barang Dari Transaksi ' . $request->kode_transaksi,
                 'jumlah' => $request->total_belanja
             ]);
-
+            
             Keranjang::where('created_by', Session::get('useractive')->id)->where('type', 2)->whereIn('id_barang', $request->idbarang)->delete();
             
+            DB::commit();
+
             return [
                 'status' => 200,
                 'message' => 'Transaksi Berhasil Dilakukan',
@@ -163,6 +175,14 @@ class TransaksiPenjualanController extends Controller
             return [
                 'status' => 300,
                 'message' => $validator->errors()
+            ];
+        }
+
+        $keranjang = Keranjang::where('type', 2)->where('id_barang', $request->id_barang)->count();
+        if($keranjang > 0){
+            return [
+                'status' => 300,
+                'message' => "Barang Sudah Ada Dalam Keranjang"
             ];
         }
 
