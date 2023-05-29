@@ -37,6 +37,7 @@ class TransaksiPembelianController extends Controller
             'tgl_faktur' => 'required',
             'status' => 'required',
             'kode_transaksi' => 'required',
+            'no_batch.*' => 'required',
         ], [
             'harga.*.required' => 'Harga Barang Harus Diisi',
             'ed.*.required' => 'Kadaluarsa Harus Diisi',
@@ -137,10 +138,13 @@ class TransaksiPembelianController extends Controller
                 //Ubah Stok Barang
                 $barang_single = $barang->firstWhere('id', $item);
                 if($barang_single->no_batch == $request->no_batch[$key]){
-                    $stok = $barang_single->stok + $request->qty[$key];
-                    $barang_single->stok = $stok;
-                    $barang_single->harga_beli = $request->harga[$key];
+                    $stok = $barang_single->stok_grosir + $request->qty[$key];
+                    $barang_single->stok = $barang_single->stok + $request->qty[$key] * $request->qty_grosir[$key];
+                    $barang_single->harga_beli_grosir = $request->harga[$key];
+                    $barang_single->harga_beli = $request->harga[$key] / $request->qty_grosir[$key];
+                    $barang_single->stok_grosir = $stok;
                     $barang_single->ed = $request->ed[$key];
+                    $barang_single->jumlah_grosir = $request->qty_grosir[$key];
                     $barang_single->save();
                     $barang_id = $item;
                 } else{
@@ -148,8 +152,12 @@ class TransaksiPembelianController extends Controller
                     $new_barang->created_at = Carbon::now();
                     $new_barang->created_by = Session::get('useractive')->id;
                     $new_barang->no_batch = $request->no_batch[$key];
-                    $new_barang->stok = $request->qty[$key];
-                    $new_barang->harga_beli = $request->harga[$key];
+                    $new_barang->stok_grosir = $request->qty[$key];
+                    $new_barang->stok = $request->qty[$key] * $request->qty_grosir[$key];
+                    $new_barang->harga_beli_grosir = $request->harga[$key];
+                    $new_barang->harga_beli = $request->harga[$key] / $request->qty_grosir[$key];
+                    $barang_single->jumlah_grosir = $request->qty_grosir[$key];
+                    $new_barang->ed = $request->ed[$key];
                     $new_barang->save();
                     $barang_id = $new_barang->id;
                 }

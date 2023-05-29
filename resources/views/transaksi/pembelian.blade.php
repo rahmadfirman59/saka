@@ -50,7 +50,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-9">
+        <div class="col-lg-12">
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -66,9 +66,10 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Barang</th>
-                                    <th style="width: 16%">No. Batch Dirubah</th>
+                                    <th style="width: 13%">No. Batch Dirubah</th>
                                     <th style="width: 9%">Jumlah</th>
-                                    <th style="width: 13%">Harga</th>
+                                    <th style="width: 5%">Item Per Box</th>
+                                    <th>Harga</th>
                                     <th>Kadaluarsa</th>
                                     <th>Subtotal</th>
                                     <th>Aksi</th>
@@ -81,9 +82,12 @@
                                     <input type="hidden" value="{{ $item->barang->id }}" name="idbarang[]">
                                     <td>{{ $key+1 }}</td>
                                     <td style="white-space: nowrap">{{ $item->barang->nama_barang }}</td>
-                                    <td><input type="text" class="form-control" style="font-size: .9rem" value="{{ $item->barang->no_batch }}" name="no_batch[]"></td>
+                                    <td><input type="text" class="form-control" style="font-size: .9rem" name="no_batch[]"></td>
                                     <td>
                                         <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->barang->stok }}, {{ $item->barang->harga_jual }})">
+                                    </td>
+                                    <td>
+                                        <input name="qty_grosir[]" type="number" id="qty_grosir{{ $key }}" value="1" class="form-control text-center">
                                     </td>
                                     <td><input type="text" class="form-control" style="font-size: .9rem" id="harga{{ $key }}" onchange="change_harga(this.value, {{ $key }})" name="harga[]"></td>
                                     <td><input type="date" style="font-size: .8rem; height: 38px;" class="form-control" name="ed[]"></td>
@@ -96,11 +100,11 @@
                             </tbody>
                             <tfoot>
                                 <tr> 
-                                    <td style="text-align:right; vertical-align: middle" colspan="6"><b style="float: right;">Potongan</b></td> 
+                                    <td style="text-align:right; vertical-align: middle" colspan="7"><b style="float: right;">Potongan</b></td> 
                                     <td id="tot_bar" colspan="2"><input type="text" name='potongan' onchange="potongan_change(this.value)" id='potongan' style="font-size: .9rem" class="form-control"></td>
                                 </tr> 
                                 <tr>
-									<td align='right' colspan='6' style="border-bottom: 1px solid lightgray; padding: 0.25em; vertical-align: middle;"><b style=" float: right;">Total<b></td>
+									<td align='right' colspan='7' style="border-bottom: 1px solid lightgray; padding: 0.25em; vertical-align: middle;"><b style=" float: right;">Total<b></td>
                                     <td id="total" colspan='2' style="font-size: 1rem; border-bottom: 1px solid lightgray; font-weight: bold; text-align: center" price="0"><b><?php echo "Rp. ".number_format(0, 2 , ',' , '.' ) ?></b></td>
                                 </tr>
                             </tfoot>
@@ -110,14 +114,14 @@
             </div>
         </div>
 
-        <div class="col-lg-3">
+        <div class="col-lg-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h5 class="card-title p-0" style="display: inline-block">Transaksi Pembelian</h5>
                 </div>
                 <div class="card-body">
                     <div class="row" style="gap: 11px 0">
-                        <div class="col-12 col-md-12 col-lg-12">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label>Supplier</label>
                                 <select name="nm_supplier" class="form-control">
@@ -128,32 +132,32 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-12 col-lg-12">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label>No. Faktur</label>
                                 <input type="text" id="no_faktur" name="no_faktur" class="form-control">
                             </div>
                         </div>
-                        <div class="col-12 col-md-12 col-lg-12">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label>Tanggal Faktur</label>
                                 <input type="date" id="tgl_faktur" name="tgl_faktur" class="form-control">
                             </div>
                         </div>
-                        <div class="col-12 col-md-12 col-lg-12">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label>No. Nota</label>
                                 <input type="text" value="{{ 'PMB'.(int)$count_pembelian.date('Ymd') }}" id="kode_transaksi" name="kode_transaksi" class="form-control" disabled>
                             </div>
                         </div>
-                        <div class="col-12 col-md-12 col-lg-12">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label>Tanggal</label>
                                 <input type="text" value="{{ date('d-m-Y') }}" class="form-control" disabled>
                             </div>
                         </div>
-                        <div class="col-12 col-md-12 col-lg-12">
-                            <div class="form-group d-flex justify-content-around" style="margin: 0">
+                        <div class="col-12 col-md-6 col-lg-6 d-flex align-items-center justify-content-center">
+                            <div class="form-group d-flex justify-content-around" style="margin: 0; gap: 40px">
                                 <div>
                                     <label class="checkbox-inline"><input name='status' id="tunai" checked type='radio' value='1'></label>
                                     <label>Tunai</label>
@@ -164,7 +168,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-12 col-lg-12">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label>Jatuh Tempo</label>
                                 <input type="date" name="tgl_tempo" disabled id="tgl_tempo" value="" class="form-control">
@@ -201,7 +205,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Barang</th>
-                                <th>No. Batch</th>
+                                <th>Satuan Grosir</th>
                                 <th>Stok</th>
                                 <th>Satuan</th>
                                 <th>Kadaluarsa</th>
@@ -213,8 +217,12 @@
                             @foreach ($barang as $key=> $item)
                             <tr>
                                 <td>{{ $key + 1 }}</td>         
-                                <td>{{ $item->nama_barang }}</td>                           
-                                <td>{{ $item->no_batch }}</td>                           
+                                <td>{{ $item->nama_barang }}</td>        
+                                @if(isset($item->satuan_grosir))                   
+                                <td>{{ $item->satuan_grosir . '(' . $item->jumlah_grosir .')' }}</td>                           
+                                @else
+                                <td></td>
+                                @endif
                                 <td>{{ $item->stok }}</td>                           
                                 <td>{{ $item->satuan }}</td>                           
                                 <td>{{ $item->ed }}</td>                           
@@ -246,15 +254,19 @@
             "bPaginate": false,
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0,1,2,3,4,5,6,7]
+					targets: [0,1,2,3,4,5,6,7,8]
 				},
 				{
 					width: "7%",
 					targets: [0]
 				},
                 {
-                    width: '10%',
+                    width: '8%',
                     targets: [4]
+                },
+                {
+                    width: '13%',
+                    targets: [7]
                 }
 			],
 		});

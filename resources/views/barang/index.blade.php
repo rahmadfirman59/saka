@@ -150,6 +150,23 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
+                            <label>Satuan Grosir</label>
+                            <select id='satuan_grosir' name="satuan_grosir" class="form-control form-select">
+                                <option value='' selected>-Pilih Satuan Grosir-</option>
+                                <option value='BOX'>BOX</option>
+                            </select>
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-satuan_grosir-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Jumlah Item Per Grosir</label>
+                              <input class="form-control" type="text" id="jumlah_grosir" name="jumlah_grosir" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_grosir-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
                             <label>Stok Minim</label>
                               <input class="form-control" type="text" id="stok_minim" name="stok_minim" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-stok_minim-feedback"></span>
@@ -234,6 +251,23 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
+                            <label>Jumlah Item Per Grosir</label>
+                              <input class="form-control" readonly type="text" id="jumlah_grosir" name="jumlah_grosir" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_grosir-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Satuan Grosir</label>
+                            <select id='satuan_grosir' name="satuan_grosir" class="form-control form-select">
+                                <option value='' selected>-Pilih Satuan Grosir-</option>
+                                <option value='BOX'>BOX</option>
+                            </select>
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-satuan_grosir-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
                             <label>Stok Minim</label>
                               <input class="form-control" type="text" id="stok_minim" name="stok_minim" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-stok_minim-feedback"></span>
@@ -255,6 +289,18 @@
                         <div class="form-group">
                             <label>Harga Jual</label>
                             <input type="text" name="harga_jual" id="harga_jual" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Harga Beli Grosir</label>
+                            <input type="text" readonly name="harga_beli_grosir" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Harga Jual Grosir</label>
+                            <input type="text" name="harga_jual_grosir" id="harga_jual_grosir" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -282,15 +328,15 @@
                     <table class="table datatable-primary table-striped table-hover datatable-jquery2" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>No</th>
+                                <th class="text-center">No</th>
                                 <th>Nama</th>
                                 <th>Jenis</th>
                                 <th>Satuan</th>
                                 <th>No. Batch</th>
                                 <th>Harga Beli</th>
                                 <th>Harga Jual</th>
-                                <th>Stok</th>
-                                <th>Restore</th>
+                                <th class="text-center">Stok</th>
+                                <th class="text-center">Restore</th>
                             </tr>
                         </thead>
 
@@ -298,15 +344,15 @@
                             @if(!empty($deleted_barang))
                             @foreach ($deleted_barang as $key=> $item )
                             <tr>
-                                <td>{{ $key + 1 }}</td>
+                                <td align="center">{{ $key + 1 }}</td>
                                 <td>{{ $item->nama_barang }}</td>
                                 <td>{{ $item->jenis }}</td>
                                 <td>{{ $item->satuan }}</td>
                                 <td>{{ $item->no_batch }}</td>
                                 <td>{{ "Rp. ".number_format($item->harga_beli, 2 , ',' , '.' ) }}</td>
                                 <td>{{ "Rp. ".number_format($item->harga_jual, 2 , ',' , '.' ) }}</td>
-                                <td>{{ $item->stok }}</td>
-                                <td>
+                                <td align="center">{{ $item->stok }}</td>
+                                <td align="center">
                                     <button class='btn btn-info btn-sm'><a style='color: white'; Onclick="restore_barang('barang/restore/{{ $item->id }}', '{{ $item->nama_barang }}')"><i class='fas fa-history'></i></a></button>
                                 </td>
                             </tr>
@@ -353,10 +399,9 @@
 					targets: [9]
 				},
 			],
-            search: {
-                search: searchInput,
-                
-            }
+            // search: {
+            //     search: searchInput,
+            // }
 		});
 
         $('.datatable-jquery2').dataTable({

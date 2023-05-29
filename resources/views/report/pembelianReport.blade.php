@@ -94,7 +94,8 @@
 										<th class="text-center">No.</th>
 										<th class="text-center">No. Batch</th>
 										<th>Nama Barang</th>
-										<th class="text-center">Harga</th>
+										<th class="text-center">Harga Grosir</th>
+										<th class="text-center">Jumlah Perbox</th>
 										<th class="text-center">Qty</th>
 										<th class="text-center">Subtotal</th>
 									</tr>
@@ -105,8 +106,9 @@
 										<td align="center">{{ $key + 1 }}</td>
 										<td align="center">{{ $item->barang->no_batch }}</td>
 										<td>{{ $item->barang->nama_barang }}</td>
-										<td align="center"><?php echo"Rp&nbsp".number_format($item->barang->harga_beli,2,'.',','); ?></td>
-										<td align="center">{{ $item->jumlah . ' ' . $item->barang->satuan }}</td>
+										<td align="center"><?php echo"Rp&nbsp".number_format($item->barang->harga_beli_grosir,2,'.',','); ?></td>
+										<td align="center">{{ $item->barang->jumlah_grosir }}</td>
+										<td align="center">{{ $item->jumlah . ' ' . $item->barang->satuan_grosir }}</td>
 										<td align="center"><?php echo"Rp&nbsp".number_format($item->total,2,'.',','); ?></td>
 									</tr>
 									@endforeach
@@ -169,7 +171,7 @@
                             @if ($pembelian[0]->status == 2)
                             <input type=hidden id='kode' value='{{ $transaksi->kode }}'>
                             <a href='?module=transaksi&act=detailpelunasan&id=$sql[kd_pmb]' class="btn btn-primary" id='lunas' >Pembayaran&nbsp<i class='icon-tags'></i></a>
-                            @else
+                            {{-- @else
                             <div>
                                 <button class="btn btn-warning btn-icon icon-left">
                                     <a href="" style="color: white">
@@ -186,7 +188,7 @@
                                 <a href="" style="color: white">
                                     <i class="bi bi-check2-circle"></i> Lunas
                                 </a>
-                            </button>
+                            </button> --}}
                             @endif
 						</div>
 					</div>

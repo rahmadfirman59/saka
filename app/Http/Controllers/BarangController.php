@@ -27,6 +27,8 @@ class BarangController extends Controller
             'nama_barang' => 'required',
             'no_batch' => 'required',
             'jenis' => 'required',
+            'satuan_grosir' => 'required',
+            'jumlah_grosir' => 'required|numeric',
             'satuan' => 'required',
             'stok_minim' => 'required|numeric',
             'ed' => 'required|date',
@@ -36,6 +38,8 @@ class BarangController extends Controller
             'no_batch.required' => 'No. Batch Belum Diisi',
             'jenis.required' => 'Jenis Belum Diisi',
             'satuan.required' => 'Satuan Belum Diisi',
+            'satuan_grosir.required' => 'Satuan Grosir Belum Diisi',
+            'jumlah_grosir.required' => 'Jumlah Grosir Belum Diisi',
             'stok_minim.required' => 'Stok Minim Belum Diisi',
             'ed.required' => 'Kadaluarsa Belum Diisi',
             'stok_minim.numeric' => 'Stok Minim Harus Angka'

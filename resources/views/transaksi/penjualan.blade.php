@@ -42,7 +42,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -57,7 +57,8 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Item</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jenis Pembelian</th>
                                     <th>Satuan</th>
                                     <th>Stok</th>
                                     <th>Jumlah</th>
@@ -75,9 +76,15 @@
                                     <input type="hidden" value="{{ $item->barang->id }}" name="idbarang[]">
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $item->barang->nama_barang }}</td>
+                                    <td>
+                                        <select name="jenis_pembelian{{ $key }}" onchange="ubah_jenis_pembelian(this.value, {{ $key }})" id="jenis_pembelian{{ $key }}" class="form-control">
+                                            <option value="0" selected>Satuan</option>
+                                            <option value="2">Grosir</option>
+                                        </select>
+                                    </td>
                                     <td>{{ $item->barang->satuan }}</td>
                                     <td>{{ $item->barang->stok }}</td>
-                                    <td>
+                                    <td style="width: 10%">
                                         <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->barang->stok }}, {{ $item->barang->harga_jual }})">
                                     </td>
                                     <td>{{ "Rp. ".number_format($item->barang->harga_jual, 2 , ',' , '.' ) }}</td>
@@ -100,7 +107,7 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h5 class="card-title p-0" style="display: inline-block">Kasir</h5>
@@ -128,13 +135,14 @@
                     </div>
                 </div>
             </div>
-
+        </div>
+        <div class="col-lg-6">
             <div class="card">
-				<div class="card-header">
-					<h5 class="card-title p-0" style="display: inline-block">Transaksi Penjualan</h5>
-				</div>
-				<div class="card-body mt-3">
-					<div class="row" style="gap: 11px 0">
+                <div class="card-header">
+                    <h5 class="card-title p-0" style="display: inline-block">Transaksi Penjualan</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <div class="row" style="gap: 11px 0">
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label>Dokter</label>
@@ -163,18 +171,18 @@
                                 <input type="text" value="{{ 'PJL'.(int)$count_penjualan.date('Ymd') }}" id="kode_transaksi" class="form-control" disabled>
                             </div>
                         </div>
-						<div class="col-12 col-md-12 col-lg-12">
+                        <div class="col-12 col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label>Tanggal</label>
                                 <input type="text" value="{{ date('d-m-Y') }}" class="form-control" disabled>
                             </div>
                         </div>
                     </div>
-				</div>
-			</div>
-
+                </div>
+            </div>
+    
             <div class="d-flex mt-4">
-				<button type="submit" style="width: 100%" class="py-2 btn btn-success" value="Simpan">Simpan</button>			
+                <button type="submit" style="width: 100%" class="py-2 btn btn-success" value="Simpan">Simpan</button>			
             </div>
             </form>
         </div>
@@ -200,9 +208,9 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Barang</th>
+                                <th>No. Batch</th>
                                 <th>Harga</th>
                                 <th>Stok</th>
-                                <th>Satuan</th>
                                 <th>Kadaluarsa</th>
                                 <th>Aksi</th>
                             </tr>
@@ -213,9 +221,9 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>         
                                 <td>{{ $item->nama_barang }}</td>                           
+                                <td>{{ $item->no_batch }}</td>                           
                                 <td>{{ $item->harga_jual }}</td>                           
-                                <td>{{ $item->stok }}</td>                           
-                                <td>{{ $item->satuan }}</td>                           
+                                <td>{{ $item->stok }}</td>                              
                                 <td>{{ $item->ed }}</td>           
                                 @if($item->ed > \Carbon\Carbon::today()->addDays(30)->format('Y-m-d'))                
                                 <td><button class='btn btn-info btn-sm mr-1 mx-3' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
@@ -282,6 +290,12 @@
 
     function tambah_barang_penjualan(){
         $("#modal_barang").modal('show');
+    }
+
+    function ubah_jenis_pembelian(val, id){
+        if(val == 0){
+            $('#jenis_pembelian' + id);
+        }
     }
 
     function add_barang(id, stok){
