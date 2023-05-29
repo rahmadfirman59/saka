@@ -58,7 +58,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Barang</th>
-                                    <th>Jenis Pembelian</th>
+                                    <th>Jenis Penjualan</th>
                                     <th>Satuan</th>
                                     <th>Stok</th>
                                     <th>Jumlah</th>
@@ -77,17 +77,17 @@
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $item->barang->nama_barang }}</td>
                                     <td>
-                                        <select name="jenis_pembelian{{ $key }}" onchange="ubah_jenis_pembelian(this.value, {{ $key }})" id="jenis_pembelian{{ $key }}" class="form-control">
+                                        <select name="tipe[]" onchange="ubah_tipe(this.value, {{ $key }}, {{ $item->id }})" id="tipe{{ $key }}" class="form-control">
                                             <option value="0" selected>Satuan</option>
-                                            <option value="2">Grosir</option>
+                                            <option value="1">Grosir</option>
                                         </select>
                                     </td>
-                                    <td>{{ $item->barang->satuan }}</td>
-                                    <td>{{ $item->barang->stok }}</td>
+                                    <td class="display_satuan{{ $key }}">{{ $item->barang->satuan }}</td>
+                                    <td class="display_stok{{ $key }}">{{ $item->barang->stok }}</td>
                                     <td style="width: 10%">
                                         <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->barang->stok }}, {{ $item->barang->harga_jual }})">
                                     </td>
-                                    <td>{{ "Rp. ".number_format($item->barang->harga_jual, 2 , ',' , '.' ) }}</td>
+                                    <td price="{{ $item->barang->harga_jual }}" class="display_harga{{ $key }}">{{ "Rp. ".number_format($item->barang->harga_jual, 2 , ',' , '.' ) }}</td>
                                     <td id="subtotal{{ $key }}" class="subtotal" price="{{ $item->barang->harga_jual }}">{{ "Rp. ".number_format($item->barang->harga_jual, 2 , ',' , '.' ) }}</td>
                                     <td>
                                         <button class='btn btn-danger btn-sm' type="button"><a style='color: white' onclick="delete_keranjang({{ $item->id }})"><i class='bi bi-trash-fill'></i></a></button>
@@ -292,10 +292,47 @@
         $("#modal_barang").modal('show');
     }
 
-    function ubah_jenis_pembelian(val, id){
-        if(val == 0){
-            $('#jenis_pembelian' + id);
-        }
+    function ubah_tipe(val, id, id_keranjang){
+        $('#qty'+id).val(1);
+        $('#modal_loading').modal('show');
+        $.ajax({
+            url: '/saka/transaksi/penjualan/get-keranjang/' + id_keranjang,
+            type: "GET",
+            success: function (response) {
+                setTimeout(function () {
+                    $('#modal_loading').modal('hide');
+                }, 500);
+                let query_barang = response[0]['barang'];
+                let grosir
+                if(val == 1){grosir = '_grosir';}else{grosir = ''}
+
+                $('.display_satuan' + id).text(query_barang['satuan' + grosir]);
+                $('.display_stok' + id).text(query_barang['stok' + grosir]);
+                $('.display_harga' + id).text(fungsiRupiah(query_barang['harga_jual' + grosir]));
+                $('.display_harga' + id).attr('price', query_barang['harga_jual' + grosir]);
+                $('#subtotal' + id).text(fungsiRupiah(query_barang['harga_jual' + grosir]));
+                $('#subtotal' + id).attr('price', query_barang['harga_jual' + grosir])
+                total = 0;
+                $( ".subtotal" ).each(function( index ) {
+                    //   console.log( index + ": " + $( this ).text() );
+                    total += parseInt($( this ).attr('price'));
+                    $('#total').text(fungsiRupiah(total));
+                    $('#total').attr('price', total);
+                    $('#total_belanja').val(fungsiRupiah(total));
+                });
+                $('#total_belanja').val($('#total').text());
+                hitung($('#uang').val(), $('#total').attr('price'));
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                setTimeout(function () {
+                    $('#modal_loading').modal('hide');
+                }, 500);
+                swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
+                    icon: 'error',
+                });
+            }
+        })
     }
 
     function add_barang(id, stok){
@@ -374,7 +411,11 @@
        });
     }
 
-    function change_qty(qty, id, stok, harga){
+    function change_qty(qty, id){
+
+        let harga = parseInt($('.display_harga' + id).attr('price'));
+        let stok = parseInt($('.display_stok' + id).text())
+
         if(qty > stok){
             swal('Jumlah Barang Tidak Boleh Melebihi Stok', { icon: 'error', });
             $('#qty' + id).val(stok);

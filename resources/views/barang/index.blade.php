@@ -9,6 +9,8 @@
         text-align: center;
     }
 
+    .modal {overflow-y: scroll!important;}
+
     td{
         font-size: .9rem;
     }
@@ -52,8 +54,6 @@
                             <th>Jenis</th>
                             <th>Satuan</th>
                             <th>No. Batch</th>
-                            <th style="white-space: nowrap">Harga Beli</th>
-                            <th style="white-space: nowrap">Harga Jual</th>
                             <th>Stok</th>
                             <th>Dibuat</th>
                             <th style="width: 10%">Aksi</th>
@@ -68,11 +68,9 @@
                             <td>{{ $item->jenis }}</td>
                             <td>{{ $item->satuan }}</td>
                             <td>{{ $item->no_batch }}</td>
-                            <td>{{ "Rp. ".number_format($item->harga_beli, 0 , ',' , '.' ) }}</td>
-                            <td>{{ "Rp. ".number_format($item->harga_jual, 0 , ',' , '.' ) }}</td>
                             <td>{{ $item->stok }}</td>
                             <td>{{ $item->user->name }}</td>
-                            <td>
+                            <td class="d-flex">
                                 <button class='btn btn-info btn-sm mr-1'><a style='color: white;' onclick="edit('barang/detail/{{ $item->id }}')"><i class='fa fa-edit'></i></a></button>
                                 <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('barang/delete/{{ $item->id }}', '{{ $item->nama_barang }}')"><i class='bi bi-trash-fill'></i></a></button>
                             </td>
@@ -388,7 +386,7 @@
 			sDom: 'lBfrtip',
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0, 3, 4, 7, 8, 9]
+					targets: [0,3,4,5,6,7]
 				},
 				{
 					width: "7%",
@@ -396,7 +394,7 @@
 				},
 				{
 					orderable: false,
-					targets: [9]
+					targets: [7]
 				},
 			],
             // search: {

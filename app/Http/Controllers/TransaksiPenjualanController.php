@@ -66,11 +66,20 @@ class TransaksiPenjualanController extends Controller
 		try{
 
             foreach($request->idbarang as $key => $item){
-                if($barang->firstWhere('id', $item)->stok < $request->qty[$key]){
-                    return [
-                        'status' => 300,
-                        'message' => "Transaksi Tidak Bisa Dilakukan Karena Stok " . $barang->firstWhere('id', $item)->nama_barang . " Telah Habis"
-                    ];
+                if($request->tipe[$key] == 0){
+                    if($barang->firstWhere('id', $item)->stok < $request->qty[$key]){
+                        return [
+                            'status' => 300,
+                            'message' => "Transaksi Tidak Bisa Dilakukan Karena Stok " . $barang->firstWhere('id', $item)->nama_barang . " Telah Habis"
+                        ];
+                    }
+                } else {
+                    if($barang->firstWhere('id', $item)->stok_grosir < $request->qty[$key]){
+                        return [
+                            'status' => 300,
+                            'message' => "Transaksi Tidak Bisa Dilakukan Karena Stok " . $barang->firstWhere('id', $item)->nama_barang . " Telah Habis"
+                        ];
+                    }
                 }
 
                 if($barang->firstWhere('id', $item)->ed <= Carbon::today()->addDays(30)->format('Y-m-d')){
@@ -92,21 +101,34 @@ class TransaksiPenjualanController extends Controller
 
             foreach($request->idbarang as $key => $item){
                 //Ubah Stok Barang
+                
+                $sub_total = 0;
                 $barang_single = $barang->firstWhere('id', $item);
-                $stok = $barang_single->stok - $request->qty[$key];
+                if($request->tipe[$key] == 0){
+                    $stok = $barang_single->stok - $request->qty[$key];
+                    $stok_grosir = floor($stok / $barang_single->jumlah_grosir);
+                    $sub_total += $barang->firstWhere('id', $item)->harga_jual * $request->qty[$key];
+                    $harga = $barang->firstWhere('id', $item)->harga_jual;
+                } else{
+                    $stok = $barang_single->stok - ($request->qty[$key] * $barang_single->jumlah_grosir);
+                    $stok_grosir = $barang_single->stok_grosir - $request->qty[$key];
+                    $sub_total += $barang->firstWhere('id', $item)->harga_jual_grosir * $request->qty[$key];
+                    $harga = $barang->firstWhere('id', $item)->harga_jual_grosir;
+                }
+
                 $barang_single->stok = $stok;
+                $barang_single->stok_grosir = $stok_grosir;
                 $barang_single->save();
 
-                $sub_total = 0;
-                $sub_total += $barang->firstWhere('id', $item)->harga_jual * $request->qty[$key];
 
                 Penjualan::create([
                     'id_barang' => $item,
                     'jumlah' => $request->qty[$key],
-                    'harga' => $barang->firstWhere('id', $item)->harga_jual,
-                    'subtotal' => $barang->firstWhere('id', $item)->harga_jual * $request->qty[$key],
+                    'harga' => $harga,
+                    'subtotal' => $sub_total,
                     'dokter_id' => $request->nm_dokter,
                     'kode_penjualan' => $request->kode_penjualan,
+                    'tipe' => $request->tipe[$key],
                     'id_transaksi' => $transaksi->id
                 ]);  
             }
@@ -194,6 +216,11 @@ class TransaksiPenjualanController extends Controller
         return [
             'status' => 200
         ];
+    }
+
+    public function get_keranjang($id){
+        $data = Keranjang::where('id', $id)->with('barang')->get();
+        return $data;
     }
 
     public function delete_keranjang($id){

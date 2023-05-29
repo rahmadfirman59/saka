@@ -114,7 +114,11 @@
 										<td align="center">{{ $item->barang->no_batch }}</td>
 										<td>{{ $item->barang->nama_barang }}</td>
 										<td align="center">{{ $item->harga }}</td>
+										@if($item->tipe == 0)
 										<td align="center">{{ $item->jumlah . ' ' . $item->barang->satuan }}</td>
+										@else
+										<td align="center">{{ $item->jumlah . ' ' . $item->barang->satuan_grosir }}</td>
+										@endif
 										<td align="center"><?php echo "Rp&nbsp". number_format($item->subtotal,2,'.',','); ?></td>
 									</tr>
 									@endforeach

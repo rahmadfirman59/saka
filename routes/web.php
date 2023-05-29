@@ -91,6 +91,7 @@ Route::group(['middleware' => ['ceklogin']], function () {
         Route::prefix('penjualan')->group(function () {
             Route::get('/', [TransaksiPenjualanController::class, 'index'])->name('transaksi.penjualan');
             Route::post('/add-keranjang', [TransaksiPenjualanController::class, 'add_keranjang']);
+            Route::get('/get-keranjang/{id}', [TransaksiPenjualanController::class, 'get_keranjang']);
             Route::get('/delete-keranjang/{id}', [TransaksiPenjualanController::class, 'delete_keranjang']);
 
             Route::post('/store', [TransaksiPenjualanController::class, 'store']);

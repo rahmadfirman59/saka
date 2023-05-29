@@ -119,8 +119,17 @@ class JurnalPenjualanController extends Controller
             
             foreach($penjualan as $item){
                 $barang_single = $barang->firstWhere('id', $item->id_barang);
-                $stok = $barang_single->stok + $item->jumlah;
-                $barang_single->stok = $stok;
+                if($item->tipe == 0){
+                    $stok = $barang_single->stok + $item->jumlah;
+                    $stok_grosir = floor($stok / $barang_single->jumlah_grosir);
+                    $barang_single->stok = $stok;
+                    $barang_single->stok_grosir = $stok_grosir;
+                } else {
+                    $stok_grosir = $barang_single->stok_grosir + $item->jumlah;
+                    $stok = $barang_single->stok + $item->jumlah * $barang_single->jumlah_grosir;
+                    $barang_single->stok = $stok;
+                    $barang_single->stok_grosir = $stok_grosir;
+                }
                 $barang_single->save();
 
                 Keranjang::create([
