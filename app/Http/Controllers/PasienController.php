@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HistoryPasien;
 use App\Models\Pasien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
 class PasienController extends Controller
@@ -18,6 +20,11 @@ class PasienController extends Controller
 
     public function detail($id){
         return Pasien::find($id);
+    }
+
+    public function check_history($id){
+        $history_pasien = HistoryPasien::where('id_pasien', $id)->with('transaksi')->orderBy('created_at', 'desc')->get();
+        return Response::json($history_pasien);
     }
 
     public function store_update(Request $request){

@@ -28,6 +28,15 @@ table td {
   padding: .8rem;
 }
 
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+  top: 4px!important;
+  right: 4px!important;
+}
+
+.select2-container .select2-selection--single{
+  height: unset!important;
+}
+
 .card-header .card-title{
     font-size: 20px;
     color: #012970;

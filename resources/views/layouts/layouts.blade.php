@@ -30,6 +30,7 @@
     <!-- Custom styles for this page -->
     <link href="{{ asset('public/sbadmin/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ asset('public/plugins/simple-datatables/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/plugins/select2/dist/css/select2.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('public/sbadmin/css/style-additional.css') }}">
 
     @yield('css')
@@ -349,6 +350,7 @@
     <script src="{{ asset('public/sbadmin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset("public/sbadmin/vendor/apexcharts/apexcharts.min.js") }}"></script>
     <script src="{{ asset("public/plugins/sweetalert/sweetalert.min.js") }}"></script>
+    <script src="{{ asset("public/plugins/select2/dist/js/select2.full.min.js") }}"></script>
 
     
     <!-- Page level custom scripts -->
@@ -358,7 +360,11 @@
     
     @yield('script')
 
-
+    <script>
+    if(jQuery().select2) {
+        $(".select2").select2();
+    }
+    </script>
 </body>
 
 </html>

@@ -73,6 +73,7 @@ Route::group(['middleware' => ['ceklogin']], function () {
 
         Route::prefix('pasien')->group(function () {
             Route::get('/', [PasienController::class, 'index'])->name('pasien');
+            Route::get('/check-history/{id}', [PasienController::class, 'check_history']);
             Route::post('/store-update', [PasienController::class, 'store_update']);
             Route::get('/detail/{id}', [PasienController::class, 'detail']);
             Route::delete('/delete/{id}', [PasienController::class, 'delete']);
