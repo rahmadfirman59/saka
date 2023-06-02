@@ -170,8 +170,25 @@
 				}
 			],
 		});
-	});
 
+	});
+    
+    let Datatable_history = $('.datatable-history-jquery').dataTable({
+        sDom: 'lBfrtip',
+        columnDefs: [{
+                className: 'text-center',
+                targets: [0,1,2,3,4]
+            },
+            {
+                width: "7%",
+                targets: [0]
+            },
+            {
+                orderable: false,
+                targets: [4]
+            }
+        ],
+    });
     function add(){
         $("#modal").modal('show');
         $(".modal-title").text('Tambah Pasien');
@@ -191,9 +208,11 @@
                     $('#modal_loading').modal('hide');
                 }, 500);
                 $('#modal_history').modal('show');
+                Datatable_history.fnClearTable();
+                Datatable_history.fnDestroy();
                 $.each(response, function(i, response_single){
                     if(typeof(response_single['transaksi']['potongan']) == "undefined" || response_single['transaksi']['potongan'] === null) {
-                        response_single['transaksi']['potongan'] = '';
+                        response_single['transaksi']['potongan'] = 0;
                     }
                     $('#table-history tbody').append(`<tr><td>${i + 1}</td><td>${response_single['tanggal']}</td><td>${fungsiRupiah(response_single['transaksi']['potongan'])}</td><td>${fungsiRupiah(response_single['transaksi']['kredit'])}</td><td><button class='btn btn-info btn-sm'><a style='color: white'; Onclick="window.location.href = '/saka/jurnal/jurnal-penjualan/detail-penjualan/${response_single['id_transaksi']}'"><i class='bi bi-file-text-fill'></i></a></button></td></tr>`);
                 })
@@ -213,6 +232,7 @@
                         }
                     ],
                 });
+               
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 setTimeout(function () {
