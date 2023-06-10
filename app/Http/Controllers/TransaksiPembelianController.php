@@ -17,8 +17,9 @@ use Carbon\Carbon;
 
 class TransaksiPembelianController extends Controller
 {
-    
-    public function index(){
+
+    public function index()
+    {
         $data['suppliers'] = Supplier::all();
         $data['count_pembelian'] = Pembelian::count() + 1;
         $data['barang'] = Barang::where('is_delete', 0)->orderBy('nama_barang', 'asc')->get();
@@ -26,7 +27,8 @@ class TransaksiPembelianController extends Controller
         return view('transaksi.pembelian', $data);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'idbarang.*' => 'required',
             'qty.*' => 'required',
@@ -46,32 +48,32 @@ class TransaksiPembelianController extends Controller
             'nm_supplier.required' => 'Supplier Harus Diisi',
         ]);
 
-        
-        if($validator->fails()){
+
+        if ($validator->fails()) {
             return [
                 'status' => 300,
                 'message' => $validator->errors()->first()
             ];
         }
-        
-        if($request->status == 2 && $request->tgl_tempo == null){
+
+        if ($request->status == 2 && $request->tgl_tempo == null) {
             return [
                 'status' => 300,
                 'message' => "Tanggal Jatuh Tempo Belum Diisi"
             ];
         }
-        
+
         DB::beginTransaction();
-        
-		try{
+
+        try {
 
             $sub_total = 0;
             $barang = Barang::all();
 
-            if($request->status == 1){
+            if ($request->status == 1) {
                 $transaksi = MasterTransaksi::create([
                     'kode_akun' => '113',
-                    'keterangan' => 'Pembelian Barang',
+                    'keterangan' => 'Persediaan Barang',
                     'debt' => $request->total_belanja,
                     'type' => 1,
                     'kode' => $request->kode_transaksi,
@@ -89,15 +91,14 @@ class TransaksiPembelianController extends Controller
                     'potongan' => $request->potongan
                 ]);
 
-                
-                $akun = Akun::where('kode_akun', 112)->first();
+
+                $akun = Akun::where('kode_akun', 113)->first();
                 $akun->jumlah += $request->total_belanja;
                 $akun->save();
 
                 $akun2 = Akun::where('kode_akun', 111)->first();
                 $akun2->jumlah -= $request->total_belanja;
                 $akun2->save();
-
             } else {
                 $transaksi = MasterTransaksi::create([
                     'kode_akun' => '211',
@@ -118,12 +119,12 @@ class TransaksiPembelianController extends Controller
                     'tanggal' => date('Y-m-d'),
                     'potongan' => $request->potongan
                 ]);
-                
+
                 $akun = Akun::where('kode_akun', 211)->first();
                 $akun->jumlah += $request->total_belanja;
                 $akun->save();
             }
-            
+
             Log::create([
                 'user_id' => Session::get('useractive')->id,
                 'nomor_transaksi' => $request->kode_transaksi,
@@ -132,12 +133,12 @@ class TransaksiPembelianController extends Controller
                 'jumlah' => $request->total_belanja
             ]);
             Keranjang::where('created_by', Session::get('useractive')->id)->where('type', 1)->whereIn('id_barang', $request->idbarang)->delete();
-            
-            foreach($request->idbarang as $key => $item){
-                
+
+            foreach ($request->idbarang as $key => $item) {
+
                 //Ubah Stok Barang
                 $barang_single = $barang->firstWhere('id', $item);
-                if($barang_single->no_batch == $request->no_batch[$key]){
+                if ($barang_single->no_batch == $request->no_batch[$key]) {
                     $stok = $barang_single->stok_grosir + $request->qty[$key];
                     $barang_single->stok = $barang_single->stok + $request->qty[$key] * $request->qty_grosir[$key];
                     $barang_single->harga_beli_grosir = $request->harga[$key];
@@ -147,7 +148,7 @@ class TransaksiPembelianController extends Controller
                     $barang_single->jumlah_grosir = $request->qty_grosir[$key];
                     $barang_single->save();
                     $barang_id = $item;
-                } else{
+                } else {
                     $new_barang = $barang_single->replicate();
                     $new_barang->created_at = Carbon::now();
                     $new_barang->created_by = Session::get('useractive')->id;
@@ -177,44 +178,41 @@ class TransaksiPembelianController extends Controller
                     'harga' => $request->harga[$key],
                     'total' => $sub_total,
                     'tgl_tempo' => $request->tgl_tempo,
-                ]);  
+                ]);
             }
             DB::commit();
-            
+
             // MasterTransaksi::create([
             //     'kode_akun' => '111',
             //     'keterangan' => 'Kas',
             //     'debt' => $request->total_belanja,
             //     'type' => 3
             // ]);
-            
-            
+
+
             return [
                 'status' => 200,
                 'message' => 'Transaksi Berhasil Dilakukan',
                 'id' => $transaksi->id
             ];
-        }
-
-		catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
 
-			return [
-				'status' 	=> 300, // GAGAL
-				'message'       => (env('APP_DEBUG', 'true') == 'true')? $e->getMessage() : 'Operation error'
-			];
-
-		}
-
+            return [
+                'status'     => 300, // GAGAL
+                'message'       => (env('APP_DEBUG', 'true') == 'true') ? $e->getMessage() : 'Operation error'
+            ];
+        }
     }
 
-    public function add_keranjang(Request $request){
+    public function add_keranjang(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'id_barang' => 'required',
             'type' => 'required',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return [
                 'status' => 300,
                 'message' => $validator->errors()
@@ -233,17 +231,18 @@ class TransaksiPembelianController extends Controller
         $request->request->add(['created_at' => Carbon::now()->toDateTimeString()]);
 
         Keranjang::create($request->all());
-        
+
         return [
             'status' => 200
         ];
     }
 
-    public function delete_keranjang($id){
+    public function delete_keranjang($id)
+    {
 
         $delete = Keranjang::find($id);
 
-        if($delete <> ""){
+        if ($delete <> "") {
             $delete->delete();
             return [
                 'status' => 200,

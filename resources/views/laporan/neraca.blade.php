@@ -59,7 +59,13 @@
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Persedian Akhir Barang</td>
-                                                        <td><?php  echo "Rp.".number_format($persediaan->total,2,'.',','); ?></td>
+                                                        <td><?php  echo "Rp.".number_format($persediaan->jumlah,2,'.',','); ?></td>
+                                                        
+                                                    </tr>
+                                                     <tr>
+                                                        <td colspan="3">HPP</td>
+                                                        <td><?php  echo "Rp.".number_format(320000,2,'.',','); ?></td>
+                                                        
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Total</td>
@@ -87,11 +93,20 @@
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Modal</td>
-                                                        <td><?php  echo "Rp.".number_format(($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total),2,'.',','); ?></td>
+                                                        {{-- <td><?php  echo "Rp.".number_format(($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total),2,'.',','); ?></td> --}}
+                                                        <td ><?php  echo "Rp.".number_format($pasiva->jumlah,2,'.',','); ?></td>
+                                                    </tr>
+                                                      <tr>
+                                                        <td colspan="3">Penjualan</td>
+                                                        {{-- <td><?php  echo "Rp.".number_format(($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total),2,'.',','); ?></td> --}}
+                                                        <td ><?php  echo "Rp.".number_format($penjualan,2,'.',','); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Total</td>
-                                                        <td align="right"><?php  echo "Rp.".number_format(($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total) + $hutang,2,'.',','); ?></td>
+                                                        {{-- <td align="right"><?php  echo "Rp.".number_format(($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total) + $hutang,2,'.',','); ?></td> --}}
+                                                        {{-- <td align="right"><?php  echo "Rp.".number_format(1000000,2,'.',','); ?></td> --}}
+                                                        
+                                                        <td align="right"><?php  echo "Rp.".number_format($pasiva->jumlah + $penjualan,2,'.',','); ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
