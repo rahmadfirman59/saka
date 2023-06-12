@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Akun;
+use App\Models\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class AkunController extends Controller
@@ -54,6 +56,45 @@ class AkunController extends Controller
             'status' => 200,
             'message' => 'Data Berhasil Disimpan',
         ];
+    }
+
+    public function tambah_modal(Request $request){
+        $validator = Validator::make($request->all(), [
+            'jumlah_modal' => 'required|numeric',
+        ],
+        [
+            'jumlah_modal.required' => 'Jumlah Modal Harus Diisi',
+            'jumlah_modal.numeric' => 'Jumlah Modal Harus Angka',
+        ]);
+
+        if($validator->fails()){
+            return [
+                'status' => 300,
+                'message' => $validator->errors()->first()
+            ];
+        }
+
+        $akun1 = Akun::where('kode_akun', 311)->first();
+        $akun1->jumlah += $request->jumlah_modal;
+        $akun1->save();
+
+        $akun2 = Akun::where('kode_akun', 111)->first();
+        $akun2->jumlah += $request->jumlah_modal;
+        $akun2->save();
+
+        Log::create([
+            'user_id' => Session::get('useractive')->id,
+            'nomor_transaksi' => '',
+            'waktu' => date('Y-m-d H:i:s'),
+            'keterangan' => 'Penambahan Modal Sebanyak ' . $request->jumlah_modal,
+            'jumlah' => $request->jumlah_modal
+        ]);
+
+        return [
+            'status' => 200,
+            'message' => 'Modal Berhasil Ditambah',
+        ];
+
     }
 
     public function delete($id){

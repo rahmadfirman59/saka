@@ -77,7 +77,7 @@ class TransaksiPenjualanController extends Controller
                     if($barang->firstWhere('id', $item)->stok_grosir < $request->qty[$key]){
                         return [
                             'status' => 300,
-                            'message' => "Transaksi Tidak Bisa Dilakukan Karena Stok " . $barang->firstWhere('id', $item)->nama_barang . " Telah Habis"
+                            'message' => "Transaksi Tidak Bisa Dilakukan Karena Stok Grosir" . $barang->firstWhere('id', $item)->nama_barang . " Telah Habis"
                         ];
                     }
                 }
@@ -90,6 +90,15 @@ class TransaksiPenjualanController extends Controller
                 }
             }
 
+            MasterTransaksi::create([
+                'kode_akun' => '111',
+                'keterangan' => 'Kas',
+                'debt' => $request->total_belanja,
+                'type' => 3,
+                'kode' => $request->kode_transaksi,
+                'tanggal' => date('Y-m-d'),
+            ]);
+
             $transaksi = MasterTransaksi::create([
                 'kode_akun' => '411',
                 'keterangan' => 'Penjualan Barang',
@@ -99,6 +108,7 @@ class TransaksiPenjualanController extends Controller
                 'kode' => $request->kode_transaksi
             ]);
 
+            $hpp = 0;
             foreach($request->idbarang as $key => $item){
                 //Ubah Stok Barang
                 
@@ -120,6 +130,7 @@ class TransaksiPenjualanController extends Controller
                 $barang_single->stok_grosir = $stok_grosir;
                 $barang_single->save();
 
+                $hpp += $barang_single->harga_beli * $request->qty[$key];
 
                 Penjualan::create([
                     'id_barang' => $item,
@@ -132,12 +143,21 @@ class TransaksiPenjualanController extends Controller
                     'id_transaksi' => $transaksi->id
                 ]);  
             }
-            
+
+            MasterTransaksi::create([
+                'kode_akun' => '119',
+                'keterangan' => 'HPP',
+                'debt' => $hpp,
+                'type' => 5,
+                'kode' => $request->kode_transaksi,
+                'tanggal' => date('Y-m-d'),
+            ]);
+
             MasterTransaksi::create([
                 'kode_akun' => '111',
-                'keterangan' => 'Kas',
-                'debt' => $request->total_belanja,
-                'type' => 3,
+                'keterangan' => 'Persediaan Barang',
+                'kredit' => $hpp,
+                'type' => 5,
                 'kode' => $request->kode_transaksi,
                 'tanggal' => date('Y-m-d'),
             ]);
@@ -155,6 +175,14 @@ class TransaksiPenjualanController extends Controller
             $akun1 = Akun::where('kode_akun', 411)->first();
             $akun1->jumlah += $request->total_belanja;
             $akun1->save();
+
+            $akun2 = Akun::where('kode_akun', 119)->first();
+            $akun2->jumlah += $hpp;
+            $akun2->save();
+
+            $akun2 = Akun::where('kode_akun', 113)->first();
+            $akun2->jumlah -= $hpp;
+            $akun2->save();
             
             Log::create([
                 'user_id' => Session::get('useractive')->id,

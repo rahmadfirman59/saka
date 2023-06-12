@@ -71,16 +71,6 @@ class TransaksiPembelianController extends Controller
             $barang = Barang::all();
 
             if ($request->status == 1) {
-                $transaksi = MasterTransaksi::create([
-                    'kode_akun' => '113',
-                    'keterangan' => 'Persediaan Barang',
-                    'debt' => $request->total_belanja,
-                    'type' => 1,
-                    'kode' => $request->kode_transaksi,
-                    'tanggal' => date('Y-m-d'),
-                    'potongan' => $request->potongan
-                ]);
-
                 MasterTransaksi::create([
                     'kode_akun' => '111',
                     'keterangan' => 'Kas',
@@ -91,6 +81,15 @@ class TransaksiPembelianController extends Controller
                     'potongan' => $request->potongan
                 ]);
 
+                $transaksi = MasterTransaksi::create([
+                    'kode_akun' => '113',
+                    'keterangan' => 'Persediaan Barang',
+                    'debt' => $request->total_belanja,
+                    'type' => 1,
+                    'kode' => $request->kode_transaksi,
+                    'tanggal' => date('Y-m-d'),
+                    'potongan' => $request->potongan
+                ]);
 
                 $akun = Akun::where('kode_akun', 113)->first();
                 $akun->jumlah += $request->total_belanja;
@@ -157,7 +156,7 @@ class TransaksiPembelianController extends Controller
                     $new_barang->stok = $request->qty[$key] * $request->qty_grosir[$key];
                     $new_barang->harga_beli_grosir = $request->harga[$key];
                     $new_barang->harga_beli = $request->harga[$key] / $request->qty_grosir[$key];
-                    $barang_single->jumlah_grosir = $request->qty_grosir[$key];
+                    $new_barang->jumlah_grosir = $request->qty_grosir[$key];
                     $new_barang->ed = $request->ed[$key];
                     $new_barang->save();
                     $barang_id = $new_barang->id;

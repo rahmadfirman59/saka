@@ -45,6 +45,7 @@ Route::group(['middleware' => ['ceklogin']], function () {
         Route::prefix('akun')->group(function () {
             Route::get('/', [AkunController::class, 'index'])->name('akun');
             Route::post('/store-update', [AkunController::class, 'store_update']);
+            Route::post('/tambah-modal', [AkunController::class, 'tambah_modal']);
             Route::get('/detail/{id}', [AkunController::class, 'detail']);
             Route::delete('/delete/{id}', [AkunController::class, 'delete']);
         });

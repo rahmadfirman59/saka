@@ -43,12 +43,14 @@
                             <td>{{ $item->nama_akun }}</td>
                             <td>{{ "Rp. ".number_format($item->jumlah, 2 , ',' , '.' ) }}</td>
                             <td>
+                                @if($item->kode_akun == 311)
+                                <button class='btn btn-warning btn-sm mr-1'><a style='color: white;' onclick="tambah_modal()"><i class='fa fa-plus'></i></a></button>
+                                @endif
                                 <button class='btn btn-info btn-sm mr-1'><a style='color: white;' onclick="edit('akun/detail/{{ $item->id }}')"><i class='fa fa-edit'></i></a></button>
                                 <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('akun/delete/{{ $item->id }}', '{{ $item->nama_akun }}')"><i class='bi bi-trash-fill'></i></a></button>
                             </td>
                         </tr>
                         @endforeach
-
                     </tbody>
                 </table>
             </div>
@@ -113,7 +115,37 @@
           </form>
        </div>
     </div>
- </div>
+</div>
+
+<div class="modal fade" role="dialog" id="modal_tambah" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document">
+       <div class="modal-content">
+          <div class="modal-header br">
+             <h5 class="modal-title">Tambah Modal</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+             </button>
+          </div>
+          <form id="form_tambah_modal" method="POST" autocomplete="off">
+             @csrf
+             <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>Modal</label>
+                              <input class="form-control" type="number" id="jumlah_modal" name="jumlah_modal" >
+                        </div>
+                    </div>
+                </div>
+             </div>
+             <div class="modal-footer bg-whitesmoke br">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-warning">Simpan</button>
+             </div>
+          </form>
+       </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
@@ -157,6 +189,43 @@
         edit_action(url, 'Edit Akun');
         $("#type").val('update');
     }
+
+    function tambah_modal(){
+        $('#modal_tambah').modal('show');
+        $("#form_tambah_modal")[0].reset();
+    }
+
+    $('#form_tambah_modal').submit(function(e){
+        e.preventDefault();
+        $('#modal_loading').modal('show');
+        $.ajax({
+            url: '/saka/master/akun/tambah-modal',
+            type: "POST",
+            data: $('#form_tambah_modal').serialize(),
+            success: function (response) {
+                setTimeout(function () {
+                    $('#modal_loading').modal('hide');
+                }, 500);
+                if (response.status === 200) {
+                    swal(response.message, { icon: 'success', }).then(function() {
+                        location.reload();
+                    });
+                } else {
+                    swal(response.message, {
+                        icon: 'error',
+                    });
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                setTimeout(function () {
+                    $('#modal_loading').modal('hide');
+                }, 500);
+                swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
+                    icon: 'error',
+                });
+            }
+        })
+    })
 </script>
     
 </script>
