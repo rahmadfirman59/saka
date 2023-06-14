@@ -150,7 +150,7 @@
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'rugi-laba') active @endif" href="{{ route('laporan.rugiLaba') }}">Laporan Rugi Laba</a>
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'neraca') active @endif" href="{{ route('laporan.neraca') }}">Laporan Neraca</a>
                         {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'perubahan-modal') active @endif" href="{{ route('laporan.perubahanModal') }}">Laporan Perubahan Modal</a> --}}
-                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'hutang') active @endif" href="{{ route('laporan.hutang') }}">Laporan Hutang</a>
+                        {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'hutang') active @endif" href="{{ route('laporan.hutang') }}">Laporan Hutang</a> --}}
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'penjualan') active @endif" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a>
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'pembelian') active @endif" href="{{ route('laporan.pembelian') }}">Laporan Pembelian</a>
                         {{-- {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'retur-pembelian') active @endif" href="{{ route('laporan.retur-pembelian') }}">Laporan Retur Penjualan</a> --}}

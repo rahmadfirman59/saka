@@ -22,7 +22,7 @@ class AuthController extends Controller
 
         if ($check == 1) {
             $user = User::where("email", '=', $request->username)->first();
-
+            // return  encrypt($request->password)
             if ($request->password == decrypt($user->password)) {
                 Session::put('useractive', $user);
 

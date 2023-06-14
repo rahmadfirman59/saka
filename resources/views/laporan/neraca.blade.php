@@ -64,7 +64,7 @@
                                                     </tr>
                                                      <tr>
                                                         <td colspan="3">HPP</td>
-                                                        <td><?php  echo "Rp.".number_format(0,2,'.',','); ?></td>
+                                                        <td><?php  echo "Rp.".number_format($hpp,2,'.',','); ?></td>
                                                         
                                                     </tr>
                                                     <tr>
