@@ -87,7 +87,7 @@
                                         <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->barang->stok }}, {{ $item->barang->harga_jual }})">
                                     </td>
                                     <td>
-                                        <input name="qty_grosir[]" type="number" id="qty_grosir{{ $key }}" value="1" class="form-control text-center">
+                                        <input name="qty_grosir[]" type="number" id="qty_grosir{{ $key }}" onchange="change_item_box(this.value, {{ $key }})" value="1" class="form-control text-center">
                                     </td>
                                     <td><input type="text" class="form-control" style="font-size: .9rem" id="harga{{ $key }}" onchange="change_harga(this.value, {{ $key }})" name="harga[]"></td>
                                     <td><input type="date" style="font-size: .8rem; height: 38px;" class="form-control" name="ed[]"></td>
@@ -409,7 +409,7 @@
 
     function change_qty(qty, id, stok){
         if(qty < 1){
-            swal('Jumlah Barang Tidak Boleh Kurang dari 0', { icon: 'error', });
+            swal('Jumlah Barang Tidak Boleh Kurang dari 1', { icon: 'error', });
             $('#qty' + id).val(1);
             $(`#subtotal${id}`).text(fungsiRupiah(harga));
             return;
@@ -431,6 +431,14 @@
             $('#total_belanja').val(fungsiRupiah(total));
         });
         $('#total_belanja').val($('#total').text());
+    }
+
+    function change_item_box(qty, id){
+        if(qty < 1){
+            swal('Jumlah Item Per Box Tidak Boleh Kurang dari 1', { icon: 'error', });
+            $('#qty_grosir' + id).val(1);
+            return;
+        }
     }
 
 

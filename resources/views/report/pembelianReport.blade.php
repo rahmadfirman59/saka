@@ -108,7 +108,7 @@
 										<td>{{ $item->barang->nama_barang }}</td>
 										<td align="center"><?php echo"Rp&nbsp".number_format($item->barang->harga_beli_grosir,2,'.',','); ?></td>
 										<td align="center">{{ $item->barang->jumlah_grosir }}</td>
-										<td align="center">{{ $item->jumlah . ' ' . $item->barang->satuan_grosir }}</td>
+										<td align="center">{{ $item->jumlah_grosir . ' ' . $item->barang->satuan_grosir }}</td>
 										<td align="center"><?php echo"Rp&nbsp".number_format($item->total,2,'.',','); ?></td>
 									</tr>
 									@endforeach

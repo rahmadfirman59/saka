@@ -71,21 +71,21 @@ class TransaksiPembelianController extends Controller
             $barang = Barang::all();
 
             if ($request->status == 1) {
-                MasterTransaksi::create([
-                    'kode_akun' => '111',
-                    'keterangan' => 'Kas',
-                    'kredit' => $request->total_belanja,
-                    'type' => 3,
-                    'kode' => $request->kode_transaksi,
-                    'tanggal' => date('Y-m-d'),
-                    'potongan' => $request->potongan
-                ]);
-
                 $transaksi = MasterTransaksi::create([
                     'kode_akun' => '113',
                     'keterangan' => 'Persediaan Barang',
                     'debt' => $request->total_belanja,
                     'type' => 1,
+                    'kode' => $request->kode_transaksi,
+                    'tanggal' => date('Y-m-d'),
+                    'potongan' => $request->potongan
+                ]);
+
+                MasterTransaksi::create([
+                    'kode_akun' => '111',
+                    'keterangan' => 'Kas',
+                    'kredit' => $request->total_belanja,
+                    'type' => 3,
                     'kode' => $request->kode_transaksi,
                     'tanggal' => date('Y-m-d'),
                     'potongan' => $request->potongan
@@ -99,21 +99,21 @@ class TransaksiPembelianController extends Controller
                 $akun2->jumlah -= $request->total_belanja;
                 $akun2->save();
             } else {
-                $transaksi = MasterTransaksi::create([
-                    'kode_akun' => '211',
-                    'keterangan' => 'Hutang Dagang',
-                    'kredit' => $request->total_belanja,
-                    'type' => 1,
-                    'kode' => $request->kode_transaksi,
-                    'tanggal' => date('Y-m-d'),
-                    'potongan' => $request->potongan
-                ]);
-
                 MasterTransaksi::create([
                     'kode_akun' => '111',
                     'keterangan' => 'Pembelian Barang Kas',
                     'debt' => $request->total_belanja,
                     'type' => 3,
+                    'kode' => $request->kode_transaksi,
+                    'tanggal' => date('Y-m-d'),
+                    'potongan' => $request->potongan
+                ]);
+
+                $transaksi = MasterTransaksi::create([
+                    'kode_akun' => '211',
+                    'keterangan' => 'Hutang Dagang',
+                    'kredit' => $request->total_belanja,
+                    'type' => 1,
                     'kode' => $request->kode_transaksi,
                     'tanggal' => date('Y-m-d'),
                     'potongan' => $request->potongan
@@ -173,7 +173,8 @@ class TransaksiPembelianController extends Controller
                     'no_faktur' => $request->no_faktur,
                     'tgl_faktur' => $request->tgl_faktur,
                     'status' => $request->status,
-                    'jumlah' => $request->qty[$key],
+                    'jumlah' => $request->qty[$key] * $barang_single->jumlah_grosir,
+                    'jumlah_grosir' => $request->qty[$key],
                     'harga' => $request->harga[$key],
                     'total' => $sub_total,
                     'tgl_tempo' => $request->tgl_tempo,
