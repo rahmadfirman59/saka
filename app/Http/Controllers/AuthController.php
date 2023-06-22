@@ -19,7 +19,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $check = User::where("email", '=', $request->username)->count();
-
+        // return encrypt($request->password);
         if ($check == 1) {
             $user = User::where("email", '=', $request->username)->first();
             // return  encrypt($request->password)
