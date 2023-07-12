@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\App;
 use App\Http\Controllers\AkunController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\TransaksiPenjualanController;
 
 Route::post('login', [AuthController::class, 'login'])->name('post.login');
 Route::get('login', [AuthController::class, 'index'])->name('login');
+Route::get('test', [App::class, 'get_barang_all'])->name('login');
 
 Route::group(['middleware' => ['ceklogin']], function () {
     Route::get('/', function(){

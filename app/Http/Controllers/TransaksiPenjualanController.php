@@ -51,7 +51,7 @@ class TransaksiPenjualanController extends Controller
             ];
         }
 
-        if($request->uang < $request->total_belanja){
+        if($request->uang + $request->potongan < $request->total_belanja){
             return [
                 'status' => 300,
                 'message' => "Uang Tidak Cukup"
@@ -97,6 +97,7 @@ class TransaksiPenjualanController extends Controller
                 'type' => 3,
                 'kode' => $request->kode_transaksi,
                 'tanggal' => date('Y-m-d'),
+                'potongan' => $request->potongan
             ]);
 
             $transaksi = MasterTransaksi::create([
@@ -105,7 +106,8 @@ class TransaksiPenjualanController extends Controller
                 'kredit' => $request->total_belanja,
                 'type' => 2,
                 'tanggal' => date('Y-m-d'),
-                'kode' => $request->kode_transaksi
+                'kode' => $request->kode_transaksi,
+                'potongan' => $request->potongan
             ]);
 
             $hpp = 0;
@@ -114,6 +116,12 @@ class TransaksiPenjualanController extends Controller
                 
                 $sub_total = 0;
                 $barang_single = $barang->firstWhere('id', $item);
+                if(!isset($barang_single->jumlah_grosir) || $barang_single->jumlah_grosir < 1){
+                    return [
+                        'status' 	=> 300, // GAGAL
+                        'message'       => 'Jumlah Grosir Barang ' . $barang_single->nama_barang . ' Belum Diisi'
+                    ];
+                }
                 if($request->tipe[$key] == 0){
                     $stok = $barang_single->stok - $request->qty[$key];
                     $stok_grosir = floor($stok / $barang_single->jumlah_grosir);
@@ -151,6 +159,7 @@ class TransaksiPenjualanController extends Controller
                 'type' => 5,
                 'kode' => $request->kode_transaksi,
                 'tanggal' => date('Y-m-d'),
+                'potongan' => $request->potongan
             ]);
 
             MasterTransaksi::create([
@@ -160,6 +169,7 @@ class TransaksiPenjualanController extends Controller
                 'type' => 5,
                 'kode' => $request->kode_transaksi,
                 'tanggal' => date('Y-m-d'),
+                'potongan' => $request->potongan
             ]);
 
             HistoryPasien::create([

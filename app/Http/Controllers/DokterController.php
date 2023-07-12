@@ -12,7 +12,7 @@ class DokterController extends Controller
     
     public function index()
     {
-        $dokter = Dokter::all();
+        $dokter = Dokter::with('user_created_by', 'user_updated_by')->get();
         return view('dokter.index')
             ->with('dokter', $dokter);
     }

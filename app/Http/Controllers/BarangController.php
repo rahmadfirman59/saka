@@ -11,7 +11,7 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $barang = Barang::with('user')->where('is_delete', 0)->orderBy('nama_barang', 'asc')->get();
+        $barang = Barang::with('user_created_by', 'user_updated_by')->where('is_delete', 0)->orderBy('nama_barang', 'asc')->get();
         $barang_deleted = Barang::where('is_delete', 1)->orderBy('nama_barang', 'asc')->get();
         return view('barang.index')
             ->with('barang', $barang)

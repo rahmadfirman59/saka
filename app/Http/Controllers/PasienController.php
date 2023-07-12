@@ -13,7 +13,7 @@ class PasienController extends Controller
 {
     public function index()
     {
-        $pasien = Pasien::with('user')->get();
+        $pasien = Pasien::with('user_created_by', 'user_updated_by')->get();
         return view('pasien.index')
             ->with('pasien', $pasien);
     }

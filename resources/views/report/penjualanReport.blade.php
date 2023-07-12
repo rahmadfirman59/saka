@@ -124,9 +124,15 @@
 									@endforeach
 								</tbody>
 								<tfoot>
+									@if(isset($transaksi->potongan))
+									<tr class="footer" style="font-size: 1rem;">
+										<td colspan="5"><div align="center"><strong>POTONGAN</strong></div></td>
+										<td align="center"><strong style="color: red">- <?php echo "Rp&nbsp". number_format($transaksi->potongan,2,'.',','); ?></strong></td>
+									</tr>
+									@endif
 									<tr class="footer" style="font-size: 1rem;">
 										<td colspan="5"><div align="center"><strong>TOTAL Penyesuaian</strong></div></td>
-										<td align="center"><strong><?php echo "Rp&nbsp". number_format($transaksi->kredit,2,'.',','); ?></strong></td>
+										<td align="center"><strong><?php echo "Rp&nbsp". number_format($transaksi->kredit - $transaksi->potongan ?? 0,2,'.',','); ?></strong></td>
 									</tr>
 								</tfoot>
 							</table>

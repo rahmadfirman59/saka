@@ -4,12 +4,28 @@ use App\Models\Barang;
 use Illuminate\Support\Carbon;
 
 class App {
+    public static function get_barang_all(){
+        return Barang::where('ed', '<=', Carbon::today()->addDays(30)->format('Y-m-d'))->orwhere('stok', '<=', 10)->orderBy('ed', 'DESC')->get();
+    }
+
     public static function get_barang_expired(){
         return Barang::where('ed', '<=', Carbon::today()->addDays(30)->format('Y-m-d'))->orderBy('ed', 'DESC')->get();
     }
 
+    public static function get_barang_stock(){
+        return Barang::where('stok', '<=', 10)->orderBy('ed', 'DESC')->get();
+    }
+
     public static function count_barang_expired(){
         return Barang::where('ed', '<=', Carbon::today()->addDays(30)->format('Y-m-d'))->count();
+    }
+
+    public static function count_barang_stock(){
+        return Barang::where('stok', '<=', 10)->count();
+    }
+    
+    public static function count_semua(){
+        return Barang::where('ed', '<=', Carbon::today()->addDays(30)->format('Y-m-d'))->count() + Barang::where('stok', '<=', 10)->count();
     }
 
     public static function tgl_indo($tanggal){

@@ -126,10 +126,16 @@
                                 <input type="text" id="uang" name="uang" onkeyup="hitung(this.value)" onkeypress="return hanyaAngka(event,false);" class="form-control">
                             </div>
                         </div>
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label>Potongan</label>
+                                <input type="text" id="potongan" name="potongan" onkeyup="potongan_change(this.value)" onkeypress="return hanyaAngka(event,false);" class="form-control">
+                            </div>
+                        </div>
 						<div class="d-flex w-100" style="font-size: 16px!important; padding-top: 15px;border-top: 1px solid #d8d1d1;margin-top: 10px;">
 							<div class="p-2 fw-bold ml-2" style="color: black">
                                 <label style="font-weight: bold">Kembali</label>
-                                <span id="kembali" style='margin-left:10px; font-weight: bold'><span style='margin-left:15px'></span>-</span>
+                                <span id="kembali" style='margin-left:10px; font-weight: bold' price=""><span style='margin-left:15px'></span>-</span>
                             </div>
 						</div>
                     </div>
@@ -146,7 +152,7 @@
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label>Dokter</label>
-                                <select name="nm_dokter" class="form-control">
+                                <select name="nm_dokter" class="form-control select2">
                                     <option value="" selected>- Pilih Dokter -</option>
                                     @foreach ($dokters as $dokter)
                                     <option value={{ $dokter->id }}>{{ $dokter->nama_dokter }}</option>
@@ -440,18 +446,47 @@
             $('#total_belanja').val(fungsiRupiah(total));
         });
         $('#total_belanja').val($('#total').text());
-        hitung($('#uang').val(), $('#total').attr('price'));
+        hitung($('#uang').val());
     }
 
     function hitung(value){
         total = $('#total').attr('price');
-        if(total < parseInt(value)){
-            $('#kembali').text(fungsiRupiah(value - total));
-        } else if (total == parseInt(value)){
+        potongan = parseInt($('#potongan').val());
+        if(isNaN(potongan)){
+            potongan = 0;
+        }
+        if (parseInt(potongan) > total){
+            swal('Jumlah Potongan Melebihi Harga Total', { icon: 'error', });
+            $('#potongan').val(0);
+            return;
+        }
+        value_potongan = parseInt(value) + potongan;
+        console.log(value_potongan)
+        if(total < value_potongan){
+            $('#kembali').text(fungsiRupiah(value_potongan - total));
+            $('#kembali').attr('price', value - total);
+        } else if (total == value_potongan){
             $('#kembali').text("Rp. 0,00");
         } else {
             $('#kembali').text('Uang Belum Cukup');
         }
+    }
+
+    function potongan_change(value){
+        total = parseInt($('#total').attr('price'));
+        uang = parseInt($('#uang').val());
+        if (parseInt(value) > total){
+            swal('Jumlah Potongan Melebihi Harga Total', { icon: 'error', });
+            $('#potongan').val(0);
+            return;
+        }
+        uang_and_potongan = uang + parseInt(value);
+        // console.log(uang_and_potongan);
+        if(isNaN(uang_and_potongan)){
+            hitung(uang);
+            return;
+        }
+        hitung(uang);
     }
 
 

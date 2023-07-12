@@ -35,6 +35,17 @@
 
     @yield('css')
 
+    <style>
+        .nav-link.notification-link{
+            padding: 0.5rem .75rem!important;
+            height: unset!important;
+        }
+
+        .fade:not(.show){
+            display: none;
+        }
+    </style>
+
 
 </head>
 
@@ -217,24 +228,88 @@
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Peringatan Barang Expired
+                                <h6 class="dropdown-header" style="background: white!important; border-color: lightgray!important">
+                                    <ul class="nav nav-pills" id="myTab3" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active position-relative notification-link" id="semua-tab" data-toggle="tab" href="#semua" role="tab"
+                                                aria-controls="semua" aria-selected="true">
+                                                <span
+                                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-light"
+                                                    style="top: -5px; right: -5px; padding: .45em .6em;">{{ App::count_semua() }}</span>
+                                                Semua
+                                            </a>
+                                        </li>
+                                        <li class="nav-item mx-3">
+                                            <a class="nav-link position-relative notification-link" id="expired-tab" data-toggle="tab" href="#expired" role="tab"
+                                                aria-controls="expired" aria-selected="true">
+                                                <span
+                                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-light"
+                                                    style="top: -5px; right: -5px; padding: .45em .6em;">{{ App::count_barang_expired() }}</span>
+                                                Expired
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link position-relative notification-link" id="stock-tab" data-toggle="tab" href="#stock" role="tab"
+                                                aria-controls="stock" aria-selected="true">
+                                                <span
+                                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-light"
+                                                    style="top: -5px; right: -5px; padding: .45em .6em;">{{ App::count_barang_stock() }}</span>
+                                                Stock Habis
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </h6>
-                                <div style="height: 350px; overflow-y: auto">
-                                    @foreach(App::get_barang_expired() as $item)
-                                    <a class="dropdown-item d-flex align-items-center justify-content-between" href="/saka/master/barang?search={{ $item->nama_barang }}" style="gap: 30px">
-                                        <div>
-                                            <div class="small text-gray-500">Expired At <span style="color: #817d7d; font-weight: 700; margin-left: .15rem">{{ App::tgl_indo($item->ed) }}</span></div>
-                                            <span class="font-weight-bold">{{ $item->nama_barang }}</span>
-                                        </div>
-                                        <div>
-                                            <div class="small text-gray-500 d-none">Expired At <span style="color: #817d7d; font-weight: 700; display: none">{{ App::tgl_indo($item->ed) }}</span></div>
-                                            <span class="font-weight-bold" style="font-size: .8rem; white-space: nowrap;">Stock : {{ $item->stok }}</span>
-                                        </div>
-                                    </a>
-                                    @endforeach
+                                <div class="tab-pane fade show active" id="semua" role="tabpanel" aria-labelledby="semua-tab">
+                                    <div style="height: 350px; overflow-y: auto">
+                                        @foreach(App::get_barang_all() as $item)
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between" href="/saka/master/barang?search={{ $item->nama_barang }}" style="gap: 30px">
+                                            <div>
+                                                <div class="small text-gray-500">Expired At <span style="color: #817d7d; font-weight: 700; margin-left: .15rem">{{ App::tgl_indo($item->ed) }}</span></div>
+                                                <span class="font-weight-bold">{{ $item->nama_barang }}</span>
+                                            </div>
+                                            <div>
+                                                <div class="small text-gray-500 d-none">Expired At <span style="color: #817d7d; font-weight: 700; display: none">{{ App::tgl_indo($item->ed) }}</span></div>
+                                                <span class="font-weight-bold" style="font-size: .8rem; white-space: nowrap;">Stock : {{ $item->stok }}</span>
+                                            </div>
+                                        </a>
+                                        @endforeach
+                                    </div>
+                                    <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="/saka/dashboard#expired_barang_table">Show All</a>
                                 </div>
-                                <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="/saka/dashboard#expired_barang_table">Show All Expired Barang</a>
+                                <div class="tab-pane fade" id="expired" role="tabpanel" aria-labelledby="expired-tab">
+                                    <div style="height: 350px; overflow-y: auto">
+                                        @foreach(App::get_barang_expired() as $item)
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between" href="/saka/master/barang?search={{ $item->nama_barang }}" style="gap: 30px">
+                                            <div>
+                                                <div class="small text-gray-500">Expired At <span style="color: #817d7d; font-weight: 700; margin-left: .15rem">{{ App::tgl_indo($item->ed) }}</span></div>
+                                                <span class="font-weight-bold">{{ $item->nama_barang }}</span>
+                                            </div>
+                                            <div>
+                                                <div class="small text-gray-500 d-none">Expired At <span style="color: #817d7d; font-weight: 700; display: none">{{ App::tgl_indo($item->ed) }}</span></div>
+                                                <span class="font-weight-bold" style="font-size: .8rem; white-space: nowrap;">Stock : {{ $item->stok }}</span>
+                                            </div>
+                                        </a>
+                                        @endforeach
+                                    </div>
+                                    <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="/saka/dashboard#expired_barang_table">Show All</a>
+                                </div>
+                                <div class="tab-pane fade" id="stock" role="tabpanel" aria-labelledby="stock-tab">
+                                    <div style="height: 350px; overflow-y: auto">
+                                        @foreach(App::get_barang_stock() as $item)
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between" href="/saka/master/barang?search={{ $item->nama_barang }}" style="gap: 30px">
+                                            <div>
+                                                <div class="small text-gray-500">Expired At <span style="color: #817d7d; font-weight: 700; margin-left: .15rem">{{ App::tgl_indo($item->ed) }}</span></div>
+                                                <span class="font-weight-bold">{{ $item->nama_barang }}</span>
+                                            </div>
+                                            <div>
+                                                <div class="small text-gray-500 d-none">Expired At <span style="color: #817d7d; font-weight: 700; display: none">{{ App::tgl_indo($item->ed) }}</span></div>
+                                                <span class="font-weight-bold" style="font-size: .8rem; white-space: nowrap;">Stock : {{ $item->stok }}</span>
+                                            </div>
+                                        </a>
+                                        @endforeach
+                                    </div>
+                                    <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="/saka/dashboard#expired_barang_table">Show All</a>
+                                </div>
                             </div>
                         </li>
 
@@ -255,14 +330,14 @@
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
-                                <a class="dropdown-item" href="#">
+                                {{-- <a class="dropdown-item" href="#">
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Settings
                                 </a>
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Activity Log
-                                </a>
+                                </a> --}}
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -364,6 +439,11 @@
     if(jQuery().select2) {
         $(".select2").select2();
     }
+
+    $('.dropdown-menu .nav-item a').on('click', function(e) {
+      e.stopPropagation();
+      $(this).tab('show');
+    });
     </script>
 </body>
 

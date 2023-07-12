@@ -12,7 +12,11 @@ class Pasien extends Model
     protected $table = 'pasien';
     protected $guarded = ['id'];
 
-    public function user(){
+    public function user_created_by(){
         return $this->belongsTo(User::class, 'created_by', 'id');
-    } 
+    }
+
+    public function user_updated_by(){
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
 }

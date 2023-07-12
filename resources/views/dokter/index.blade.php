@@ -39,6 +39,8 @@
                             <th>Kota</th>
                             <th>No. Telp</th>
                             <th>Alamat</th>
+                            <th>Dibuat</th>
+                            <th>Diubah</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -51,6 +53,8 @@
                             <td>{{ $item->kota }}</td>
                             <td>{{ $item->no_telp }}</td>
                             <td>{{ $item->alamat }}</td>
+                            <td>{{ isset($item->user_created_by->name) ? $item->user_created_by->name : '-' }}</td>
+                            <td>{{ isset($item->user_updated_by->name) ? $item->user_updated_by->name : '-' }}</td>
                             <td>
                                 <button class='btn btn-info btn-sm mr-1'><a style='color: white;' onclick="edit('dokter/detail/{{ $item->id }}')"><i class='fa fa-edit'></i></a></button>
                                 <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('dokter/delete/{{ $item->id }}', '{{ $item->nama_Dokter }}')"><i class='bi bi-trash-fill'></i></a></button>
@@ -134,7 +138,7 @@
 			sDom: 'lBfrtip',
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0, 3, 5]
+					targets: [0, 3, 5, 6, 7]
 				},
 				{
 					width: "7%",
@@ -142,7 +146,7 @@
 				},
 				{
 					orderable: false,
-					targets: [5]
+					targets: [7]
 				}
 			],
 		});

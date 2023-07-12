@@ -38,6 +38,8 @@
                             <th class="text-center">Nama</th>
                             <th>Level</th>
                             <th class="text-center">Email</th>
+                            <th>Dibuat</th>
+                            <th>Diubah</th>
                             <th>Created At</th>
                             <th>Aksi</th>
                         </tr>
@@ -50,7 +52,9 @@
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->level }}</td>
                             <td>{{ $item->email }}</td>
-                            <td>{{ $item->created_at }}</td>
+                            <td>{{ isset($item->user_created_by->name) ? $item->user_created_by->name : '-' }}</td>
+                            <td>{{ isset($item->user_updated_by->name) ? $item->user_updated_by->name : '-' }}</td>
+                            <td>{{ $item->created_at_desc }}</td>
                             <td>
                                 <button class='btn btn-info btn-sm mr-1'><a style='color: white;' onclick="edit('user/detail/{{ $item->id }}')"><i class='fa fa-edit'></i></a></button>
                                 <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('user/delete/{{ $item->id }}', '{{ $item->name }}')"><i class='bi bi-trash-fill'></i></a></button>
@@ -204,7 +208,7 @@
 			sDom: 'lBfrtip',
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0, 2, 4, 5]
+					targets: [0, 2, 4, 5, 6, 7]
 				},
 				{
 					width: "7%",
@@ -212,7 +216,7 @@
 				},
 				{
 					orderable: false,
-					targets: [4, 5]
+					targets: [6, 7]
 				}
 			],
 		});

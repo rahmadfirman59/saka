@@ -38,6 +38,7 @@
                             <th>Nama Pasien</th>
                             <th>No. Telp</th>
                             <th>Dibuat Oleh</th>
+                            <th>Diubah Oleh</th>
                             <th>Dibuat Pada</th>
                             <th>Aksi</th>
                         </tr>
@@ -49,7 +50,8 @@
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $item->nama_pasien }}</td>
                             <td>{{ $item->no_telp }}</td>
-                            <td>{{ $item->user->name }}</td>
+                            <td>{{ isset($item->user_created_by->name) ? $item->user_created_by->name : '-' }}</td>
+                            <td>{{ isset($item->user_updated_by->name) ? $item->user_updated_by->name : '-' }}</td>
                             <td>{{ App\Helpers\App::tgl_indo($item->created_at->format('Y-m-d')) }}</td>
                             <td>
                                 <button class='btn btn-warning btn-sm'><a style='color: white'; Onclick="check_history('{{ $item->id }}')"><i class="bi bi-file-text-fill"></i></a></button>
@@ -158,7 +160,7 @@
 			sDom: 'lBfrtip',
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0, 2,3,4,5]
+					targets: [0, 2,3,4,5,6]
 				},
 				{
 					width: "7%",
@@ -166,7 +168,7 @@
 				},
 				{
 					orderable: false,
-					targets: [5]
+					targets: [6]
 				}
 			],
 		});

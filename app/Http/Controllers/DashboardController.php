@@ -16,6 +16,7 @@ class DashboardController extends Controller
             $query->select('no_faktur', 'id_transaksi', 'id_supplier', 'status');
         }])->where('type', 1)->get();
         $data['barang_ed'] = Barang::where('ed', '<=', Carbon::today()->addDays(30)->format('Y-m-d'))->orderBy('ed', 'DESC')->get();
+        $data['barang_stok'] = Barang::where('stok', '<=', 10)->orderBy('ed', 'DESC')->get();
         return view('dashboard.dashboard', $data);
     }
 }

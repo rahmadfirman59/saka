@@ -11,7 +11,7 @@ class SupplierController extends Controller
 {
     public function index()
     {
-        $supplier = Supplier::all();
+        $supplier = Supplier::with('user_created_by', 'user_updated_by')->get();
         return view('supplier.index')
             ->with('supplier', $supplier);
     }

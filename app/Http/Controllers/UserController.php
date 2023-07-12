@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = User::all();
+        $user = User::with('user_created_by', 'user_updated_by')->get();
         return view('users.index')
             ->with('user', $user);
     }
@@ -38,7 +38,7 @@ class UserController extends Controller
             ];
         }
             
-        $request->request->add(['password' =>Hash::make($request->password)]);
+        $request->request->add(['password' => Hash::make($request->password)]);
         User::create([
             'name' => $request->nama_user,
             'email' => $request->email,
@@ -69,7 +69,7 @@ class UserController extends Controller
         
         $request->request->add(['updated_by' => Session::get('useractive')->id]);
         if(isset($request->change_password)){
-            $request->request->add(['password' =>Hash::make($request->password)]);
+            $request->request->add(['password' => Hash::make($request->password)]);
             $request->request->remove('change_password');
         }
 

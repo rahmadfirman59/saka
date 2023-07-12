@@ -124,7 +124,7 @@
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label>Supplier</label>
-                                <select name="nm_supplier" class="form-control">
+                                <select name="nm_supplier" class="form-control select2">
 									<option value="" selected>- Pilih Supplier -</option>
                                     @foreach ($suppliers as $supplier)
                                     <option value="{{ $supplier->id }}">{{ $supplier->nama_supplier }}</option>
