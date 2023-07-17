@@ -102,6 +102,7 @@
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
+            @if(auth()->user()->level == 'superadmin')
             <li class="nav-item @if($url_menu == "master") active @endif">
                 <a class="nav-link @if($url_menu == "master") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
@@ -170,6 +171,61 @@
                     </div>
                 </div>
             </li>
+
+            @elseif (auth()->user()->level == 'kasir')
+            <li class="nav-item @if($url_menu == "master") active @endif">
+                <a class="nav-link @if($url_menu == "master") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="bi bi-menu-button-wide"></i>
+                    <span>Master</span>
+                </a>
+                <div id="collapsePages" class="collapse  @if($url_menu == "master") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'dokter') active @endif" href="{{ route('dokter') }}">Dokter</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'pasien') active @endif" href="{{ route('pasien') }}">Pasien</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item @if($url_menu == "transaksi") active @endif">
+                <a class="nav-link collapsed @if($url_menu == "transaksi") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages2"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="bi bi-cart"></i>
+                    <span>Transaksi</span>
+                </a>
+                <div id="collapsePages2" class="collapse @if($url_menu == "transaksi") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'penjualan') active @endif" href="{{ route('transaksi.penjualan') }}">Penjualan</a>                        
+                    </div>
+                </div>
+            </li>
+
+            @elseif (auth()->user()->level == 'pembelian')
+            <li class="nav-item @if($url_menu == "master") active @endif">
+                <a class="nav-link @if($url_menu == "master") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="bi bi-menu-button-wide"></i>
+                    <span>Master</span>
+                </a>
+                <div id="collapsePages" class="collapse  @if($url_menu == "master") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'barang') active @endif" href="{{ route('barang') }}">Barang</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item @if($url_menu == "transaksi") active @endif">
+                <a class="nav-link collapsed @if($url_menu == "transaksi") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages2"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="bi bi-cart"></i>
+                    <span>Transaksi</span>
+                </a>
+                <div id="collapsePages2" class="collapse @if($url_menu == "transaksi") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'pembelian') active @endif" href="{{ route('transaksi.pembelian') }}">Pembelian</a>                        
+                    </div>
+                </div>
+            </li>
+            @endif
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -223,7 +279,7 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter" style="right: .15rem">{{ App::count_barang_expired() }}</span>
+                                <span class="badge badge-danger badge-counter" style="right: .15rem">{{ App::count_semua() }}</span>
                             </a>
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -262,14 +318,18 @@
                                 <div class="tab-pane fade show active" id="semua" role="tabpanel" aria-labelledby="semua-tab">
                                     <div style="height: 350px; overflow-y: auto">
                                         @foreach(App::get_barang_all() as $item)
-                                        <a class="dropdown-item d-flex align-items-center justify-content-between" href="/saka/master/barang?search={{ $item->nama_barang }}" style="gap: 30px">
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between" @if(auth()->user()->level == 'superadmin' || auth()->user()->level == 'pembelian') href="/saka/master/barang?search={{ $item->nama_barang }}" @endif style="gap: 30px">
                                             <div>
                                                 <div class="small text-gray-500">Expired At <span style="color: #817d7d; font-weight: 700; margin-left: .15rem">{{ App::tgl_indo($item->ed) }}</span></div>
                                                 <span class="font-weight-bold">{{ $item->nama_barang }}</span>
                                             </div>
                                             <div>
+                                                @if($item->ed <= \Carbon\Carbon::today()->addDays(30)->format('Y-m-d'))
                                                 <div class="small text-gray-500 d-none">Expired At <span style="color: #817d7d; font-weight: 700; display: none">{{ App::tgl_indo($item->ed) }}</span></div>
+                                                @endif
+                                                @if($item->stok < 10)
                                                 <span class="font-weight-bold" style="font-size: .8rem; white-space: nowrap;">Stock : {{ $item->stok }}</span>
+                                                @endif
                                             </div>
                                         </a>
                                         @endforeach
@@ -279,14 +339,13 @@
                                 <div class="tab-pane fade" id="expired" role="tabpanel" aria-labelledby="expired-tab">
                                     <div style="height: 350px; overflow-y: auto">
                                         @foreach(App::get_barang_expired() as $item)
-                                        <a class="dropdown-item d-flex align-items-center justify-content-between" href="/saka/master/barang?search={{ $item->nama_barang }}" style="gap: 30px">
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between" @if(auth()->user()->level == 'superadmin' || auth()->user()->level == 'pembelian') href="/saka/master/barang?search={{ $item->nama_barang }}" @endif style="gap: 30px">
                                             <div>
                                                 <div class="small text-gray-500">Expired At <span style="color: #817d7d; font-weight: 700; margin-left: .15rem">{{ App::tgl_indo($item->ed) }}</span></div>
                                                 <span class="font-weight-bold">{{ $item->nama_barang }}</span>
                                             </div>
                                             <div>
                                                 <div class="small text-gray-500 d-none">Expired At <span style="color: #817d7d; font-weight: 700; display: none">{{ App::tgl_indo($item->ed) }}</span></div>
-                                                <span class="font-weight-bold" style="font-size: .8rem; white-space: nowrap;">Stock : {{ $item->stok }}</span>
                                             </div>
                                         </a>
                                         @endforeach
@@ -296,13 +355,11 @@
                                 <div class="tab-pane fade" id="stock" role="tabpanel" aria-labelledby="stock-tab">
                                     <div style="height: 350px; overflow-y: auto">
                                         @foreach(App::get_barang_stock() as $item)
-                                        <a class="dropdown-item d-flex align-items-center justify-content-between" href="/saka/master/barang?search={{ $item->nama_barang }}" style="gap: 30px">
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between" @if(auth()->user()->level == 'superadmin' || auth()->user()->level == 'pembelian') href="/saka/master/barang?search={{ $item->nama_barang }}" @endif style="gap: 30px">
                                             <div>
-                                                <div class="small text-gray-500">Expired At <span style="color: #817d7d; font-weight: 700; margin-left: .15rem">{{ App::tgl_indo($item->ed) }}</span></div>
                                                 <span class="font-weight-bold">{{ $item->nama_barang }}</span>
                                             </div>
                                             <div>
-                                                <div class="small text-gray-500 d-none">Expired At <span style="color: #817d7d; font-weight: 700; display: none">{{ App::tgl_indo($item->ed) }}</span></div>
                                                 <span class="font-weight-bold" style="font-size: .8rem; white-space: nowrap;">Stock : {{ $item->stok }}</span>
                                             </div>
                                         </a>

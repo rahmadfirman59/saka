@@ -127,18 +127,19 @@ class TransaksiPenjualanController extends Controller
                     $stok_grosir = floor($stok / $barang_single->jumlah_grosir);
                     $sub_total += $barang->firstWhere('id', $item)->harga_jual * $request->qty[$key];
                     $harga = $barang->firstWhere('id', $item)->harga_jual;
+                    $hpp += $barang_single->harga_beli * $request->qty[$key];
                 } else{
                     $stok = $barang_single->stok - ($request->qty[$key] * $barang_single->jumlah_grosir);
                     $stok_grosir = $barang_single->stok_grosir - $request->qty[$key];
                     $sub_total += $barang->firstWhere('id', $item)->harga_jual_grosir * $request->qty[$key];
                     $harga = $barang->firstWhere('id', $item)->harga_jual_grosir;
+                    $hpp += $barang_single->harga_beli_grosir * $request->qty[$key];
                 }
 
                 $barang_single->stok = $stok;
                 $barang_single->stok_grosir = $stok_grosir;
                 $barang_single->save();
 
-                $hpp += $barang_single->harga_beli * $request->qty[$key];
 
                 Penjualan::create([
                     'id_barang' => $item,

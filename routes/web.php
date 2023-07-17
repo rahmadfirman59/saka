@@ -32,7 +32,6 @@ use App\Http\Controllers\TransaksiPenjualanController;
 
 Route::post('login', [AuthController::class, 'login'])->name('post.login');
 Route::get('login', [AuthController::class, 'index'])->name('login');
-Route::get('test', [App::class, 'get_barang_all'])->name('login');
 
 Route::group(['middleware' => ['ceklogin']], function () {
     Route::get('/', function(){
@@ -170,8 +169,6 @@ Route::group(['middleware' => ['ceklogin']], function () {
             Route::get('/pdf', [LaporanController::class, 'penjualan_pdf']);
         });
     });
-
-    // Route::get('/akun', [DashboardController::class, 'index'])->name('akun');
 
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');

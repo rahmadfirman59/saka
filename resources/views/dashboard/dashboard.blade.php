@@ -13,6 +13,7 @@
     <!-- Content Row -->
     <div class="row">
 
+        @if(auth()->user()->level == 'kasir' || auth()->user()->level == 'superadmin')
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2 penjualan-card">
@@ -31,24 +32,30 @@
                 </div>
             </div>
         </div>
+        @endif
+        
+        @if(auth()->user()->level == 'pembelian' || auth()->user()->level == 'superadmin')
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2 pembelian-card">
                 <div class="card-body">
-                    <h5 class="card-title2">Pembelian</h5>
+                    <h5 class="card-title2">Transaksi</h5>
 
                     <div class="d-flex align-items-center">
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                             <i class="bi bi-currency-dollar"></i>
                         </div>
                         <div class="pl-3">
-                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/transaksi/pembelian" style="color: #012970" class="pembelian-href">Penjualan</a></h6>
+                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/transaksi/pembelian" style="color: #012970" class="pembelian-href">Pembelian</a></h6>
 
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        @endif
+
+        @if(auth()->user()->level == 'superadmin')
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2 laporan-card">
@@ -67,6 +74,7 @@
                 </div>
             </div>
         </div>
+        @endif
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-danger shadow h-100 py-2 grafik-card">
