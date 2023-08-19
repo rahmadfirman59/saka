@@ -9,10 +9,10 @@ class CekLogin
 {
     public function handle($request, Closure $next)
     {
-        if (!Auth::check() || auth()->user()->type != 'superadmin') {
+        if (!Auth::check()) {
             return redirect()->route('login'); //jangan lupa berikan name pada route loginnya
         }
-        
+
         if (auth()->user()->level == 'superadmin' && Auth::check()) {
             return $next($request);
         } else if (auth()->user()->level == 'kasir') {
