@@ -9,7 +9,11 @@ class CekLogin
 {
     public function handle($request, Closure $next)
     {
-        if (auth()->user()->level == 'superadmin') {
+        if (!Auth::check() || auth()->user()->type != 'superadmin') {
+            return redirect()->route('login'); //jangan lupa berikan name pada route loginnya
+        }
+        
+        if (auth()->user()->level == 'superadmin' && Auth::check()) {
             return $next($request);
         } else if (auth()->user()->level == 'kasir') {
             // User with status 1 can access routes within the specified prefixes
