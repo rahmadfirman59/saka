@@ -165,7 +165,14 @@
                               <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_grosir-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label>Jumlah Item Per Satuan</label>
+                            <input class="form-control" type="text" id="jumlah_pecahan" name="jumlah_pecahan" >
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_pecahan-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
                             <label>Stok Minim</label>
                               <input class="form-control" type="text" id="stok_minim" name="stok_minim" >
@@ -251,6 +258,20 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
+                            <label>Stok Grosir</label>
+                              <input class="form-control" disabled type="text" id="stok_grosir" name="stok_grosir" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-stok_grosir-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Stok Satuan</label>
+                              <input class="form-control" disabled type="text" id="stok" name="stok" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-stok-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
                             <label>Jumlah Item Per Grosir</label>
                               <input class="form-control" readonly type="text" id="jumlah_grosir" name="jumlah_grosir" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_grosir-feedback"></span>
@@ -264,6 +285,20 @@
                                 <option value='BOX'>BOX</option>
                             </select>
                             <span class="d-flex text-danger invalid-feedback" id="invalid-satuan_grosir-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Jumlah Item Per Satuan</label>
+                              <input class="form-control" type="text" id="jumlah_pecahan" name="jumlah_pecahan" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_pecahan-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Sisa Pecahan</label>
+                              <input class="form-control" type="text" id="sisa_pecahan" name="sisa_pecahan" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-sisa_pecahan-feedback"></span>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
@@ -399,9 +434,6 @@
 					targets: [8]
 				},
 			],
-            search: {
-                search: searchInput,
-            }
 		});
 
         $('.datatable-jquery2').dataTable({

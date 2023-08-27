@@ -117,6 +117,7 @@
                         <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'dokter') active @endif" href="{{ route('dokter') }}">Dokter</a>
                         <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'pasien') active @endif" href="{{ route('pasien') }}">Pasien</a>
                         <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'user') active @endif" href="{{ route('user') }}">User</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'obat-racik') active @endif" href="{{ route('obat-racik') }}">Obat Racik</a>
                     </div>
                 </div>
             </li>

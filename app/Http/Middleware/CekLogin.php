@@ -26,7 +26,7 @@ class CekLogin
             } else {
                 abort(403, 'Unauthorized action.');
             }
-        } else if (auth()->user()->level == 'pembelian'){
+        } else if (auth()->user()->level == 'pembelian' && Auth::check()){
             // User with status 1 can access routes within the specified prefixes
             $allowedPrefixes = ['master/barang', 'transaksi/pembelian', '', 'grafik', 'logout']; // Replace with your desired prefixes
             $currentPrefix = $request->route()->getPrefix();

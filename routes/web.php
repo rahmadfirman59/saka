@@ -13,6 +13,7 @@ use App\Http\Controllers\JurnalPenjualanController;
 use App\Http\Controllers\JurnalPenyesuaianController;
 use App\Http\Controllers\JurnalUmumController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\ObatRacikController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -87,6 +88,14 @@ Route::group(['middleware' => ['ceklogin']], function () {
             Route::post('/update', [UserController::class, 'update']);
             Route::get('/detail/{id}', [UserController::class, 'detail']);
             Route::delete('/delete/{id}', [UserController::class, 'delete']);
+        });
+
+        Route::prefix('obat-racik')->group(function () {
+            Route::get('/', [ObatRacikController::class, 'index'])->name('obat-racik');
+            Route::get('/detail/{id}', [ObatRacikController::class, 'detail']);
+            Route::get('/add', [ObatRacikController::class, 'add'])->name('obat-racik-add');
+            Route::post('/store', [ObatRacikController::class, 'store']);
+            Route::delete('/delete/{id}', [ObatRacikController::class, 'delete']);
         });
     });
 

@@ -122,6 +122,10 @@ table td {
     color: #012970;
 }
 
+.btn{
+  font-size: 13px;
+}
+
 label{
     font-size: 15px;
     margin-bottom: 4px;
@@ -196,4 +200,9 @@ table.datatable-primary thead tr{
     margin-bottom: 0;
     font-weight: 600;
     color: #012970;
+}
+
+.list-barang-wrapper{
+  background-color: lightgray;
+  padding: 20px;
 }
