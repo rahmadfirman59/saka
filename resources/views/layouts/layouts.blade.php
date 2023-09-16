@@ -59,10 +59,8 @@
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/saka/dashboard">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">Apotik Saka Sasmitra</div>
+                <img src="{{ asset('public\sbadmin\img\logo-sasmitra.png') }}" width="50" alt="logo_sasmitra">
+                <div class="sidebar-brand-text mr-3">Apotik Saka Sasmitra</div>
             </a>
 
 
@@ -131,6 +129,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'penjualan') active @endif" href="{{ route('transaksi.penjualan') }}">Penjualan</a>
                         <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'pembelian') active @endif" href="{{ route('transaksi.pembelian') }}">Pembelian</a>
+                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'obat-racik') active @endif" href="{{ route('transaksi.obat-racik') }}">Obat Racik</a>
                         
                     </div>
                 </div>

@@ -16,6 +16,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ObatRacikController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransaksiObatRacikController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransaksiPembelianController;
 use App\Http\Controllers\TransaksiPenjualanController;
@@ -115,6 +116,14 @@ Route::group(['middleware' => ['ceklogin']], function () {
             Route::get('/delete-keranjang/{id}', [TransaksiPembelianController::class, 'delete_keranjang']);
 
             Route::post('/store', [TransaksiPembelianController::class, 'store']);
+        });
+
+        Route::prefix('obat-racik')->group(function () {
+            Route::get('/', [TransaksiObatRacikController::class, 'index'])->name('transaksi.obat-racik');
+            Route::post('/add-keranjang', [TransaksiObatRacikController::class, 'add_keranjang']);
+            Route::get('/delete-keranjang/{id}', [TransaksiObatRacikController::class, 'delete_keranjang']);
+
+            Route::post('/store', [TransaksiObatRacikController::class, 'store']);
         });
     });
 

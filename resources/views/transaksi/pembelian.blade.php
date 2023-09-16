@@ -411,8 +411,7 @@
         if(qty < 1){
             swal('Jumlah Barang Tidak Boleh Kurang dari 1', { icon: 'error', });
             $('#qty' + id).val(1);
-            $(`#subtotal${id}`).text(fungsiRupiah(harga));
-            return;
+            qty=1;
         }
 
         harga = $(`#harga${id}`).val();
@@ -424,7 +423,6 @@
         
         total = 0;
         $( ".subtotal" ).each(function( index ) {
-            //   console.log( index + ": " + $( this ).text() );
             total += parseInt($( this ).attr('price'));
             $('#total').text(fungsiRupiah(total));
             $('#total').attr('price', total);

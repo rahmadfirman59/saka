@@ -31,11 +31,11 @@
 
     <!-- Page Heading -->
     <div class="pagetitle">
-        <h1 class="h3 mb-2">Transaksi Penjualan</h1>
+        <h1 class="h3 mb-2">Transaksi Obat Racik</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Transaksi</a></li>
-                <li class="breadcrumb-item active"><a href="#">Penjualan</a></li>
+                <li class="breadcrumb-item active"><a href="#">Obat Racik</a></li>
                 
             </ol>
         </nav>
@@ -47,8 +47,8 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <button type="button" style="left: 12px;top: 13px;font-size: 13px" class="btn btn-warning"
-                                onclick="tambah_barang_penjualan();"><i class="fa fa-plus mr-1"></i>
-                                Tambah Barang</button>
+                                onclick="tambah_obat_racik();"><i class="fa fa-plus mr-1"></i>
+                                Tambah Obat Racik</button>
                 </div>
                 <form id="form_penjualan">
                 <div class="card-body">
@@ -57,9 +57,8 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Barang</th>
-                                    <th>Jenis Penjualan</th>
-                                    <th>Satuan</th>
+                                    <th>Nama Racik</th>
+                                    <th>List Barang</th>
                                     <th>Stok</th>
                                     <th>Jumlah</th>
                                     <th>Harga</th>
@@ -71,24 +70,22 @@
                             <tbody>
                                 <?php $total = 0 ?>
                                 @foreach ($keranjang as $key=> $item)
-                                <?php $total+=$item->barang->harga_jual ?>
+                                <?php $total+=$item->obat_racik->harga ?>
                                 <tr>
                                     <input type="hidden" value="{{ $item->barang->id }}" name="idbarang[]">
                                     <td>{{ $key+1 }}</td>
-                                    <td>{{ $item->barang->nama_barang }}</td>
+                                    <td>{{ $item->obat_racik->nama_racik }}</td>
                                     <td>
-                                        <select name="tipe[]" onchange="ubah_tipe(this.value, {{ $key }}, {{ $item->id }})" id="tipe{{ $key }}" class="form-control">
-                                            <option value="0" selected>Satuan</option>
-                                            <option value="1">Grosir</option>
-                                        </select>
+                                        @foreach ($item->obat_racik->barangs as $barang)
+                                            <span class="badge badge-primary" style="font-family: 'Nunito', sans-serif; padding: .35em .7em;">{{ $barang->nama_barang }} (<span class="jumlah_stock_{{ $key }}" stock="{{ $barang->pivot->jumlah }}">{{ $barang->pivot->jumlah }}</span>)</span>
+                                        @endforeach
                                     </td>
-                                    <td class="display_satuan{{ $key }}">{{ $item->barang->satuan }}</td>
-                                    <td class="display_stok{{ $key }}">{{ $item->barang->stok }}</td>
+                                    <td class="display_stok{{ $key }}">{{ $item->obat_racik->stok }}</td>
                                     <td style="width: 10%">
                                         <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->barang->stok }}, {{ $item->barang->harga_jual }})">
                                     </td>
-                                    <td price="{{ $item->barang->harga_jual }}" class="display_harga{{ $key }}">{{ "Rp. ".number_format($item->barang->harga_jual, 2 , ',' , '.' ) }}</td>
-                                    <td id="subtotal{{ $key }}" class="subtotal" price="{{ $item->barang->harga_jual }}">{{ "Rp. ".number_format($item->barang->harga_jual, 2 , ',' , '.' ) }}</td>
+                                    <td price="{{ $item->obat_racik->harga }}" class="display_harga{{ $key }}">{{ "Rp. ".number_format($item->obat_racik->harga, 2 , ',' , '.' ) }}</td>
+                                    <td id="subtotal{{ $key }}" class="subtotal" price="{{ $item->obat_racik->harga }}">{{ "Rp. ".number_format($item->obat_racik->harga, 2 , ',' , '.' ) }}</td>
                                     <td>
                                         <button class='btn btn-danger btn-sm' type="button"><a style='color: white' onclick="delete_keranjang({{ $item->id }})"><i class='bi bi-trash-fill'></i></a></button>
                                     </td>
@@ -123,7 +120,7 @@
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label>Uang</label>
-                                <input type="text" id="uang" name="uang" onkeyup="hitung(this.value)" onkeypress="return hanyaAngka(event,false);" class="form-control">
+                                <input type="text" id="uang" name="uang" onkeyup="hitung(this.value)" class="form-control">
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-12">
@@ -145,7 +142,7 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title p-0" style="display: inline-block">Transaksi Penjualan</h5>
+                    <h5 class="card-title p-0" style="display: inline-block">Transaksi Obat Racik</h5>
                 </div>
                 <div class="card-body mt-3">
                     <div class="row" style="gap: 11px 0">
@@ -174,7 +171,7 @@
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label>No. Nota</label>
-                                <input type="text" value="{{ 'PJL'.(int)$count_penjualan.date('Ymd') }}" id="kode_transaksi" class="form-control" disabled>
+                                <input type="text" value="{{ 'PJL'.(int)$count_obat_racik.date('Ymd') }}" id="kode_transaksi" class="form-control" disabled>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-12">
@@ -198,43 +195,51 @@
 @endsection
 
 @section('modal')
-<div class="modal fade" role="dialog" id="modal_barang" data-keyboard="false">
+<div class="modal fade" role="dialog" id="modal_obat_racik" data-keyboard="false">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header br">
-                <h5 class="modal-title">Tabel Barang</h5>
+                <h5 class="modal-title">Tabel Obat Racik</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="table-responsive">
-                    <table class="table datatable-primary table-striped table-hover datatable-barang" width="100%" cellspacing="0">
+                    <table class="table datatable-primary table-striped table-hover datatable-obat-racik" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Barang</th>
-                                <th>No. Batch</th>
+                                <th>Nama Racik</th>
+                                <th>List Barang</th>
                                 <th>Harga</th>
-                                <th>Stok</th>
-                                <th>Kadaluarsa</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
     
                         <tbody>
-                            @foreach ($barang as $key=> $item)
+                            @foreach ($obat_racik as $key=> $item)
                             <tr>
-                                <td>{{ $key + 1 }}</td>         
-                                <td>{{ $item->nama_barang }}</td>                           
-                                <td>{{ $item->no_batch }}</td>                           
-                                <td>{{ $item->harga_jual }}</td>                           
-                                <td>{{ $item->stok }}</td>                              
-                                <td>{{ $item->ed }}</td>           
-                                @if($item->ed > \Carbon\Carbon::today()->addDays(30)->format('Y-m-d'))                
-                                <td><button class='btn btn-info btn-sm mr-1 mx-3' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $item->nama_racik }}</td>
+                                <td>
+                                    @php
+                                        $expired = false;
+                                    @endphp
+                                    @foreach ($item->barangs as $barang)
+                                        @php
+                                            if($barang->ed <= \Carbon\Carbon::today()->addDays(30)->format('Y-m-d')){
+                                                $expired = true;
+                                            }
+                                        @endphp
+                                        <span class="badge @if($barang->ed <= \Carbon\Carbon::today()->addDays(30)->format('Y-m-d')) badge-danger @else badge-primary @endif" style="font-family: 'Nunito', sans-serif; padding: .35em .7em;">{{ $barang->nama_barang }} ({{ $barang->pivot->jumlah }}) @if($barang->ed <= \Carbon\Carbon::today()->addDays(30)->format('Y-m-d'))(expired)@endif</span>
+                                    @endforeach
+                                </td>
+                                <td>{{ "Rp. ".number_format($item->harga, 2 , ',' , '.' ) }}</td>
+                                @if($expired === false )                
+                                <td><button class='btn btn-info btn-sm mr-1 mx-3' onclick="add_barang({{ $item->id }})"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
                                 @else
-                                <td><p class="text-danger"; style="font-size: .9rem">Barang Sudah Expired</p></td>
+                                <td><p class="text-danger"; style="font-size: .9rem">Terdapat Barang Sudah Expired</p></td>
                                 @endif
                             </tr>
                             @endforeach
@@ -276,11 +281,11 @@
 			],
 		});
 
-        $('.datatable-barang').dataTable({
+        $('.datatable-obat-racik').dataTable({
 			sDom: 'lBfrtip',
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0,2,3,4,5,6]
+					targets: [0,2,3,4]
 				},
 				{
 					width: "7%",
@@ -288,71 +293,22 @@
 				},
                 {
                     orderable: false,
-                    targets: [6]
+                    targets: [4]
                 }
 			],
 		});
 	});
 
-    function tambah_barang_penjualan(){
-        $("#modal_barang").modal('show');
+    function tambah_obat_racik(){
+        $("#modal_obat_racik").modal('show');
     }
 
-    function ubah_tipe(val, id, id_keranjang){
-        $('#qty'+id).val(1);
+    function add_barang(id){
         $('#modal_loading').modal('show');
         $.ajax({
-            url: '/saka/transaksi/penjualan/get-keranjang/' + id_keranjang,
-            type: "GET",
-            success: function (response) {
-                setTimeout(function () {
-                    $('#modal_loading').modal('hide');
-                }, 500);
-                let query_barang = response[0]['barang'];
-                let grosir
-                if(val == 1){grosir = '_grosir';}else{grosir = ''}
-
-                $('.display_satuan' + id).text(query_barang['satuan' + grosir]);
-                $('.display_stok' + id).text(query_barang['stok' + grosir]);
-                $('.display_harga' + id).text(fungsiRupiah(query_barang['harga_jual' + grosir]));
-                $('.display_harga' + id).attr('price', query_barang['harga_jual' + grosir]);
-                $('#subtotal' + id).text(fungsiRupiah(query_barang['harga_jual' + grosir]));
-                $('#subtotal' + id).attr('price', query_barang['harga_jual' + grosir])
-                total = 0;
-                $( ".subtotal" ).each(function( index ) {
-                    //   console.log( index + ": " + $( this ).text() );
-                    total += parseInt($( this ).attr('price'));
-                    $('#total').text(fungsiRupiah(total));
-                    $('#total').attr('price', total);
-                    $('#total_belanja').val(fungsiRupiah(total));
-                });
-                $('#total_belanja').val($('#total').text());
-                hitung($('#uang').val(), $('#total').attr('price'));
-                
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                setTimeout(function () {
-                    $('#modal_loading').modal('hide');
-                }, 500);
-                swal("Oops! Terjadi kesalahan (" + errorThrown + ")", {
-                    icon: 'error',
-                });
-            }
-        })
-    }
-
-    function add_barang(id, stok){
-        if(stok < 1){
-            swal("Stok Produk Sudah Habis", {
-                icon: 'error',
-            });
-            return;
-        }
-        $('#modal_loading').modal('show');
-        $.ajax({
-            url: '/saka/transaksi/penjualan/add-keranjang',
+            url: '/saka/transaksi/obat-racik/add-keranjang',
             type: "POST",
-            data: {"id_barang": id, "type": 2},
+            data: {"id_barang": id, "type": 3},
             success: function (response) {
                 setTimeout(function () {
                     $('#modal_loading').modal('hide');
@@ -433,6 +389,10 @@
             $(`#subtotal${id}`).attr('price', harga);
             qty = 1;
         }
+
+        $('.jumlah_stock_' + id).each((i, element) => {
+            $(element).text(parseInt($(element).attr('stock')) * qty)
+        });
         
         harga *= qty;
         $(`#subtotal${id}`).text(fungsiRupiah(harga));
@@ -441,7 +401,6 @@
         
         total = 0;
         $( ".subtotal" ).each(function( index ) {
-            //   console.log( index + ": " + $( this ).text() );
             total += parseInt($( this ).attr('price'));
             $('#total').text(fungsiRupiah(total));
             $('#total').attr('price', total);
@@ -504,7 +463,7 @@
             if (willDelete) {
                 $("#modal_loading").modal('show');
                 $.ajax({
-                    url: '/saka/transaksi/penjualan/store',
+                    url: '/saka/transaksi/obat-racik/store',
                     type: "POST",
                     data: $('#form_penjualan').serialize() + '&total_belanja=' + $('#total').attr('price') + '&kode_transaksi=' + $('#kode_transaksi').val(),
                     success: function (response) {

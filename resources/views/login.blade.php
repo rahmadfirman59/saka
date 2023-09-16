@@ -37,7 +37,8 @@
     
                 <div class="col-xl-6 col-lg-6 col-md-6">
 
-                    <div class="d-flex justify-content-center py-4">
+                    <div class="d-flex justify-content-center align-items-center py-4" style="gap: 13px">
+                        <img src="{{ asset('public\sbadmin\img\logo-sasmitra.png') }}" width="50" alt="logo_sasimitra">
                         <a style="font-weight: 700; font-size: 30px; color: #012970">Akuntansi Apotek</a>
                     </div>
                     <div class="card o-hidden border-0 shadow-lg" style="box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1)">
