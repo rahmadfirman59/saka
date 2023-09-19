@@ -135,6 +135,7 @@
                                     <th>No.</th>
                                     <th>Tanggal</th>
                                     <th>Nomor Bukti</th>
+                                    <th>Tipe</th>
                                     <th>Dokter</th>
                                     <th class="text-center">Total</th>
                                 </tr>
@@ -146,6 +147,7 @@
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $item->transaksi->tanggal }}</td>
                                     <td>{{ $item->transaksi->kode }}</td>
+                                    <td>{{ $item->tipe_text }}</td>
                                     <td>{{ $item->dokter->nama_dokter }}</td>
                                     <td style="text-align: end"><?php echo "Rp. ".number_format($item->subtotal, 2 , ',' , '.' ) ?></td>
                                 </tr>
@@ -153,7 +155,7 @@
                             </tbody>
                             <tfoot>
                                 <tr class="footer">
-                                    <td style="background: rgb(241 248 255) !important" colspan="4"><div align="center"><strong>TOTAL PENJUALAN</strong></div></td>
+                                    <td style="background: rgb(241 248 255) !important" colspan="5"><div align="center"><strong>TOTAL PENJUALAN</strong></div></td>
                                     <td style="background: rgb(241 248 255) !important" align="right"><strong><?php echo "Rp.&nbsp" . number_format($Totalpenjualan,2,'.',','); ?></strong></td>
                                 </tr>
                             </tfoot>
@@ -181,7 +183,7 @@
             "bLengthChange": false,
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0,1,2,3]
+					targets: [0,1,2,3,4]
 				}
 			],
 		});

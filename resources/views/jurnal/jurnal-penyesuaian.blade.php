@@ -87,26 +87,36 @@
                     </div>
                     <div class="col-12 col-md-12 col-lg-12">
                         <div class="form-group">
-                            <label>Kode Rekening</label>
-                              <input class="form-control" type="text" id="kode_akun" name="kode_akun" >
-                              <span class="d-flex text-danger invalid-feedback" id="invalid-kode_akun-feedback"></span>
+                            <label>Pilih Biaya</label>
+                            <select id="pilih_biaya" onchange="change_biaya(this.value)" name="pilih_biaya" class="form-control select2">
+                                <option value="disabled">-- Pilih Biaya --</option>
+                                @foreach ($penyesuaian as $item)
+                                <option value="{{ $item->kode_akun }}">{{ $item->nama_akun }}</option>
+                                @endforeach
+                            </select>
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-pilih_biaya-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label>Nama Rekening</label>
-                              <input class="form-control" type="text" id="nama_rekening" name="nama_rekening" >
-                              <span class="d-flex text-danger invalid-feedback" id="invalid-nama_rekening-feedback"></span>
+                            <label>Kode Akun</label>
+                              <input class="form-control" disabled type="text" id="kode_akun">
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label>Jenis</label>
-                              <select name="jenis" id="jenis" class="form-control">
+                              <select id="jenis" disabled class="form-control">
                                 <option value="">-- Pilih Jenis --</option>
                                 <option value="1">Debit</option>
                                 <option value="2">Kredit</option>
                               </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>Nama Akun</label>
+                              <input class="form-control" disabled type="text" id="nama_akun" >
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-12">
@@ -148,6 +158,31 @@
 			],
 		});
 	});
+
+    function change_biaya(value){
+        $("#modal_loading").modal('show');
+        $.ajax({
+            url: '/saka/jurnal/jurnal-penyesuaian/detail/' + value,
+            type: "GET",
+            success: function (response) {
+                setTimeout(function () {
+                    $('#modal_loading').modal('hide');
+                }, 500);
+                $('#kode_akun').val(response.kode_akun);
+                $('#jenis').val(response.jenis_akun_id);
+                $('#jenis').select2().trigger('change');
+                $('#nama_akun').val(response.nama_akun);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                setTimeout(function () {
+                    $('#modal_loading').modal('hide');
+                }, 500);
+                swal("Oops! Terjadi kesalahan", {
+                    icon: 'error',
+                });
+            }
+        })
+    }
 
     function add(){
         $("#modal").modal('show');

@@ -117,6 +117,8 @@ $.ajaxSetup({
        .then((willDelete) => {
              if (willDelete) {
                 $("#modal_loading").modal('show');
+                $('select,input,textarea.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').text('');
                 $.ajax({
                    url:  $('#form_upload').attr('action'),
                    type: $('#form_upload').attr('method'),
@@ -171,7 +173,7 @@ $.ajaxSetup({
        .then((willDelete) => {
              if (willDelete) {
                 $("#modal_loading").modal('show');
-                $('input,textarea.is-invalid').removeClass('is-invalid');
+                $('select,input,textarea.is-invalid').removeClass('is-invalid');
                 $('.invalid-feedback').text('');
                 $.ajax({
                    url:  $('#form_submit_request').attr('action'),

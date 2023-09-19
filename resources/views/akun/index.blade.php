@@ -160,6 +160,8 @@
 	$(document).ready(function () {
 		$('.datatable-jquery').dataTable({
 			sDom: 'lBfrtip',
+            pageLength : 15,
+            lengthMenu: [[15, 25, 50, 100], [15, 25, 50, 100]],
 			columnDefs: [{
 					className: 'text-center',
 					targets: [0, 1, 4]

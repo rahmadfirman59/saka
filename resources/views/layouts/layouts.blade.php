@@ -74,7 +74,7 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item @if($url_menu == "dashboard") active @endif">
                 <a class="nav-link" href="/saka/dashboard">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span></a>
             </li>
 

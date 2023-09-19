@@ -153,6 +153,7 @@ Route::group(['middleware' => ['ceklogin']], function () {
 
         Route::prefix('jurnal-penyesuaian')->group(function () {
             Route::get('/', [JurnalPenyesuaianController::class, 'index'])->name('jurnal.penyesuaian');
+            Route::get('/detail/{id}', [JurnalPenyesuaianController::class, 'detail']);
             Route::post('/store-update', [JurnalPenyesuaianController::class, 'store_update']);
         });
     });

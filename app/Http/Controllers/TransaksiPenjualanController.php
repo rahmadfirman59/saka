@@ -38,6 +38,7 @@ class TransaksiPenjualanController extends Controller
             'qty' => 'required',
             'kode_transaksi' => 'required',
             'total_belanja' => 'required',
+            'tipe_pembayaran' => 'required'
         ],[
             'uang.required' => 'Uang Belum Diisi',
             'nm_dokter.required' => 'Dokter Belum Dipilih',
@@ -90,15 +91,34 @@ class TransaksiPenjualanController extends Controller
                 }
             }
 
-            MasterTransaksi::create([
-                'kode_akun' => '111',
-                'keterangan' => 'Kas',
-                'debt' => $request->total_belanja,
-                'type' => 3,
-                'kode' => $request->kode_transaksi,
-                'tanggal' => date('Y-m-d'),
-                'potongan' => $request->potongan
-            ]);
+            if($request->tipe_pembayaran == 1){
+                MasterTransaksi::create([
+                    'kode_akun' => '111',
+                    'keterangan' => 'Kas',
+                    'debt' => $request->total_belanja,
+                    'type' => 3,
+                    'kode' => $request->kode_transaksi,
+                    'tanggal' => date('Y-m-d'),
+                    'potongan' => $request->potongan
+                ]);
+
+                $akun = Akun::where('kode_akun', 111)->first();
+            } else {
+                MasterTransaksi::create([
+                    'kode_akun' => '112',
+                    'keterangan' => 'Kas Bank',
+                    'debt' => $request->total_belanja,
+                    'type' => 3,
+                    'kode' => $request->kode_transaksi,
+                    'tanggal' => date('Y-m-d'),
+                    'potongan' => $request->potongan
+                ]);
+                
+                $akun = Akun::where('kode_akun', 112)->first();
+            }
+            
+            $akun->jumlah += $request->total_belanja;
+            $akun->save();
 
             $transaksi = MasterTransaksi::create([
                 'kode_akun' => '411',
@@ -164,7 +184,7 @@ class TransaksiPenjualanController extends Controller
             ]);
 
             MasterTransaksi::create([
-                'kode_akun' => '111',
+                'kode_akun' => '113',
                 'keterangan' => 'Persediaan Barang',
                 'kredit' => $hpp,
                 'type' => 5,
@@ -179,10 +199,6 @@ class TransaksiPenjualanController extends Controller
                 'tanggal' => date('Y-m-d'),
             ]);
             
-            $akun = Akun::where('kode_akun', 111)->first();
-            $akun->jumlah += $request->total_belanja;
-            $akun->save();
-            
             $akun1 = Akun::where('kode_akun', 411)->first();
             $akun1->jumlah += $request->total_belanja;
             $akun1->save();
@@ -191,9 +207,9 @@ class TransaksiPenjualanController extends Controller
             $akun2->jumlah += $hpp;
             $akun2->save();
 
-            $akun2 = Akun::where('kode_akun', 113)->first();
-            $akun2->jumlah -= $hpp;
-            $akun2->save();
+            $akun3 = Akun::where('kode_akun', 113)->first();
+            $akun3->jumlah -= $hpp;
+            $akun3->save();
             
             Log::create([
                 'user_id' => Session::get('useractive')->id,

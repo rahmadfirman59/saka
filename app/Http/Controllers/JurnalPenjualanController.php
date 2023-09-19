@@ -19,6 +19,17 @@ use App\Models\User;
 
 class JurnalPenjualanController extends Controller
 {
+
+    private $perusahaan;
+    public function __construct()
+    {
+        $this->perusahaan = (object) [
+            'nm_perusahaan' => 'APOTEK SAKA SASMITRA',
+            'email' => 'ichimentei.indo@gmail.com',
+            'alamat' => 'JALAN DIPONEGORO SEMARANG',
+        ];
+    }
+
     public function index(){
         $transaksi = MasterTransaksi::where('type', 2)->orderBy('created_at', 'desc')->get();
         return view('jurnal.jurnal-penjualan')
@@ -27,28 +38,29 @@ class JurnalPenjualanController extends Controller
 
     public function detail_penjualan($id){
         $data['transaksi'] = MasterTransaksi::where('type', 2)->find($id);
-        $data['penjualan'] = Penjualan::with('dokter')->with('barang')->where('id_transaksi', $data['transaksi']->id)->get();
+        $data['type_penjualan'] = Penjualan::where('id_transaksi', $data['transaksi']->id)->select('tipe')->first();
+        if($data['type_penjualan']->tipe == 2){
+            $data['penjualan'] = Penjualan::with('dokter')->with('obat_racik')->where('id_transaksi', $data['transaksi']->id)->get();
+        } else {
+            $data['penjualan'] = Penjualan::with('dokter')->with('barang')->where('id_transaksi', $data['transaksi']->id)->get();
+        }
         $data['petugas'] = User::find($data['transaksi']->created_by)->first();
         $data['pasien'] = HistoryPasien::where('id_transaksi', $data['transaksi']->id)->with('pasien')->first();
-        $data['perusahaan'] = (object) [
-            'nm_perusahaan' => 'APOTEK SAKA SASMITRA',
-            'email' => 'ichimentei.indo@gmail.com',
-            'alamat' => 'JALAN DIPONEGORO SEMARANG',
-        ];
-
+        $data['perusahaan'] = $this->perusahaan;
         return view('report.penjualanReport')
             ->with($data);
     }
 
     public function cetak_penjualan($id){
         $data['transaksi'] = MasterTransaksi::where('type', 2)->find($id);
-        $data['penjualan'] = Penjualan::with('dokter')->with('barang')->where('id_transaksi', $data['transaksi']->id)->get();
+        $data['type_penjualan'] = Penjualan::where('id_transaksi', $data['transaksi']->id)->select('tipe')->first();
+        if($data['type_penjualan']->tipe == 2){
+            $data['penjualan'] = Penjualan::with('dokter')->with('obat_racik')->where('id_transaksi', $data['transaksi']->id)->get();
+        } else {
+            $data['penjualan'] = Penjualan::with('dokter')->with('barang')->where('id_transaksi', $data['transaksi']->id)->get();
+        }
         $data['petugas'] = User::find($data['transaksi']->created_by)->first();
-        $data['perusahaan'] = (object) [
-            'nm_perusahaan' => 'APOTEK SAKA SASMITRA',
-            'email' => 'ichimentei.indo@gmail.com',
-            'alamat' => 'JALAN DIPONEGORO SEMARANG',
-        ];
+        $data['perusahaan'] = $this->perusahaan;
         return view('pdf.penjualanPDF')
             ->with($data);
     }

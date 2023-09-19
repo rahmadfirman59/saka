@@ -97,6 +97,34 @@
 						<div class="section-badge">Barang Teroder</div>
 						<div class="table-responsive">
 							<table class="table table-md">
+								@if($type_penjualan->tipe == 2)
+								<thead>
+									<tr style="background: #e4e4e4d9;">
+										<th class="text-center">No.</th>
+										<th class="text-center">Nama Obat Racik</th>
+										<th class="text-center">List Barang</th>
+										<th class="text-center">Harga</th>
+										<th class="text-center">Qty</th>
+										<th class="text-center">Subtotal</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach ($penjualan as $key=> $item)
+									<tr class="body">
+										<td align="center">{{ $key + 1 }}</td>
+										<td align="center">{{ $item->obat_racik->nama_racik }}</td>
+										<td align="center">
+											@foreach ($item->obat_racik->barangs as $barang)
+												<span class="badge badge-primary" style="font-family: 'Nunito', sans-serif; padding: .35em .7em;">{{ $barang->nama_barang }} ({{ $barang->pivot->jumlah }})</span>
+											@endforeach
+										</td>
+										<td align="center">{{ $item->obat_racik->harga }}</td>
+										<td align="center">{{ $item->jumlah }}</td>
+										<td align="center"><?php echo "Rp&nbsp". number_format($item->subtotal,2,'.',','); ?></td>
+									</tr>
+									@endforeach
+								</tbody>
+								@else
 								<thead>
 									<tr style="background: #e4e4e4d9;">
 										<th class="text-center">No.</th>
@@ -123,6 +151,7 @@
 									</tr>
 									@endforeach
 								</tbody>
+								@endif
 								<tfoot>
 									@if(isset($transaksi->potongan))
 									<tr class="footer" style="font-size: 1rem;">
@@ -139,11 +168,15 @@
 						</div>
 						<p style="color: red; font-family: 'nunito', arial; font-size: .9rem; margin-bottom: 50px; display: block; width: 100%">*barang yang sudah dibeli tidak bisa dikembalikan</p>
 						<div class="d-flex justify-content-between" style="width: 100%">
+							@if($type_penjualan->tipe != 2)
 							<button class="btn btn-danger btn-icon icon-left" onclick="batal_penjualan({{ $transaksi->id }}, '{{ Session::get('useractive')->level }}')">
 								<p style="color: white; margin: 0">
 									<i class="bi bi-x-circle-fill"></i> Batal
 								</p>
 							</button>
+							@else
+							<p></p>
+							@endif
 							<button class="btn btn-warning btn-icon icon-left" <?= "onclick=\"window.open('/saka/jurnal/jurnal-penjualan/cetak-penjualan/$transaksi->id','Print','menubar=no,navigator=no,width=500,height=450,left=200,top=150,toolbar=no')\";" ?>><i class="bi bi-printer-fill"></i></i> Print</button>
 						</div>
 					</div>

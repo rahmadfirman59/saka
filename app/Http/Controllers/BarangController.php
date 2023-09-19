@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
+use App\Models\Akun;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Barang;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 class BarangController extends Controller
 {
@@ -32,6 +35,9 @@ class BarangController extends Controller
             'satuan' => 'required',
             'stok_minim' => 'required|numeric',
             'ed' => 'required|date',
+            'jumlah_barang' => 'required_with_all:harga_beli,harga_beli_grosir',
+            'harga_beli' => 'required_with_all:harga_beli_grosir,jumlah_barang',
+            'harga_beli_grosir' => 'required_with_all:jumlah_barang,harga_beli',
         ],
         [
             'nama_barang.required' => 'Nama Barang Belum Diisi',
@@ -51,17 +57,47 @@ class BarangController extends Controller
                 'message' => $validator->errors()
             ];
         }
-        
-        if(isset($request->id)){
-            $request->request->add(['updated_by' => Session::get('useractive')->id]);
-        }
-        
-        Barang::updateOrCreate(['id' => $request->id],$request->all() );
+        DB::beginTransaction();
 
-        return [
-            'status' => 200,
-            'message' => 'Data Berhasil Disimpan',
-        ];
+		try{
+        
+            if(isset($request->jumlah_barang) && isset($request->harga_beli)){
+                $akun_persediaan_barang = Akun::where('kode_akun', 113)->first();
+                $akun_persediaan_barang->jumlah += $request->jumlah_barang * $request->harga_beli;
+                $akun_persediaan_barang->save();
+
+                $akun_modal = Akun::where('kode_akun', 311)->first();
+                $akun_modal->jumlah += $request->jumlah_barang * $request->harga_beli;
+                $akun_modal->save();
+
+                $request->merge(["stok_grosir" => floor($request->jumlah_barang / $request->jumlah_grosir)]);
+                $request->merge(["stok" => $request->jumlah_barang]);
+            }
+
+            if(isset($request->id)){
+                $request->request->add(['updated_by' => Session::get('useractive')->id]);
+            }
+            
+            // return $request->all();
+            Barang::updateOrCreate(['id' => $request->id],$request->all() );
+
+            DB::commit();
+
+            return [
+                'status' => 200,
+                'message' => 'Data Berhasil Disimpan',
+            ];
+
+        }
+		catch(\Exception $e){
+            DB::rollback();
+
+			return [
+				'status' 	=> 300, // GAGAL
+				'message'       => (env('APP_DEBUG', 'true') == 'true')? $e->getMessage() : 'Operation error'
+			];
+
+		}
     }
 
     public function restore($id){

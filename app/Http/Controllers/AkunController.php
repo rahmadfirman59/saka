@@ -14,7 +14,7 @@ class AkunController extends Controller
     
     public function index()
     {
-        $akun = Akun::all();
+        $akun = Akun::orderBy('kode_akun', 'asc')->get();
         return view('akun.index')
             ->with('akun', $akun);
     }

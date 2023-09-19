@@ -16,28 +16,34 @@ class JurnalPenyesuaianController extends Controller
         return view('jurnal.jurnal-penyesuaian', $data);
     }
 
+    public function detail($id){
+        return Akun::where('kode_akun', $id)->first();
+    }
+
     public function store_update(Request $request){
         $validator = Validator::make($request->all(), [
             'kode_biaya' => 'required',
-            'kode_akun' => 'required',
-            'nama_rekening' => 'required',
-            'jenis' => 'required',
+            'pilih_biaya' => 'required|not_in:disabled',
             'jumlah' => 'required',
+        ], [
+            "pilih_biaya.not_in" => "The Pilih Biaya field is required"
         ]);
-
-
+        
+        
         if($validator->fails()){
             return [
                 'status' => 300,
                 'message' => $validator->errors()
             ];
         }
+
+        $biaya = Akun::where('kode_akun', $request->pilih_biaya)->first();
         
         Biaya::create([
-            'kode_akun' => $request->kode_akun,
+            'kode_akun' => $biaya->kode_akun,
             'tanggal' => $request->tanggal,
             'jumlah' => $request->jumlah,
-            'status' => $request->jenis,
+            'status' => $biaya->jenis_akun_id,
         ]);
 
         MasterTransaksi::create([
@@ -45,23 +51,22 @@ class JurnalPenyesuaianController extends Controller
             'tanggal' => $request->tanggal,
             'kode_akun' => 111,
             'keterangan' => "Kas",
-            'debet' => $request->jumlah,
+            'debt' => $request->jumlah,
             'type' => 4
         ]);
 
         MasterTransaksi::create([
             'kode' => $request->kode_biaya,
             'tanggal' => $request->tanggal,
-            'kode_akun' => $request->kode_akun,
-            'keterangan' => "Kas",
+            'kode_akun' => $biaya->kode_akun,
+            'keterangan' => $biaya->nama_akun,
             'kredit' => $request->jumlah,
             'type' => 3
         ]);
 
-        Akun::where('kode_akun', $request->kode_akun)->update([
-            'nama_akun' => $request->nama_rekening,
-            'jenis_akun_id' => $request->jenis,
-            'jumlah' => $request->jumlah,
+        $jumlah_akun = (int)$biaya->jumlah + (int)$request->jumlah;
+        Akun::where('kode_akun', $biaya->kode_akun)->update([
+            'jumlah' => $jumlah_akun,
         ]);
 
         return [

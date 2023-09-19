@@ -61,7 +61,7 @@
                             <td>{{ $item->nama_barang }}</td>
                             <td>{{ $item->satuan }}</td>
                             <td>{{ $item->pembelian_sum_jumlah }}</td>
-                            <td>{{ $item->penjualan_sum_jumlah }}</td>
+                            <td>@if(isset($item->penjualan_sum_jumlah)){{ $item->penjualan_sum_jumlah .' '. $item->satuan}}@endif @if(isset($item->sisa_pecahan)&&$item->sisa_pecahan !== 0)({{ $item->sisa_pecahan }} Pecahan)@endif</td>
                             <td>{{ $item->stok }}</td>
                             <td><?php echo "Rp.&nbsp" . number_format($item->harga_beli,2,'.',','); ?></td>
                             <td align="right"><?php echo "Rp.&nbsp" . number_format($item->harga_beli * $item->stok,2,'.',','); ?></td>

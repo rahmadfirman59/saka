@@ -39,6 +39,17 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if($type_penjualan->tipe == 2)
+                            @foreach ($penjualan as $key=> $item)
+                            <tr class="body">
+                                <td align="center">{{ $key + 1 }}</td>
+                                <td align="center">{{ $item->obat_racik->nama_racik }}</td>
+                                <td align="center">{{ $item->harga }}</td>
+                                <td align="center">{{ $item->jumlah }}</td>
+                                <td align="center"><?php echo "Rp&nbsp". number_format($item->subtotal,2,'.',','); ?></td>
+                            </tr>
+                            @endforeach
+                            @else
                             @foreach ($penjualan as $key=> $item)
                             <tr class="body">
                                 <td align="center">{{ $key + 1 }}</td>
@@ -48,6 +59,7 @@
                                 <td align="center"><?php echo "Rp&nbsp". number_format($item->subtotal,2,'.',','); ?></td>
                             </tr>
                             @endforeach
+                            @endif
                         </tbody>
                         <tfoot>
                             <tr>

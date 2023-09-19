@@ -112,7 +112,7 @@
                 <div class="card-header py-3">
                     <h5 class="card-title p-0" style="display: inline-block">Kasir</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding-bottom: .9rem">
                     <div class="row" style="gap: 11px 0">
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="form-group">
@@ -132,7 +132,19 @@
                                 <input type="text" id="potongan" name="potongan" onkeyup="potongan_change(this.value)" onkeypress="return hanyaAngka(event,false);" class="form-control">
                             </div>
                         </div>
-						<div class="d-flex w-100" style="font-size: 16px!important; padding-top: 15px;border-top: 1px solid #d8d1d1;margin-top: 10px;">
+                        <div class="col-12 col-md-12 col-lg-12 d-flex align-items-center justify-content-center">
+                            <div class="form-group d-flex justify-content-around" style="margin: 0; gap: 40px">
+                                <div>
+                                    <label class="checkbox-inline"><input name="tipe_pembayaran" id="tunai" checked="" type="radio" value="1"></label>
+                                    <label>Tunai</label>
+                                </div>
+                                <div>
+                                    <label class="checkbox-inline"><input name="tipe_pembayaran" id="tempo" type="radio" value="2"></label>
+                                    <label>Transfer</label>
+                                </div>
+                            </div>
+                        </div>
+						<div class="d-flex w-100" style="font-size: 16px!important; padding-top: 11px;border-top: 1px solid #d8d1d1;margin-top: 3px;">
 							<div class="p-2 fw-bold ml-2" style="color: black">
                                 <label style="font-weight: bold">Kembali</label>
                                 <span id="kembali" style='margin-left:10px; font-weight: bold' price=""><span style='margin-left:15px'></span>-</span>

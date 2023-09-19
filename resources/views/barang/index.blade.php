@@ -135,15 +135,15 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label>Satuan</label>
-                            <select id='satuan' name="satuan" class="form-control form-select">
+                            <select id='satuan' name="satuan" onchange="change_satuan(this)" class="form-control form-select">
                                 <option value='' selected>-Pilih Satuan-</option>
-                                <option value='pcs'>PCS</option>
-                                <option value='Tablet'>Tablet</option>
-                                <option value='Ampul'>Ampul</option>
-                                <option value='Tube'>Tube</option>
-                                <option value='Flabot'>Flabot</option>
-                                <option value='Botol'>Botol</option>
-                                <option value='BOX'>BOX</option>
+                                <option value='pcs' tipe="1">PCS</option>
+                                <option value='Tablet' tipe="1">Tablet</option>
+                                <option value='Ampul' tipe="0">Ampul</option>
+                                <option value='Tube' tipe="0">Tube</option>
+                                <option value='Flabot' tipe="0">Flabot</option>
+                                <option value='Botol' tipe="0">Botol</option>
+                                <option value='BOX' tipe="1">BOX</option>
                             </select>
                             <span class="d-flex text-danger invalid-feedback" id="invalid-satuan-feedback"></span>
                         </div>
@@ -160,15 +160,15 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label>Jumlah Item Per Grosir</label>
+                            <label>Jumlah Satuan Per Grosir</label>
                               <input class="form-control" type="text" id="jumlah_grosir" name="jumlah_grosir" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_grosir-feedback"></span>
                         </div>
                     </div>
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
-                            <label>Jumlah Item Per Satuan</label>
-                            <input class="form-control" type="text" id="jumlah_pecahan" name="jumlah_pecahan" >
+                            <label>Jumlah Pecahan Per Satuan</label>
+                            <input class="form-control" type="text" disabled id="jumlah_pecahan" name="jumlah_pecahan" >
                             <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_pecahan-feedback"></span>
                         </div>
                     </div>
@@ -183,6 +183,33 @@
                         <div class="form-group">
                             <label>Kadaluarsa</label>
                             <input type="date" name="ed" id="ed" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-1 pt-3 container-persediaan-manual">
+                    <div class="col-12">
+                        <h5 style="font-size: 20px;font-weight: 700;color: #012970;">Tambah Persediaan Manual</h5>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Jumlah Barang</label>
+                            <input type="text" name="jumlah_barang" id="jumlah_barang" class="form-control">
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_barang-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label>Harga Beli</label>
+                            <input type="text" name="harga_beli" id="harga_beli" class="form-control">
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-harga_beli-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label>Harga Beli Grosir</label>
+                            <input type="text" name="harga_beli_grosir" id="harga_beli_grosir" class="form-control">
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-harga_beli_grosir-feedback"></span>
                         </div>
                     </div>
                 </div>
@@ -511,6 +538,17 @@
         $('input, select').removeClass('is-invalid');
     }
 
+    function change_satuan(element){
+        let tipe = $(element).find("option:selected").attr('tipe');
+        if(tipe == 1){
+            $('#jumlah_pecahan').prop("disabled", false);
+        } else {
+            $('#jumlah_pecahan').prop("disabled", true);
+            $('#jumlah_pecahan').val("");
+        }
+    }
+    
+
     function edit(url){
        save_method = 'edit';
        $("#modal_edit").modal('show');
@@ -524,7 +562,6 @@
              setTimeout(function () {  $('#modal_loading').modal('hide'); }, 500);
              Object.keys(response).forEach(function (key) {
                  var elem_name = $('[name=' + key + ']');
-                 console.log(elem_name.val(response[key]));
                 if (elem_name.hasClass('selectric')) {
                    elem_name.val(response[key]).change().selectric('refresh');
                 }else if(elem_name.hasClass('select2')){

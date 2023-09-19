@@ -153,7 +153,7 @@ class LaporanController extends Controller
         $data['perusahaan'] = $this->perusahaan;
         $data['penjualan'] = Penjualan::with('transaksi', 'dokter')->get();
         $data['Totalpenjualan'] = Penjualan::sum('subtotal');
-        $data['tanggal'] = $this->tanggal;
+            $data['tanggal'] = $this->tanggal;
         return view('laporan.penjualan', $data);
     }
 

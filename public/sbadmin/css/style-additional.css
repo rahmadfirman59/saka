@@ -206,3 +206,30 @@ table.datatable-primary thead tr{
   background-color: lightgray;
   padding: 20px;
 }
+
+.select2 .selection{
+  width: 100%;
+}
+
+.select2-container{
+  display: block;
+}
+
+.select2-container--default .select2-selection--single{
+  border: 1px solid #ced4da!important;
+}
+
+.select2.is-invalid + .select2-container--default .select2-selection--single{
+  border: 1px solid red!important;
+}
+
+.container-persediaan-manual{
+  border-top: 4px solid #d3d3d3e6;
+  border-bottom: 4px solid gray;
+  border-left: 1px solid #d3d3d382;
+  /* padding-top: 15px; */
+  border-right: 1px solid #d3d3d382;
+  border-radius: 15px;
+  margin-left: 0;
+  margin-right: 0;
+}
