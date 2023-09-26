@@ -480,7 +480,6 @@
     <!-- Page level plugins -->
     <script src="{{ asset('public/sbadmin/vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('public/sbadmin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset("public/sbadmin/vendor/apexcharts/apexcharts.min.js") }}"></script>
     <script src="{{ asset("public/plugins/sweetalert/sweetalert.min.js") }}"></script>
     <script src="{{ asset("public/plugins/select2/dist/js/select2.full.min.js") }}"></script>
 

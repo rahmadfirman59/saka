@@ -134,7 +134,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label>Satuan</label>
+                            <label>Satuan PCS</label>
                             <select id='satuan' name="satuan" onchange="change_satuan(this)" class="form-control form-select">
                                 <option value='' selected>-Pilih Satuan-</option>
                                 <option value='pcs' tipe="1">PCS</option>
@@ -150,7 +150,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label>Satuan Grosir</label>
+                            <label>Satuan BOX</label>
                             <select id='satuan_grosir' name="satuan_grosir" class="form-control form-select">
                                 <option value='' selected>-Pilih Satuan Grosir-</option>
                                 <option value='BOX'>BOX</option>
@@ -160,14 +160,14 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label>Jumlah Satuan Per Grosir</label>
+                            <label>Jumlah PCS Per BOX</label>
                               <input class="form-control" type="text" id="jumlah_grosir" name="jumlah_grosir" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_grosir-feedback"></span>
                         </div>
                     </div>
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
-                            <label>Jumlah Pecahan Per Satuan</label>
+                            <label>Jumlah Tablet Per PCS</label>
                             <input class="form-control" type="text" disabled id="jumlah_pecahan" name="jumlah_pecahan" >
                             <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_pecahan-feedback"></span>
                         </div>
@@ -285,26 +285,19 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label>Stok Grosir</label>
+                            <label>Stok BOX</label>
                               <input class="form-control" disabled type="text" id="stok_grosir" name="stok_grosir" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-stok_grosir-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label>Stok Satuan</label>
-                              <input class="form-control" disabled type="text" id="stok" name="stok" >
-                              <span class="d-flex text-danger invalid-feedback" id="invalid-stok-feedback"></span>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label>Jumlah Item Per Grosir</label>
+                            <label>Jumlah PCS Per BOX</label>
                               <input class="form-control" readonly type="text" id="jumlah_grosir" name="jumlah_grosir" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_grosir-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label>Satuan Grosir</label>
                             <select id='satuan_grosir' name="satuan_grosir" class="form-control form-select">
@@ -316,14 +309,21 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label>Jumlah Item Per Satuan</label>
+                            <label>Stok PCS</label>
+                              <input class="form-control" disabled type="text" id="stok" name="stok" >
+                              <span class="d-flex text-danger invalid-feedback" id="invalid-stok-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label>Jumlah Tablet Per PCS</label>
                               <input class="form-control" type="text" id="jumlah_pecahan" name="jumlah_pecahan" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_pecahan-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label>Sisa Pecahan</label>
+                            <label>Sisa Tablet</label>
                               <input class="form-control" type="text" id="sisa_pecahan" name="sisa_pecahan" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-sisa_pecahan-feedback"></span>
                         </div>
@@ -344,7 +344,7 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label>Harga Beli</label>
-                            <input type="text" readonly name="harga_beli" class="form-control">
+                            <input type="text" readonly name="harga_beli_edit" class="form-control">
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
@@ -356,7 +356,7 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label>Harga Beli Grosir</label>
-                            <input type="text" readonly name="harga_beli_grosir" class="form-control">
+                            <input type="text" readonly name="harga_beli_grosir_edit" class="form-control">
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
@@ -450,8 +450,12 @@
 			sDom: 'lBfrtip',
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0,3,4,5,6,7,8]
+					targets: [0,3,4,5,6,7]
 				},
+                {
+                    className: 'justify-content-center text-center', // Add this className
+                    targets: [8] // Add target 8 here
+                },
 				{
 					width: "7%",
 					targets: [0]
@@ -580,7 +584,13 @@
                    var nominal = response[key].toString();
                    elem_name.val(nominal.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1."));
                 }else{
-                   elem_name.val(response[key]);
+                    if(key == 'harga_beli'){
+                        $('[name=harga_beli_edit]').val(response[key]);
+                    } else if (key == 'harga_beli_grosir'){
+                        $('[name=harga_beli_grosir_edit]').val(response[key]);
+                    }else {
+                        elem_name.val(response[key]);
+                    }
                 }
              });
           },error: function (jqXHR, textStatus, errorThrown){

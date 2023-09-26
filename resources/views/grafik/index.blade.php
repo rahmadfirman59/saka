@@ -43,7 +43,9 @@
 @endsection
 
 @section('script')
+<script src="{{ asset("public/sbadmin/vendor/apexcharts/apexcharts.min.js") }}"></script>
 <script>
+
 document.addEventListener("DOMContentLoaded", () => {
     new ApexCharts(document.querySelector("#reportsChart"), {
     chart: {

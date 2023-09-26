@@ -111,6 +111,10 @@ table td {
   margin-bottom: 15px;
 }
 
+.modal{
+  overflow-y: scroll!important
+}
+
 .breadcrumb a {
   color: #899bbd;
   transition: 0.3s;
