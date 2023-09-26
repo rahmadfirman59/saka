@@ -81,7 +81,7 @@
                     <div class="col-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <label>Kode Transaksi Biaya</label>
-                              <input class="form-control" type="text" value="BYA{{ $biaya_id->id . date('Ymd') }}" readonly id="kode_biaya" name="kode_biaya" >
+                              <input class="form-control" type="text" value="BYA{{ $biaya_id->id ?? 0 . date('Ymd') }}" readonly id="kode_biaya" name="kode_biaya" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-kode_biaya-feedback"></span>
                         </div>
                     </div>
