@@ -212,6 +212,7 @@
                                 <th>No</th>
                                 <th>Nama Racik</th>
                                 <th>List Barang</th>
+                                <th>Stok</th>
                                 <th>Harga</th>
                                 <th>Aksi</th>
                             </tr>
@@ -235,9 +236,10 @@
                                         <span class="badge @if($barang->ed <= \Carbon\Carbon::today()->addDays(30)->format('Y-m-d')) badge-danger @else badge-primary @endif" style="font-family: 'Nunito', sans-serif; padding: .35em .7em;">{{ $barang->nama_barang }} ({{ $barang->pivot->jumlah }}) @if($barang->ed <= \Carbon\Carbon::today()->addDays(30)->format('Y-m-d'))(expired)@endif</span>
                                     @endforeach
                                 </td>
+                                <td>{{ $item->stok }}</td>
                                 <td>{{ "Rp. ".number_format($item->harga, 2 , ',' , '.' ) }}</td>
                                 @if($expired === false )                
-                                <td><button class='btn btn-info btn-sm mr-1 mx-3' onclick="add_barang({{ $item->id }})"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
+                                <td><button class='btn btn-info btn-sm mr-1 mx-3' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
                                 @else
                                 <td><p class="text-danger"; style="font-size: .9rem">Terdapat Barang Sudah Expired</p></td>
                                 @endif
@@ -285,7 +287,7 @@
 			sDom: 'lBfrtip',
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0,2,3,4]
+					targets: [0,2,3,4,5]
 				},
 				{
 					width: "7%",
@@ -293,7 +295,7 @@
 				},
                 {
                     orderable: false,
-                    targets: [4]
+                    targets: [5]
                 }
 			],
 		});
@@ -303,7 +305,13 @@
         $("#modal_obat_racik").modal('show');
     }
 
-    function add_barang(id){
+    function add_barang(id, stok){
+        if(stok < 1){
+            swal("Stok Obat Racik Sudah Habis", {
+                icon: 'error',
+            });
+            return;
+        }
         $('#modal_loading').modal('show');
         $.ajax({
             url: '/saka/transaksi/obat-racik/add-keranjang',

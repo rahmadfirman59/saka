@@ -18,16 +18,16 @@ class ObatRacikController extends Controller
     }
 
     public function add(){
-        $data['barang'] = Barang::where('is_delete', 0)->where('jumlah_pecahan', '>', 0)->orderBy('nama_barang', 'asc')->get();
+        $data['barang'] = Barang::where('is_delete', 0)->where('jumlah_pecahan', '>', 0)->whereNotNull('harga_jual_tablet')->orderBy('nama_barang', 'asc')->get();
         return view('obat-racik.add', $data);
     }
 
     public function detail($id){
         $data['data'] = ObatRacik::find($id);
         $data['list_barang'] = RacikBarang::with(['barang' => function($query){
-            $query->select(['id', 'nama_barang']);
+            $query->select(['id', 'nama_barang', 'harga_jual_tablet']);
         }])->where('id_racik', $id)->get();
-        $data['barang'] = Barang::where('is_delete', 0)->where('jumlah_pecahan', '>', 0)->orderBy('nama_barang', 'asc')->get();
+        $data['barang'] = Barang::where('is_delete', 0)->where('jumlah_pecahan', '>', 0)->whereNotNull('harga_jual_tablet')->orderBy('nama_barang', 'asc')->get();
         return view('obat-racik.add', $data);
     }
 
@@ -36,15 +36,11 @@ class ObatRacikController extends Controller
             'id.*' => 'required',
             'nama_racik' => 'required',
             'jumlah.*' => 'required',
-            'harga' => 'required|integer',
         ], [
             'nama_racik.required' => 'Nama Racik Harus Diisi',
-            'harga.required' => 'Harga Barang Harus Diisi',
-            'harga.integer' => 'Harga Barang Harus Angka',
             'jumlah.*.required' => 'Quantity Barang Harus Diisi',
             'id.*.required' => 'Barang Tidak Boleh Kosong',
         ]);
-
 
         if ($validator->fails()) {
             return [
@@ -53,10 +49,16 @@ class ObatRacikController extends Controller
             ];
         }
 
+        
         DB::beginTransaction();
-
+        
         try {
-            $ObatRacik = ObatRacik::updateOrCreate(['id' => $request->id],['nama_racik' => $request->nama_racik,'harga' => $request->harga]);
+            $harga_final = 0;
+            foreach($request->jumlah as $key => $item){
+                $harga_tablet = Barang::where('id', $request->id_barang[$key])->select('harga_jual_tablet')->first();
+                $harga_final += $item * $harga_tablet->harga_jual_tablet;
+            }
+            $ObatRacik = ObatRacik::updateOrCreate(['id' => $request->id],['nama_racik' => $request->nama_racik,'harga' => $harga_final]);
             
             if(isset($request->id)){
                 RacikBarang::where('id_racik', $request->id)->delete();

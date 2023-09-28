@@ -40,7 +40,7 @@
                             onclick="$('#modal_restore').modal('show');"><i class="fas fa-history mr-1"></i>
                             Restore Barang</button>
                 <button type="button" style="font-size: 13px" class="btn btn-warning"
-                            onclick="add();"><i class="fa fa-plus mr-1"></i>
+                            onclick="add()"><i class="fa fa-plus mr-1"></i>
                             Tambah Barang</button>
             </div>
         </div>
@@ -135,7 +135,7 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label>Satuan PCS</label>
-                            <select id='satuan' name="satuan" onchange="change_satuan(this)" class="form-control form-select">
+                            <select name="satuan" onchange="change_satuan(this)" class="form-control form-select">
                                 <option value='' selected>-Pilih Satuan-</option>
                                 <option value='pcs' tipe="1">PCS</option>
                                 <option value='Tablet' tipe="1">Tablet</option>
@@ -270,7 +270,7 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label>Satuan</label>
-                            <select id='satuan' name="satuan" class="form-control form-select">
+                            <select id='satuan' disabled class="form-control form-select">
                                 <option value='' selected>-Pilih Satuan-</option>
                                 <option value='pcs'>PCS</option>
                                 <option value='Tablet'>Tablet</option>
@@ -317,7 +317,7 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label>Jumlah Tablet Per PCS</label>
-                              <input class="form-control" type="text" id="jumlah_pecahan" name="jumlah_pecahan" >
+                              <input class="form-control" type="number" onchange="change_jumlah_tablet(this.value)" id="jumlah_pecahan_edit" name="jumlah_pecahan" >
                               <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_pecahan-feedback"></span>
                         </div>
                     </div>
@@ -343,6 +343,18 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
+                            <label>Harga Beli Grosir</label>
+                            <input type="text" readonly name="harga_beli_grosir_edit" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Harga Jual Grosir</label>
+                            <input type="text" name="harga_jual_grosir" id="harga_jual_grosir" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
                             <label>Harga Beli</label>
                             <input type="text" readonly name="harga_beli_edit" class="form-control">
                         </div>
@@ -355,14 +367,14 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label>Harga Beli Grosir</label>
-                            <input type="text" readonly name="harga_beli_grosir_edit" class="form-control">
+                            <label>Harga Beli Tablet</label>
+                            <input type="text" disabled id="harga_beli_tablet" class="form-control">
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label>Harga Jual Grosir</label>
-                            <input type="text" name="harga_jual_grosir" id="harga_jual_grosir" class="form-control">
+                            <label>Harga Jual Tablet</label>
+                            <input type="text" name="harga_jual_tablet" id="harga_jual_tablet" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -551,13 +563,23 @@
             $('#jumlah_pecahan').val("");
         }
     }
-    
+
+    function change_jumlah_tablet(value){
+        if(value < 1){
+            $('#jumlah_pecahan_edit').val(1);
+            return;
+        }
+        let harga_beli_tablet = parseInt($('[name=harga_beli_edit]').val()) / parseInt(value);
+        $('#harga_beli_tablet').val(harga_beli_tablet.toFixed());
+    }
 
     function edit(url){
        save_method = 'edit';
        $("#modal_edit").modal('show');
        $(".modal-title").text('Edit Barang');
        $("#modal_loading").modal('show');
+       $('.invalid-feedback').text('');
+       $('input, select').removeClass('is-invalid');
        $.ajax({
           url : url,
           type: "GET",
@@ -565,7 +587,7 @@
           success: function(response){
              setTimeout(function () {  $('#modal_loading').modal('hide'); }, 500);
              Object.keys(response).forEach(function (key) {
-                 var elem_name = $('[name=' + key + ']');
+                var elem_name = $('[name=' + key + ']');
                 if (elem_name.hasClass('selectric')) {
                    elem_name.val(response[key]).change().selectric('refresh');
                 }else if(elem_name.hasClass('select2')){
@@ -588,11 +610,14 @@
                         $('[name=harga_beli_edit]').val(response[key]);
                     } else if (key == 'harga_beli_grosir'){
                         $('[name=harga_beli_grosir_edit]').val(response[key]);
+                    }else if (key == 'satuan'){
+                        $('#satuan').val(response[key]);
                     }else {
                         elem_name.val(response[key]);
                     }
                 }
              });
+             $('#harga_beli_tablet').val((response['harga_beli'] / response['jumlah_pecahan']).toFixed());
           },error: function (jqXHR, textStatus, errorThrown){
              setTimeout(function () {  $('#modal_loading').modal('hide'); }, 500);
              swal("Oops! Terjadi kesalahan segera hubungi tim IT (" + errorThrown + ")", {  icon: 'error', });

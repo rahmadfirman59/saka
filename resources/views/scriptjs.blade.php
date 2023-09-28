@@ -251,6 +251,8 @@ $.ajaxSetup({
        $("#modal").modal('show');
        $(".modal-title").text(modal_text);
        $("#modal_loading").modal('show');
+       $('.invalid-feedback').text('');
+       $('input, select').removeClass('is-invalid');
        $.ajax({
           url : url,
           type: "GET",

@@ -45,7 +45,7 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label>Harga</label>
-                            <input class="form-control" type="text" id="harga" name="harga" value="@if(isset($data)){{$data->harga}}@endif">
+                            <input class="form-control" type="text" id="harga" price="@if(isset($data)){{ $data->harga }}@else{{ 0 }}@endif" disabled value="@if(isset($data)){{ "Rp. ".number_format($data->harga, 2, ',' , '.' ) }}@else{{ "Rp. ".number_format(0, 2 , ',' , '.' ) }}@endif">
                             <span class="d-flex text-danger invalid-feedback" id="invalid-harga_racik-feedback"></span>
                         </div>
                     </div>
@@ -60,8 +60,9 @@
                             <div class="form-group" style="flex: 12">
                                 <div class="d-flex" style="gap: 15px">
                                     <input hidden class="id_list_barang" name="id_barang[]" value="{{ $item->id_barang }}">
-                                    <input class="form-control" style="flex: 3" type="text" readonly value="{{ $item->barang->nama_barang }}" >
-                                    <input class="form-control" style="flex: 1" type="text" placeholder="Qty" value="{{ $item->jumlah }}" name="jumlah[]" >
+                                    <input class="form-control" style="flex: 2" type="text" readonly value="{{ $item->barang->nama_barang }}" >
+                                    <input class="form-control harga-racik" style="flex: 1" price="{{ $item->barang->harga_jual_tablet }}" type="text" readonly value="{{ "Rp. ".number_format($item->barang->harga_jual_tablet, 0, ',' , '.' ) }}" >
+                                    <input class="form-control" style="flex: 1" type="number" placeholder="Qty" onchange="changeQtyRacik(this)" value="{{ $item->jumlah }}" name="jumlah[]" >
                                 </div>
                             </div>
                             <div style="flex: 1; margin-bottom: 1rem" class="d-flex justify-content-center">
@@ -109,6 +110,7 @@
                                 <th>Nama Barang</th>
                                 <th>Stok Pecahan</th>
                                 <th>Jumlah Pecahan</th>
+                                <th>Harga Pecahan</th>
                                 <th>Kadaluarsa</th>
                                 <th>Aksi</th>
                             </tr>
@@ -121,8 +123,9 @@
                                 <td>{{ $item->nama_barang }}</td>        
                                 <td>{{ $item->stok * $item->jumlah_pecahan + $item->sisa_pecahan }}</td>                           
                                 <td>{{ $item->jumlah_pecahan }}</td>                            
+                                <td>{{ "Rp. ".number_format($item->harga_jual_tablet, 0 , ',' , '.' ) }}</td>                            
                                 <td>{{ $item->ed }}</td>                           
-                                <td><button onclick="tambah_list_barang({{ $item->id }}, '{{ $item->nama_barang }}')" class='btn btn-info btn-sm mr-1 mx-3'><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
+                                <td><button onclick="tambah_list_barang({{ $item->id }}, '{{ $item->nama_barang }}', '{{ $item->harga_jual_tablet }}')" class='btn btn-info btn-sm mr-1 mx-3'><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
                             </tr>
                             @endforeach
                         </tbody>
@@ -157,7 +160,7 @@
 		});
     });
 
-    function tambah_list_barang(id, nama_barang){
+    function tambah_list_barang(id, nama_barang, harga_jual){
         let shouldExit = false;
         $('.id_list_barang').each(function() {
             if ($(this).val() == id) {
@@ -176,8 +179,9 @@
                 <div class="form-group" style="flex: 12">
                     <div class="d-flex" style="gap: 15px">
                         <input hidden class="id_list_barang" name="id_barang[]" value="${id}">
-                        <input class="form-control" style="flex: 3" type="text" readonly value="${nama_barang}" >
-                        <input class="form-control" style="flex: 1" type="text" placeholder="Qty" name="jumlah[]" >
+                        <input class="form-control" style="flex: 2" type="text" readonly value="${nama_barang}" >
+                        <input class="form-control harga-racik" style="flex: 1" price="${harga_jual}" type="text" readonly value="${fungsiRupiah(harga_jual)}" >
+                        <input class="form-control" style="flex: 1" type="number" onchange="changeQtyRacik(this)" placeholder="Qty" value=1 name="jumlah[]" >
                     </div>
                 </div>
                 <div style="flex: 1; margin-bottom: 1rem" class="d-flex justify-content-center">
@@ -186,9 +190,32 @@
             </div>
         `);
 
+        let hargaValue = parseInt($('#harga').attr('price')) + parseInt(harga_jual);
+        $('#harga').val(fungsiRupiah(hargaValue));
+        $('#harga').attr('price', hargaValue);
+
         if($('.list-barang-container').length > 1){
             $('.hapus-list-barang-button').show();
         }
+    }
+
+    function changeQtyRacik(element){
+        if($(element).val() < 1){
+            swal("Quantity Tidak Boleh Kurang dari 1", { icon: 'info', })
+            $(element).val(1)
+        }
+
+        hitung()
+    }
+
+    function hitung(){
+        let harga_final = 0;
+        $('.harga-racik').each(function(index, harga_racik){
+            harga_final += parseInt($(harga_racik).attr('price')) * parseInt($(harga_racik).next().val());
+        });
+
+        $('#harga').val(fungsiRupiah(harga_final));
+        $('#harga').attr('price', harga_final);
     }
 
     function add_barang(){
@@ -200,6 +227,7 @@
       if($('.list-barang-container').length <= 1){
          $('.hapus-list-barang-button').hide();
       }
+      hitung();
    }
 
    $('#form_obat_racik').submit(function(e){

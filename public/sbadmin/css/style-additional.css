@@ -60,6 +60,13 @@ table td {
   display: inline;
 }
 
+select.is-invalid {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
 .section-badge-success::before {
     content: '';
     border-radius: 5px;
