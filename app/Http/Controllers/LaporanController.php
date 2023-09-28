@@ -30,11 +30,19 @@ class LaporanController extends Controller
     public function rugi_laba()
     {
         $data['penjualan'] = MasterTransaksi::where('type', 2)->sum('kredit');
+
         $data['pembelian'] = MasterTransaksi::where('type', 1)->sum('debt');
         $data['potongan'] = MasterTransaksi::where('type', 1)->sum('potongan');
         $data['persediaan'] = Akun::where('kode_akun', 113)->select('jumlah')->first();
         $data['retur'] = Akun::select('jumlah')->where('kode_akun', 511)->first();
         $data['biaya'] = Akun::whereBetween('kode_akun', [611, 699])->sum('jumlah');
+        $data['biaya_air'] = Akun::where('kode_akun', 612)->sum('jumlah');
+        $data['biaya_listrik'] = Akun::where('kode_akun', 611)->sum('jumlah');
+        $data['biaya_gaji'] = Akun::where('kode_akun', 622)->sum('jumlah');
+        $data['biaya_sewa'] = Akun::where('kode_akun', 911)->sum('jumlah');
+
+
+        $data['total_beban'] = $data['biaya_air'] +  $data['biaya_listrik'] +  $data['biaya_gaji'] + $data['biaya_sewa'];
         //me
         $data['hpp'] = Akun::where('kode_akun', 119)->sum('jumlah');
         $data['laba_kotor'] = Akun::where('kode_akun', 411)->sum('jumlah');
@@ -42,6 +50,9 @@ class LaporanController extends Controller
         $data['total_harga_beli_produk'] = Barang::select(DB::raw('sum(harga_beli * stok) as total'))->get();
         $data['perusahaan'] = $this->perusahaan;
 
+        $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
+
+        // dd($data);
         $data['tanggal'] = $this->tanggal;
         return view('laporan.rugi-laba', $data);
     }
@@ -51,6 +62,7 @@ class LaporanController extends Controller
         $data['perusahaan'] = $this->perusahaan;
         $data['tanggal'] = $this->tanggal;
         $data['kas'] = Akun::where('kode_akun', 111)->sum('jumlah');
+        $data['kas_bank'] = Akun::where('kode_akun', 112)->sum('jumlah');
         $data['hutang'] = Akun::where('kode_akun', 211)->sum('jumlah');
         $data['persediaan'] = Barang::select(DB::raw('sum(harga_beli * stok) as total'))->first();
         // $data['penjualan'] = MasterTransaksi::where('type', 2)->sum('kredit');
@@ -65,11 +77,27 @@ class LaporanController extends Controller
         $data['retur'] = Akun::select('jumlah')->where('kode_akun', 511)->first();
 
         $data['total_harga_beli_produk'] = Barang::select(DB::raw('sum(harga_beli * stok) as total'))->get();
-        $data['aktiva'] = Akun::where('kode_akun', 113)->sum('jumlah') + $data['kas'] + $data['hpp'];
-        $data['pasiva'] =
-            Akun::where('kode_akun', 311)->first();
-        // $data['modal'] = Akun::where('kode_akun', 311)->sum('jumlah') +;
-        // dd($data);
+
+        $data['pasiva'] = Akun::where('kode_akun', 311)->first();
+
+
+        //pasiva 
+        $data['hpp'] = Akun::where('kode_akun', 119)->sum('jumlah');
+        $data['laba_kotor'] = Akun::where('kode_akun', 411)->sum('jumlah');
+        $data['laba'] = $data['laba_kotor'] - $data['hpp'];
+
+
+        $data['biaya_air'] = Akun::where('kode_akun', 612)->sum('jumlah');
+        $data['biaya_listrik'] = Akun::where('kode_akun', 611)->sum('jumlah');
+        $data['biaya_gaji'] = Akun::where('kode_akun', 622)->sum('jumlah');
+        $data['biaya_sewa'] = Akun::where('kode_akun', 911)->sum('jumlah');
+        $data['total_beban'] = $data['biaya_air'] +  $data['biaya_listrik'] +  $data['biaya_gaji'] + $data['biaya_sewa'];
+
+        $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
+        $data['aktiva'] = Akun::where('kode_akun', 113)->sum('jumlah') + $data['kas'] + $data['kas_bank'];
+
+        // return $data['laba'];
+
         return view('laporan.neraca', $data);
     }
 
@@ -153,7 +181,7 @@ class LaporanController extends Controller
         $data['perusahaan'] = $this->perusahaan;
         $data['penjualan'] = Penjualan::with('transaksi', 'dokter')->get();
         $data['Totalpenjualan'] = Penjualan::sum('subtotal');
-            $data['tanggal'] = $this->tanggal;
+        $data['tanggal'] = $this->tanggal;
         return view('laporan.penjualan', $data);
     }
 
