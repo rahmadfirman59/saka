@@ -58,18 +58,16 @@
                                                         <td><?php  echo "Rp.".number_format($kas,2,'.',','); ?></td>
                                                     </tr>
                                                     <tr>
+                                                        <td colspan="3">Kas Bank</td>
+                                                        <td><?php  echo "Rp.".number_format($kas_bank,2,'.',','); ?></td>
+                                                    </tr>
+                                                    <tr>
                                                         <td colspan="3">Persedian Akhir Barang</td>
                                                         <td><?php  echo "Rp.".number_format($persediaan->jumlah,2,'.',','); ?></td>
-                                                        
-                                                    </tr>
-                                                     <tr>
-                                                        <td colspan="3">HPP</td>
-                                                        <td><?php  echo "Rp.".number_format($hpp,2,'.',','); ?></td>
-                                                        
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Total</td>
-                                                        <td align="right"><?php  echo "Rp.".number_format($aktiva,2,'.',','); ?></td>
+                                                        <td align="right"><?php  echo "Rp.".number_format($aktiva ,2,'.',','); ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -93,20 +91,19 @@
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Modal</td>
-                                                        {{-- <td><?php  echo "Rp.".number_format(($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total),2,'.',','); ?></td> --}}
+                                                        
                                                         <td ><?php  echo "Rp.".number_format($pasiva->jumlah,2,'.',','); ?></td>
                                                     </tr>
+                                                      
+                                                    </tr>
                                                       <tr>
-                                                        <td colspan="3">Penjualan</td>
-                                                        {{-- <td><?php  echo "Rp.".number_format(($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total),2,'.',','); ?></td> --}}
-                                                        <td ><?php  echo "Rp.".number_format($penjualan,2,'.',','); ?></td>
+                                                        <td colspan="3">Laba/Rugi  </td>
+                                                        
+                                                        <td ><?php  echo "Rp.".number_format($laba_rugi,2,'.',','); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Total</td>
-                                                        {{-- <td align="right"><?php  echo "Rp.".number_format(($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total) + $hutang,2,'.',','); ?></td> --}}
-                                                        {{-- <td align="right"><?php  echo "Rp.".number_format(1000000,2,'.',','); ?></td> --}}
-                                                        
-                                                        <td align="right"><?php  echo "Rp.".number_format($pasiva->jumlah + $penjualan,2,'.',','); ?></td>
+                                                        <td align="right"><?php  echo "Rp.".number_format($pasiva->jumlah + $laba_rugi,2,'.',','); ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>

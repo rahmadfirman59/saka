@@ -109,79 +109,83 @@
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th colspan="3">Keterangan</th>
+									<th colspan="3">Laba Rugi</th>
 								</tr>
 							</thead>
 							<tbody>
+								
 								<tr class="body">
-									<td colspan='10'><div align="left">Penjualan</div></td>
+									<td colspan='9'><div align="left">Penjualan Kotor</div></td>
 									<td align="right"><?php  echo "Rp.".number_format($penjualan,2,'.',','); ?></td>
 									<td align="right"><?php  ?></td>
 								</tr>
-								{{-- <tr class="body">
-									<td colspan='7'><div align="left">Persedian Awal</div></td>
-									<td align="right"><?php  echo "Rp.".number_format($persediaan->jumlah,2,'.',','); ?></td>
-									<td align="right"><?php  ?></td>
-								</tr><tr class="body">
 								<tr class="body">
-									<td colspan='6'><div align="left">Pembelian</div></td>
-									<td align="right"><?php  echo "Rp.".number_format($pembelian,2,'.',','); ?></td>
+									<td colspan='9'><div align="left">Potongan Penjualan</div></td>
+									<td align="right">0</td>
 									<td align="right"><?php  ?></td>
-								</tr><tr class="body">
-									<td colspan='5'><div align="left">Potongan Pembelian</div></td>
-									<td align="right"><?php  echo "Rp.".number_format($potongan,2,'.',','); ?></td>
+								</tr>
+								<tr class="body">
+									<td colspan='9'><div align="left">Penjualan Bersih</div></td>
+									<td align="right"><?php  echo "Rp.".number_format($penjualan,2,'.',','); ?></td>
 									<td align="right"><?php  ?></td>
-								</tr><tr class="body">
-									<td colspan='5'><div align="left">Retur Pembelian</div></td>
-									<td align="right"><?php  echo "Rp.".number_format($retur->jumlah,2,'.',','); ?>+<hr></td>
-									<td align="right"><?php  ?></td>
-								</tr><tr class="body">
-									<td colspan='6'><div align="left"></div></td>
-									<td align="right"><?php  echo "Rp.".number_format($retur->jumlah + $potongan,2,'.',','); ?>+<hr></td>
-									<td align="right"><?php  ?></td>
-									<td align="right"><?php  ?></td><td align="right"><?php  ?></td>
-								</tr><tr class="body">
-									<td colspan='7'><div align="left">Pembelian Bersih</div></td>
-									<td align="right"><?php  echo "Rp.".number_format($pembelian - $retur->jumlah + $potongan,2,'.',','); ?><hr></td>
-									<td align="right"><?php echo"+"; ?></td>
-								</tr></tr><tr class="body">
-									<td colspan='7'><div align="left">Barang Siap Jual</div></td>
-									<td align="right"><?php  echo "Rp.".number_format($pembelian - $retur->jumlah + $potongan + $persediaan->jumlah,2,'.',','); ?></td>
-									<td align="right"><?php  ?></td>
-									<td align="right"><?php  ?></td>
-								</tr></tr><tr class="body">
-									<td colspan='7'><div align="left">Persediaan Akhir</div></td>
-									<td align="right"><?php  echo "Rp.".number_format($total_harga_beli_produk[0]->total,2,'.',','); ?><hr></td>
-									<td align="right"><?php echo"-"; ?></td>
-									<td align="right"><?php  ?></td>
-								</tr> --}}
+								</tr>
 								<tr class="body">
 									<td colspan='9'><div align="left">Harga Pokok Penjualan</div></td>
 									<td align="right"><?php  echo "Rp.".number_format($hpp,2,'.',','); ?></td>
 									<td align="right"><?php  ?></td>
 								</tr>
+								<br>
+								<tr>
+									<td colspan='9'><div align="left"></div></td>
+									<td align="right"></td>
+									<td align="right"></td>
+								</tr>
+								<tr>
+									<td colspan='9'><div align="left"></div></td>
+									<td align="right"></td>
+									<td align="right"></td>
+								</tr>
+								<tr>
+									<td colspan='9'><div align="left"></div></td>
+									<td align="right"></td>
+									<td align="right"></td>
+								</tr>
 								<tr class="body">
-									<td colspan='9'><div align="right">Laba</div></td>
+									<td colspan='9'><div align="right">Laba Kotor</div></td>
 									<td align="right"><?php  ?></td>
-									{{-- <td align="right"><?php  echo "Rp.".number_format($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total,2,'.',','); ?></td> --}}
 									<td align="right"><?php  echo "Rp.".number_format($laba,2,'.',','); ?></td>
 								</tr>
-								{{-- <tr class="body">
-									<td colspan='9'><div align="left">Biaya</div></td>
-									<td align="right"><?php  echo "Rp.".number_format($biaya,2,'.',','); ?></td>
+								<tr class="body">
+									<td colspan='9'><div align="left">Biaya Listrik</div></td>
+									<td align="right"><?php  echo "Rp.".number_format($biaya_listrik,2,'.',','); ?></td>
 									<td align="right"><?php  ?></td>
 								</tr>
 								<tr class="body">
-									<td colspan='9'><div align="left">Pajak</div></td>
-									<td align="right"><?php  echo "Rp.".number_format(($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total) * 10 / 100,2,'.',','); ?></td>
+									<td colspan='9'><div align="left">Biaya Sewa</div></td>
+									<td align="right"><?php  echo "Rp.".number_format($biaya_sewa,2,'.',','); ?></td>
 									<td align="right"><?php  ?></td>
-								</tr> --}}
-								{{-- <tr class="body">
-									<td colspan='9'><div align="right">Jumlah Beban</div></td>
+								</tr>
+								<tr class="body">
+									<td colspan='9'><div align="left">Biaya Gaji</div></td>
+									<td align="right"><?php  echo "Rp.".number_format($biaya_gaji,2,'.',','); ?></td>
 									<td align="right"><?php  ?></td>
-									<td align="right"><?php  echo "Rp.".number_format($biaya + ($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total) * 10 / 100,2,'.',','); ?></td>
-									<td align="right"><?php  echo "Rp.".number_format($penjualan - $pembelian - $retur->jumlah + $potongan + $persediaan->jumlah - $total_harga_beli_produk[0]->total,2,'.',','); ?></td>
-								</tr> --}}
+								</tr>
+								<tr class="body">
+									<td colspan='9'><div align="left">Biaya Air</div></td>
+									<td align="right"><?php  echo "Rp.".number_format($biaya_air,2,'.',','); ?></td>
+									<td align="right"><?php  ?></td>
+								</tr>
+								<tr class="body">
+									<td colspan='9'><div align="right">Total Biaya </div></td>
+									<td align="right"><?php  ?></td>
+									<td align="right"><?php  echo "Rp.".number_format($total_beban,2,'.',','); ?></td>
+								</tr>
+								<tr class="body">
+									<td colspan='9'><div align="right">Laba/Rugi Bersih </div></td>
+									<td align="right"><?php  ?></td>
+									<td align="right"><?php  echo "Rp.".number_format($laba_rugi,2,'.',','); ?></td>
+								</tr>
+								
 							</tbody>
 						</table>
 					</div>
