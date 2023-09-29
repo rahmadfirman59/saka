@@ -143,8 +143,8 @@
                 <div id="collapsePages3" class="collapse @if($url_menu == "jurnal") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-umum') active @endif" href="{{ route('jurnal.umum') }}">Jurnal Umum</a>
-                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penjualan') active @endif" href="{{ route('jurnal.penjualan') }}">Jurnal Penjualan</a>
-                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-pembelian') active @endif" href="{{ route('jurnal.pembelian') }}">Jurnal Pembelian</a>
+                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penjualan') active @endif" href="{{ route('jurnal.penjualan') }}">Data Penjualan</a>
+                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-pembelian') active @endif" href="{{ route('jurnal.pembelian') }}">Data Pembelian</a>
                         <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penyesuaian') active @endif" href="{{ route('jurnal.penyesuaian') }}">Jurnal Penyesuaian</a>
                         
                     </div>

@@ -160,20 +160,20 @@
                             <div class="form-group d-flex justify-content-around" style="margin: 0; gap: 40px">
                                 <div>
                                     <label class="checkbox-inline"><input name='status' id="tunai" checked type='radio' value='1'></label>
-                                    <label>Tunai</label>
+                                    <label>Kas</label>
                                 </div>
                                 <div>
                                     <label class="checkbox-inline"><input name='status' id="tempo" type='radio' value='2'></label>
-                                    <label>Tempo</label>
+                                    <label>Bank</label>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6">
+                        {{-- <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label>Jatuh Tempo</label>
                                 <input type="date" name="tgl_tempo" disabled id="tgl_tempo" value="" class="form-control">
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

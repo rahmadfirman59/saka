@@ -10,11 +10,11 @@
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="pagetitle">
-        <h1 class="h3 mb-2">Jurnal Pembelian</h1>
+        <h1 class="h3 mb-2">Data Pembelian</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Jurnal</a></li>
-                <li class="breadcrumb-item active"><a href="#">Jurnal Pembelian</a></li>
+                <li class="breadcrumb-item active"><a href="#">Data Pembelian</a></li>
                 
             </ol>
         </nav>
@@ -25,7 +25,7 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 card-title">Data Jurnal Pembelian</h6>
+                    <h6 class="m-0 card-title">Data  Pembelian</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
