@@ -73,7 +73,7 @@
             ?>
             <!-- Nav Item - Dashboard -->
             <li class="nav-item @if($url_menu == "dashboard") active @endif">
-                <a class="nav-link" href="/saka/dashboard">
+                <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -87,7 +87,7 @@
             </div>
 
             <li class="nav-item @if($url_menu == "grafik") active @endif">
-                <a class="nav-link" href="/saka/grafik">
+                <a class="nav-link" href="{{ route('grafik') }}">
                     <i class="bi bi-bar-chart-line-fill"></i>
                     <span>Grafik</span></a>
             </li>

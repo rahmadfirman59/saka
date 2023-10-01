@@ -189,12 +189,12 @@ class TransaksiPembelianController extends Controller
             //     'type' => 3
             // ]);
 
-
             return [
                 'status' => 200,
                 'message' => 'Transaksi Berhasil Dilakukan',
                 'id' => $transaksi->id
             ];
+
         } catch (\Exception $e) {
             DB::rollback();
 

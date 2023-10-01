@@ -4,6 +4,22 @@
     .modal-body{
         padding: 1.4em;
     }
+
+    .content-heading {
+        text-align: center;
+        padding-bottom: 5px;
+        padding-top: 7px;
+        border-radius: 20px;
+        border-bottom: 5px solid #d7d7d7;
+        border-right: 1px solid #d7d7d7;
+        border-left: 1px solid #d7d7d7;
+        color: #012970;
+        font-size: 20px;
+        font-weight: 700;
+        margin: auto;
+        margin-bottom: 17px;
+        width: 80%;
+    }
 </style>
 @endsection
 @section('content')
@@ -140,6 +156,11 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 card-title">Data Jurnal Umum</h6>
+                    <div style="position: absolute;right: 12px;top: 13px;font-size: 13px!important">
+                        <button type="button" class="btn btn-success mr-2"
+                                onclick="$('#modal_transaksi_manual').modal('show');"><i class="fas fa-plus mr-1"></i>
+                                Tambah Transaksi Manual</button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -164,6 +185,10 @@
                                         <a href="/saka/jurnal/jurnal-pembelian/detail-pembelian/{{ $item->id }}" target="_blank">{{ $item->kode }}</a>
                                         @elseif($item->type == 2)
                                         <a href="/saka/jurnal/jurnal-penjualan/detail-penjualan/{{ $item->id }}" target="_blank">{{ $item->kode }}</a>
+                                        @elseif($item->type == 6)
+                                        <a onclick="show_modal_manual('{{ $item->kode }}', '{{ $item->keterangan }}')" style="color: #4e73df; cursor: pointer">
+                                            {{ $item->kode }}
+                                        </a>
                                         @else
                                         {{ $item->kode }}
                                         @endif
@@ -182,6 +207,117 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+@endsection
+
+
+@section('modal')
+<div class="modal fade" role="dialog" id="modal_transaksi_manual" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+          <div class="modal-header br">
+             <h5 class="modal-title">Tambah Transaksi Manual</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+             </button>
+          </div>
+          <form id="form_upload" action="/saka/jurnal/jurnal-umum/store" method="POST" autocomplete="off">
+             @csrf
+             <div class="modal-body">
+                <div class="row">
+                    <input type="text" hidden class="form-control" name="id" id="id">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <h5 class="content-heading">Debit</h5>
+                        <div class="form-group">
+                            <label>Pilih Akun</label>
+                            <select id="pilih_biaya" name="pilih_akun_debit" class="form-control select2">
+                                <option value="" >-- Pilih Akun --</option>
+                                @foreach ($akun as $item)
+                                <option value="{{ $item->kode_akun }}">{{ $item->kode_akun . ' - ' .  $item->nama_akun }}</option>
+                                @endforeach
+                            </select>
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-pilih_akun_debit-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <h5 class="content-heading">Kredit</h5>
+                        <div class="form-group">
+                            <label>Pilih Akun</label>
+                            <select id="pilih_biaya" name="pilih_akun_kredit" class="form-control select2">
+                                <option value="" >-- Pilih Akun --</option>
+                                @foreach ($akun as $item)
+                                <option value="{{ $item->kode_akun }}">{{ $item->kode_akun . ' - ' .  $item->nama_akun }}</option>
+                                @endforeach
+                            </select>
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-pilih_akun_kredit-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Nominal</label>
+                            <input class="form-control" type="text" id="nominal_debit" name="nominal_debit" >
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-nominal_debit-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Nominal</label>
+                            <input class="form-control" type="text" id="nominal_kredit" name="nominal_kredit" >
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-nominal_kredit-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Uraian</label>
+                            <textarea class="form-control" name="uraian_debit" style="min-height: 120px"></textarea>
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-uraian_debit-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Uraian</label>
+                            <textarea class="form-control" name="uraian_kredit" style="min-height: 120px"></textarea>
+                            <span class="d-flex text-danger invalid-feedback" id="invalid-uraian_kredit-feedback"></span>
+                        </div>
+                    </div>
+                </div>
+             </div>
+             <div class="modal-footer bg-whitesmoke br">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-warning">Simpan</button>
+             </div>
+          </form>
+       </div>
+    </div>
+</div>
+
+<div class="modal fade" role="dialog" id="modal_uraian" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document">
+       <div class="modal-content">
+          <div class="modal-header br">
+             <h5 class="modal-title">Detail Uraian</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+             </button>
+          </div>
+            <div class="modal-body">
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-12">
+                    <h5 class="content-heading" id="uraian_kode"></h5>
+                </div>
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="form-group">
+                        <label>Uraian</label>
+                        <textarea class="form-control" id="uraian" disabled style="min-height: 120px"></textarea>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="modal-footer bg-whitesmoke br">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+       </div>
     </div>
 </div>
 @endsection
@@ -205,6 +341,12 @@
 			],
 		});
 	});
+
+    function show_modal_manual(kode, keterangan){
+        $('#modal_uraian').modal('show');
+        $('#uraian_kode').text('Kode : ' + kode);
+        $('#uraian').val(keterangan);
+    }
 
     $('#form_jurnal_umum').submit(function(e){
         e.preventDefault();

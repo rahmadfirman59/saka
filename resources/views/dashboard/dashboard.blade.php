@@ -99,8 +99,65 @@
 
     <div class="row">
         <!-- Operasional Table -->
+
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="card recent-sales overflow-auto" id="expired_barang_table">
+                <div class="card-body">
+                    <h5 class="card-title2">Peringatan Barang Telah Expired</h5>
+
+                    <table class="table table-borderless datatable-jquery-barang datatable-primary" style="border-left: 1px solid #00000033; border-right: 1px solid #00000033; border-bottom: 1px solid #00000033">
+                        <thead>
+                            <tr>
+                                <th scope="col" align="center"><div align="center">Nama Barang</div></th>
+                                <th scope="col">No. batch</th>
+                                <th scope="col">Expired Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($barang_ed as $barang)
+                            <tr>
+                                <td ><div>{{ $barang->nama_barang }}</div></td>
+                                <td>{{ $barang->no_batch }}</td>
+                                <td>{{ $barang->ed }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="card recent-sales overflow-auto" id="expired_barang_table">
+                <div class="card-body">
+                    <h5 class="card-title2">Peringatan Stok Barang Habis</h5>
+
+                    <table class="table table-borderless datatable-jquery-barang datatable-primary" style="border-left: 1px solid #00000033; border-right: 1px solid #00000033; border-bottom: 1px solid #00000033">
+                        <thead>
+                            <tr>
+                                <th scope="col" align="center"><div align="center">Nama Barang</div></th>
+                                <th scope="col">No. batch</th>
+                                <th scope="col">Stok</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($barang_stok as $barang)
+                            <tr>
+                                <td ><div>{{ $barang->nama_barang }}</div></td>
+                                <td>{{ $barang->no_batch }}</td>
+                                <td>{{ $barang->stok }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
         <div class="col-md-5 col-sm-12 col-xs-12">
-            <div class="card recent-sales overflow-auto">
+            <div class="card recent-sales overflow-auto mt-5">
 
                 <div class="card-body">
                     <h5 class="card-title2">Biaya Operasional</h5>
@@ -139,7 +196,7 @@
 
         <!-- Hutang Table -->
         <div class="col-md-7 col-sm-12 col-xs-12">
-            <div class="card recent-sales overflow-auto">
+            <div class="card recent-sales overflow-auto mt-5">
 
                 <div class="card-body">
                     <h5 class="card-title2">Hutang Dagang</h5>
@@ -183,62 +240,6 @@
 
             </div>
         </div><!-- End Hutang Table -->
-
-        <div class="col-md-6 col-sm-12 col-xs-12">
-            <div class="card recent-sales overflow-auto mt-5" id="expired_barang_table">
-                <div class="card-body">
-                    <h5 class="card-title2">Peringatan Barang Telah Expired</h5>
-
-                    <table class="table table-borderless datatable-jquery-barang datatable-primary" style="border-left: 1px solid #00000033; border-right: 1px solid #00000033; border-bottom: 1px solid #00000033">
-                        <thead>
-                            <tr>
-                                <th scope="col" align="center"><div align="center">Nama Barang</div></th>
-                                <th scope="col">No. batch</th>
-                                <th scope="col">Expired Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($barang_ed as $barang)
-                            <tr>
-                                <td ><div>{{ $barang->nama_barang }}</div></td>
-                                <td>{{ $barang->no_batch }}</td>
-                                <td>{{ $barang->ed }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 col-sm-12 col-xs-12">
-            <div class="card recent-sales overflow-auto mt-5" id="expired_barang_table">
-                <div class="card-body">
-                    <h5 class="card-title2">Peringatan Stok Barang Habis</h5>
-
-                    <table class="table table-borderless datatable-jquery-barang datatable-primary" style="border-left: 1px solid #00000033; border-right: 1px solid #00000033; border-bottom: 1px solid #00000033">
-                        <thead>
-                            <tr>
-                                <th scope="col" align="center"><div align="center">Nama Barang</div></th>
-                                <th scope="col">No. batch</th>
-                                <th scope="col">Stok</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($barang_stok as $barang)
-                            <tr>
-                                <td ><div>{{ $barang->nama_barang }}</div></td>
-                                <td>{{ $barang->no_batch }}</td>
-                                <td>{{ $barang->stok }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
     </div>
 
 </div> 

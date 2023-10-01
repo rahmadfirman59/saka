@@ -130,6 +130,7 @@ Route::group(['middleware' => ['ceklogin']], function () {
     Route::prefix('jurnal')->group(function () {
         Route::prefix('jurnal-umum')->group(function () {
             Route::get('/', [JurnalUmumController::class, 'index'])->name('jurnal.umum');
+            Route::post('/store', [JurnalUmumController::class, 'store']);
             Route::post('/change_priode', [JurnalUmumController::class, 'change_priode']);
         });
 
