@@ -45,7 +45,7 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label>Harga</label>
-                            <input class="form-control" type="text" id="harga" price="@if(isset($data)){{ $data->harga }}@else{{ 0 }}@endif" disabled value="@if(isset($data)){{ "Rp. ".number_format($data->harga, 2, ',' , '.' ) }}@else{{ "Rp. ".number_format(0, 2 , ',' , '.' ) }}@endif">
+                            <input class="form-control" type="text" id="harga" price="@if(isset($data)){{ $harga }}@else{{ 0 }}@endif" disabled value="@if(isset($data)){{ "Rp. ".number_format($harga, 2, ',' , '.' ) }}@else{{ "Rp. ".number_format(0, 2 , ',' , '.' ) }}@endif">
                             <span class="d-flex text-danger invalid-feedback" id="invalid-harga_racik-feedback"></span>
                         </div>
                     </div>

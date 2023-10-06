@@ -48,11 +48,17 @@
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $item->nama_racik }}</td>
                             <td>
+                                @php
+                                    $harga_racik = 0;
+                                @endphp
                                 @foreach ($item->barangs as $barang)
+                                    @php
+                                        $harga_racik += $barang->harga_jual_tablet * $barang->pivot->jumlah;
+                                    @endphp
                                     <span class="badge badge-primary" style="font-family: 'Nunito', sans-serif; padding: .35em .7em;">{{ $barang->nama_barang }} ({{ $barang->pivot->jumlah }})</span>
                                 @endforeach
                             </td>
-                            <td>{{ "Rp. ".number_format($item->harga, 2 , ',' , '.' ) }}</td>
+                            <td>{{ "Rp. ".number_format($harga_racik, 2 , ',' , '.' ) }}</td>
                             <td>
                                 <button class='btn btn-info btn-sm mr-1'><a style='color: white;' href="obat-racik/detail/{{ $item->id }}"><i class='fa fa-edit'></i></a></button>
                                 <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('obat-racik/delete/{{ $item->id }}', '{{ $item->nama_racik }}')"><i class='bi bi-trash-fill'></i></a></button>

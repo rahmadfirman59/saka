@@ -182,7 +182,7 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label>Kadaluarsa</label>
-                            <input type="date" name="ed" id="ed" class="form-control">
+                            <input type="date" name="ed" id="ed_custom" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -552,6 +552,18 @@
         reset_all_select();
         $('.invalid-feedback').text('');
         $('input, select').removeClass('is-invalid');
+        
+        // Get the current date
+        const currentDate = new Date();
+
+        // Add 2 years to the current date
+        currentDate.setFullYear(currentDate.getFullYear() + 2);
+
+        // Format the date as "YYYY-MM-DD"
+        const formattedDate = currentDate.toISOString().split('T')[0];
+
+        // Set the default value of the date input field using JavaScript
+        document.getElementById("ed_custom").value = formattedDate;
     }
 
     function change_satuan(element){

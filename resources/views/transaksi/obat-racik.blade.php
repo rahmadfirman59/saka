@@ -76,7 +76,13 @@
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $item->obat_racik->nama_racik }}</td>
                                     <td>
+                                        @php
+                                            $harga_racik = 0;
+                                        @endphp
                                         @foreach ($item->obat_racik->barangs as $barang)
+                                        @php
+                                            $harga_racik += $barang->harga_jual_tablet * $barang->pivot->jumlah;                                            
+                                        @endphp
                                             <span class="badge badge-primary" style="font-family: 'Nunito', sans-serif; padding: .35em .7em;">{{ $barang->nama_barang }} (<span class="jumlah_stock_{{ $key }}" stock="{{ $barang->pivot->jumlah }}">{{ $barang->pivot->jumlah }}</span>)</span>
                                         @endforeach
                                     </td>
@@ -84,8 +90,8 @@
                                     <td style="width: 10%">
                                         <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->barang->stok }}, {{ $item->barang->harga_jual }})">
                                     </td>
-                                    <td price="{{ $item->obat_racik->harga }}" class="display_harga{{ $key }}">{{ "Rp. ".number_format($item->obat_racik->harga, 2 , ',' , '.' ) }}</td>
-                                    <td id="subtotal{{ $key }}" class="subtotal" price="{{ $item->obat_racik->harga }}">{{ "Rp. ".number_format($item->obat_racik->harga, 2 , ',' , '.' ) }}</td>
+                                    <td price="{{ $harga_racik }}" class="display_harga{{ $key }}">{{ "Rp. ".number_format($harga_racik, 2 , ',' , '.' ) }}</td>
+                                    <td id="subtotal{{ $key }}" class="subtotal" price="{{ $harga_racik }}">{{ "Rp. ".number_format($harga_racik, 2 , ',' , '.' ) }}</td>
                                     <td>
                                         <button class='btn btn-danger btn-sm' type="button"><a style='color: white' onclick="delete_keranjang({{ $item->id }})"><i class='bi bi-trash-fill'></i></a></button>
                                     </td>
@@ -226,9 +232,11 @@
                                 <td>
                                     @php
                                         $expired = false;
+                                        $harga_racik = 0;
                                     @endphp
                                     @foreach ($item->barangs as $barang)
                                         @php
+                                            $harga_racik += $barang->harga_jual_tablet * $barang->pivot->jumlah;
                                             if($barang->ed <= \Carbon\Carbon::today()->addDays(30)->format('Y-m-d')){
                                                 $expired = true;
                                             }
@@ -237,7 +245,7 @@
                                     @endforeach
                                 </td>
                                 <td>{{ $item->stok }}</td>
-                                <td>{{ "Rp. ".number_format($item->harga, 2 , ',' , '.' ) }}</td>
+                                <td>{{ "Rp. ".number_format($harga_racik, 2 , ',' , '.' ) }}</td>
                                 @if($expired === false )                
                                 <td><button class='btn btn-info btn-sm mr-1 mx-3' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
                                 @else

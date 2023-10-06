@@ -28,6 +28,11 @@ class ObatRacikController extends Controller
             $query->select(['id', 'nama_barang', 'harga_jual_tablet']);
         }])->where('id_racik', $id)->get();
         $data['barang'] = Barang::where('is_delete', 0)->where('jumlah_pecahan', '>', 0)->whereNotNull('harga_jual_tablet')->orderBy('nama_barang', 'asc')->get();
+        $harga_final = 0;
+        foreach($data['list_barang'] as $key => $item){
+            $harga_final += $item->jumlah * $item->barang->harga_jual_tablet;
+        }
+        $data['harga'] = $harga_final;
         return view('obat-racik.add', $data);
     }
 
@@ -53,12 +58,7 @@ class ObatRacikController extends Controller
         DB::beginTransaction();
         
         try {
-            $harga_final = 0;
-            foreach($request->jumlah as $key => $item){
-                $harga_tablet = Barang::where('id', $request->id_barang[$key])->select('harga_jual_tablet')->first();
-                $harga_final += $item * $harga_tablet->harga_jual_tablet;
-            }
-            $ObatRacik = ObatRacik::updateOrCreate(['id' => $request->id],['nama_racik' => $request->nama_racik,'harga' => $harga_final]);
+            $ObatRacik = ObatRacik::updateOrCreate(['id' => $request->id],['nama_racik' => $request->nama_racik]);
             
             if(isset($request->id)){
                 RacikBarang::where('id_racik', $request->id)->delete();

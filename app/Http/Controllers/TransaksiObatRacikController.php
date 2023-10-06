@@ -146,14 +146,17 @@ class TransaksiObatRacikController extends Controller
 
             $hpp = 0;
             $barang = Barang::all();
-            $obat_racik = ObatRacik::all();
             foreach($request->idbarang as $keys => $item){
                 // ?? Ubah Stok Barang
                 $sub_total = 0;
-                $loop = RacikBarang::where('id_racik', $item)->get();
+                $loop = RacikBarang::with(['barang' => function($query){
+                    $query->select(['id', 'nama_barang', 'harga_jual_tablet']);
+                }])->where('id_racik', $item)->get();
+                $harga = 0;
 
                 foreach($loop as $key => $id_barang){
                     $barang_single = $barang->find($id_barang->id_barang);
+                    $hpp += round($barang_single->harga_beli / $barang_single->jumlah_pecahan) * $id_barang->jumlah;
                     $stok_pecahan = ($barang_single->stok * $barang_single->jumlah_pecahan + $barang_single->sisa_pecahan) - ($id_barang->jumlah * $request->qty[$keys]);
                     $stok = floor($stok_pecahan / $barang_single->jumlah_pecahan);
                     $stok_grosir = floor($stok / $barang_single -> jumlah_grosir);
@@ -162,11 +165,10 @@ class TransaksiObatRacikController extends Controller
                     $barang_single->stok_grosir = $stok_grosir;
                     $barang_single->sisa_pecahan = $sisa_pecahan;
                     $barang_single->save();
+                    $harga += $id_barang->jumlah * $id_barang->barang->harga_jual_tablet;
                 };
-                
-                $harga = $obat_racik->firstWhere('id', $item)->harga;
+
                 $sub_total += $harga * $request->qty[$keys];
-                $hpp += $sub_total;
 
                 Penjualan::create([
                     'id_barang' => $item,

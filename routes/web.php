@@ -41,7 +41,11 @@ Route::group(['middleware' => ['ceklogin']], function () {
     });
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/grafik', [GrafikController::class, 'index'])->name('grafik');
+    Route::prefix('grafik')->group(function () {
+        Route::get('/', [GrafikController::class, 'index'])->name('grafik');
+        Route::get('/get-data', [GrafikController::class, 'get_data']);
+    });
+
 
     Route::prefix('master')->group(function () {
 

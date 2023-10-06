@@ -52,7 +52,6 @@ class LaporanController extends Controller
 
         $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
 
-        // dd($data);
         $data['tanggal'] = $this->tanggal;
         return view('laporan.rugi-laba', $data);
     }
