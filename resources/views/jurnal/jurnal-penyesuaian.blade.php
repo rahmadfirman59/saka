@@ -10,11 +10,11 @@
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="pagetitle">
-        <h1 class="h3 mb-2">Jurnal Penyesuaian</h1>
+        <h1 class="h3 mb-2">Biaya</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Jurnal</a></li>
-                <li class="breadcrumb-item active"><a href="#">Jurnal Penyesuaian</a></li>
+                <li class="breadcrumb-item active"><a href="#">Biaya</a></li>
             </ol>
         </nav>
     </div>
@@ -24,7 +24,7 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 card-title">Data Jurnal Penyesuaian</h6>
+                    <h6 class="m-0 card-title">Data Biaya</h6>
                     <button type="button" style="position: absolute;right: 12px;top: 13px;font-size: 13px" class="btn btn-warning"
 						onclick="add();"><i class="fa fa-plus mr-1"></i>
 						Tambah Biaya</button>
@@ -108,8 +108,8 @@
                             <label>Jenis</label>
                               <select id="jenis" disabled class="form-control">
                                 <option value="">-- Pilih Jenis --</option>
-                                <option value="1">Debit</option>
-                                <option value="2">Kredit</option>
+                                <option value="1">Kredit</option>
+                                <option value="2">Debit</option>
                               </select>
                         </div>
                     </div>

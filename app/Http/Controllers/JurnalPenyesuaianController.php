@@ -59,7 +59,7 @@ class JurnalPenyesuaianController extends Controller
             'tanggal' => $request->tanggal,
             'kode_akun' => 111,
             'keterangan' => "Kas",
-            'debt' => $request->jumlah,
+            'kredit' => $request->jumlah,
             'type' => 4
         ]);
 
@@ -68,7 +68,7 @@ class JurnalPenyesuaianController extends Controller
             'tanggal' => $request->tanggal,
             'kode_akun' => $biaya->kode_akun,
             'keterangan' => $biaya->nama_akun,
-            'kredit' => $request->jumlah,
+            'debt' => $request->jumlah,
             'type' => 3
         ]);
 

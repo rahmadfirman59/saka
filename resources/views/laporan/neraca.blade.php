@@ -28,7 +28,7 @@
             </ol>
         </nav>
     </div>
-
+<h5 style="color: red" >*Pastikan nominal pada aktiva dan pasiva sama</h5>
     <div class="row">
 		<div class="col-lg-12">
 			<section class="section">
@@ -37,7 +37,9 @@
 
 						<div class="card">
 							<div class="card-header text-center">
-								<h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Persediaan Priode <?php echo $tanggal;?></h5>
+								<h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Persediaan per <?php echo $tanggal;?></h5>
+                                <br>
+                                
 							</div>
 							<div class="card-body mt-4">
 								<div class="row">
@@ -62,7 +64,7 @@
                                                         <td><?php  echo "Rp.".number_format($kas_bank,2,'.',','); ?></td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="3">Persedian Akhir Barang</td>
+                                                        <td colspan="3">Persedian Barang</td>
                                                         <td><?php  echo "Rp.".number_format($persediaan->jumlah,2,'.',','); ?></td>
                                                     </tr>
                                                     <tr>
@@ -112,7 +114,8 @@
                                 </div>
 							</div>
 						</div>
-
+                        <!--  -->
+                        
 					</div>
 				</div>
 			</section>

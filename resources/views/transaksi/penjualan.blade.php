@@ -136,11 +136,11 @@
                             <div class="form-group d-flex justify-content-around" style="margin: 0; gap: 40px">
                                 <div>
                                     <label class="checkbox-inline"><input name="tipe_pembayaran" id="tunai" checked="" type="radio" value="1"></label>
-                                    <label>Tunai</label>
+                                    <label>Kas</label>
                                 </div>
                                 <div>
                                     <label class="checkbox-inline"><input name="tipe_pembayaran" id="tempo" type="radio" value="2"></label>
-                                    <label>Transfer</label>
+                                    <label>Bank</label>
                                 </div>
                             </div>
                         </div>
@@ -227,7 +227,7 @@
                                 <th>No</th>
                                 <th>Nama Barang</th>
                                 <th>No. Batch</th>
-                                <th>Harga</th>
+                                <th>Harga Jual </th>
                                 <th>Stok</th>
                                 <th>Kadaluarsa</th>
                                 <th>Aksi</th>
