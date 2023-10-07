@@ -135,21 +135,6 @@
 									<td align="right"><?php  ?></td>
 								</tr>
 								<br>
-								<tr>
-									<td colspan='9'><div align="left"></div></td>
-									<td align="right"></td>
-									<td align="right"></td>
-								</tr>
-								<tr>
-									<td colspan='9'><div align="left"></div></td>
-									<td align="right"></td>
-									<td align="right"></td>
-								</tr>
-								<tr>
-									<td colspan='9'><div align="left"></div></td>
-									<td align="right"></td>
-									<td align="right"></td>
-								</tr>
 								<tr class="body">
 									<td colspan='9'><div align="right">Laba Kotor</div></td>
 									<td align="right"><?php  ?></td>
@@ -192,20 +177,20 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-lg-6 mb-5">
+		<div class="col-lg-6 mb-5 mt-5">
 			<div class="card">
 				<div class="card-header">
-					<h5 class="card-title p-0">Priode</h5>
+					<h5 class="card-title p-0 m-0">Priode</h5>
 				</div>
 				<div class="card-body mt-3">
 					<div class="row">
-						<form action="llb.pdf" method="post" name="postform" class="d-flex" style="gap: 15px"  target='_blank'>
+						<form name="postform" class="d-flex" style="gap: 15px"  target='_blank'>
 							<?php 
 							echo 	
 								combonamabln(1,12,'bln_1',date('m'));
 								combothn(2000,date('Y'),'thn_1',date('Y'));
 							?>
-							<input type="submit" class='btn btn-success' name="report" value="Tampilkan" /> <a onclick="window.open('llb.print','Print','menubar=no,navigator=no,width=825,height=600,left=200,top=150,toolbar=no')";><i class='icon-print'></i></a>
+							<input type="submit" class='btn btn-success' name="report" value="Tampilkan" /> <a onclick="";><i class='icon-print'></i></a>
 						</form> 
 					</div>
 
