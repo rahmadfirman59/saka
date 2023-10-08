@@ -21,7 +21,7 @@ class LaporanController extends Controller
         $this->perusahaan = (object) [
             'nm_perusahaan' => 'APOTEK SAKA SASMITRA',
             'email' => 'ichimentei.indo@gmail.com',
-            'alamat' => 'JALAN DIPONEGORO SEMARANG',
+            'alamat' => 'Jl. Kimar I No.249, Pandean Lamper, Kec. Gayamsari, Kota Semarang, Jawa Tengah',
         ];;
 
         $this->tanggal = Carbon::now()->isoFormat('D MMMM Y');
@@ -29,30 +29,105 @@ class LaporanController extends Controller
 
     public function rugi_laba()
     {
-        $data['penjualan'] = MasterTransaksi::where('type', 2)->sum('kredit');
-
-        $data['pembelian'] = MasterTransaksi::where('type', 1)->sum('debt');
-        $data['potongan'] = MasterTransaksi::where('type', 1)->sum('potongan');
-        $data['persediaan'] = Akun::where('kode_akun', 113)->select('jumlah')->first();
-        $data['retur'] = Akun::select('jumlah')->where('kode_akun', 511)->first();
-        $data['biaya'] = Akun::whereBetween('kode_akun', [611, 699])->sum('jumlah');
-        $data['biaya_air'] = Akun::where('kode_akun', 612)->sum('jumlah');
-        $data['biaya_listrik'] = Akun::where('kode_akun', 611)->sum('jumlah');
-        $data['biaya_gaji'] = Akun::where('kode_akun', 622)->sum('jumlah');
-        $data['biaya_sewa'] = Akun::where('kode_akun', 911)->sum('jumlah');
-
-
-        $data['total_beban'] = $data['biaya_air'] +  $data['biaya_listrik'] +  $data['biaya_gaji'] + $data['biaya_sewa'];
-        //me
-        $data['hpp'] = Akun::where('kode_akun', 119)->sum('jumlah');
-        $data['laba_kotor'] = Akun::where('kode_akun', 411)->sum('jumlah');
-        $data['laba'] = $data['laba_kotor'] - $data['hpp'];
-        $data['total_harga_beli_produk'] = Barang::select(DB::raw('sum(harga_beli * stok) as total'))->get();
+        $data['total_beban'] = 0;
         $data['perusahaan'] = $this->perusahaan;
+        $data['tanggal'] = $this->tanggal;
 
+        $akun_laba = Akun::whereIn("kode_akun", [411, 119, 422])->get();
+        $data['laba_kotor'] = 0;
+        $data['hpp'] = 0;
+        foreach ($akun_laba as  $item) {
+            $penjualan_kotor = 0;
+            $hpp = 0;
+            $potongan = 0;
+            $transaksi = MasterTransaksi::where("kode_akun", $item->kode_akun)->get();
+            foreach ($transaksi as  $value) {
+                switch ($value->kode_akun) {
+                    case '411':
+                        $penjualan_kotor += $value->kredit;
+                        break;
+                    case '119':
+                        $hpp += $value->debt;
+                        break;
+                    case '422':
+                        $potongan += $value->debt;
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+            switch ($item->kode_akun) {
+                case '411':
+                    $item->total = $penjualan_kotor;
+                    break;
+                case '119':
+                    $item->total = $hpp;
+                    break;
+                case '422':
+                    $item->total = $potongan;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $item->transaksi = $transaksi;
+            $data['laba_kotor'] += $penjualan_kotor;
+            $data['hpp'] += $hpp;
+        }
+
+        $data['laba'] = $data['laba_kotor'] - $data['hpp'];
+        $data['akun_laba'] = $akun_laba;
+
+        $akun_beban = Akun::whereIn("kode_akun", [611, 622, 612, 911])->get();
+        foreach ($akun_beban as  $value) {
+            $biaya_listrik = 0;
+            $biaya_sewa = 0;
+            $biaya_air = 0;
+            $biaya_gaji = 0;
+            $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)->get();
+            foreach ($transaksi as $values) {
+                switch ($values->kode_akun) {
+                    case '611':
+                        $biaya_listrik += $values->debt;
+                        break;
+                    case '622':
+                        $biaya_gaji += $values->debt;
+                        break;
+                    case '612':
+                        $biaya_air += $values->debt;
+                        break;
+                    case '911':
+                        $biaya_sewa += $value->debt;
+                        break;
+                }
+            }
+            switch ($value->kode_akun) {
+                case '611':
+                    $value->total = $biaya_listrik;
+                    break;
+                case '622':
+                    $value->total = $biaya_gaji;
+                    break;
+                case '612':
+                    $value->total = $biaya_air;
+                    break;
+                case '911':
+                    $value->total = $biaya_sewa;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $value->transaksi = $transaksi;
+            $data['total_beban'] += $biaya_listrik + $biaya_air + $biaya_gaji +  $biaya_sewa;
+        }
+
+        $data['akun_beban'] = $akun_beban;
         $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
 
-        $data['tanggal'] = $this->tanggal;
+
+        // return $data;
         return view('laporan.rugi-laba', $data);
     }
 
@@ -224,5 +299,118 @@ class LaporanController extends Controller
         $data['total_harga_beli_produk'] = Barang::select(DB::raw('sum(harga_beli * stok) as total'))->get();
         $data['prive'] = Akun::where('kode_akun', 312)->sum('jumlah');
         return view('laporan.perubahan-modal', $data);
+    }
+
+    public function rugi_laba_change_priode(Request $request)
+    {
+
+        $tanggal1 = $request->thn_1 . '-' . $request->bln_1 . '-' . $request->tgl_1;
+        $tanggal2 = $request->thn_2 . '-' . $request->bln_2 . '-' . $request->tgl_2;
+
+        // return $tanggal1;
+
+        $data['total_beban'] = 0;
+        $data['perusahaan'] = $this->perusahaan;
+        $data['tanggal'] = $this->tanggal;
+
+        $akun_laba = Akun::whereIn("kode_akun", [411, 119, 422])->get();
+        $data['laba_kotor'] = 0;
+        $data['hpp'] = 0;
+        foreach ($akun_laba as  $item) {
+            $penjualan_kotor = 0;
+            $hpp = 0;
+            $potongan = 0;
+            $transaksi = MasterTransaksi::where("kode_akun", $item->kode_akun)
+                ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                ->get();
+            foreach ($transaksi as  $value) {
+                switch ($value->kode_akun) {
+                    case '411':
+                        $penjualan_kotor += $value->kredit;
+                        break;
+                    case '119':
+                        $hpp += $value->debt;
+                        break;
+                    case '422':
+                        $potongan += $value->debt;
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+            switch ($item->kode_akun) {
+                case '411':
+                    $item->total = $penjualan_kotor;
+                    break;
+                case '119':
+                    $item->total = $hpp;
+                    break;
+                case '422':
+                    $item->total = $potongan;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $item->transaksi = $transaksi;
+            $data['laba_kotor'] += $penjualan_kotor;
+            $data['hpp'] += $hpp;
+        }
+
+        $data['laba'] = $data['laba_kotor'] - $data['hpp'];
+        $data['akun_laba'] = $akun_laba;
+
+        $akun_beban = Akun::whereIn("kode_akun", [611, 622, 612, 911])->get();
+        foreach ($akun_beban as  $value) {
+            $biaya_listrik = 0;
+            $biaya_sewa = 0;
+            $biaya_air = 0;
+            $biaya_gaji = 0;
+            $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)
+                ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                ->get();
+            foreach ($transaksi as $values) {
+                switch ($values->kode_akun) {
+                    case '611':
+                        $biaya_listrik += $values->debt;
+                        break;
+                    case '622':
+                        $biaya_gaji += $values->debt;
+                        break;
+                    case '612':
+                        $biaya_air += $values->debt;
+                        break;
+                    case '911':
+                        $biaya_sewa += $value->debt;
+                        break;
+                }
+            }
+            switch ($value->kode_akun) {
+                case '611':
+                    $value->total = $biaya_listrik;
+                    break;
+                case '622':
+                    $value->total = $biaya_gaji;
+                    break;
+                case '612':
+                    $value->total = $biaya_air;
+                    break;
+                case '911':
+                    $value->total = $biaya_sewa;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $value->transaksi = $transaksi;
+            $data['total_beban'] += $biaya_listrik + $biaya_air + $biaya_gaji +  $biaya_sewa;
+        }
+
+        $data['akun_beban'] = $akun_beban;
+        $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
+
+
+        return $data;
     }
 }
