@@ -129,6 +129,10 @@ Route::group(['middleware' => ['ceklogin']], function () {
 
             Route::post('/store', [TransaksiObatRacikController::class, 'store']);
         });
+
+        Route::prefix('pembayaran-tempo')->group(function () {
+            Route::get('/', [JurnalPembelianController::class, 'pembayaran_tempo'])->name('transaksi.pembayaran-tempo');
+        });
     });
 
     Route::prefix('jurnal')->group(function () {

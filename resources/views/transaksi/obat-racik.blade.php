@@ -70,9 +70,8 @@
                             <tbody>
                                 <?php $total = 0 ?>
                                 @foreach ($keranjang as $key=> $item)
-                                <?php $total+=$item->obat_racik->harga ?>
                                 <tr>
-                                    <input type="hidden" value="{{ $item->barang->id }}" name="idbarang[]">
+                                    <input type="hidden" value="{{ $item->obat_racik->id }}" name="idbarang[]">
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $item->obat_racik->nama_racik }}</td>
                                     <td>
@@ -81,14 +80,14 @@
                                         @endphp
                                         @foreach ($item->obat_racik->barangs as $barang)
                                         @php
-                                            $harga_racik += $barang->harga_jual_tablet * $barang->pivot->jumlah;                                            
+                                            $harga_racik += $barang->harga_jual_tablet * $barang->pivot->jumlah;                   
                                         @endphp
                                             <span class="badge badge-primary" style="font-family: 'Nunito', sans-serif; padding: .35em .7em;">{{ $barang->nama_barang }} (<span class="jumlah_stock_{{ $key }}" stock="{{ $barang->pivot->jumlah }}">{{ $barang->pivot->jumlah }}</span>)</span>
                                         @endforeach
                                     </td>
                                     <td class="display_stok{{ $key }}">{{ $item->obat_racik->stok }}</td>
                                     <td style="width: 10%">
-                                        <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->barang->stok }}, {{ $item->barang->harga_jual }})">
+                                        <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->obat_racik->stok }}, {{ $harga_racik }})">
                                     </td>
                                     <td price="{{ $harga_racik }}" class="display_harga{{ $key }}">{{ "Rp. ".number_format($harga_racik, 2 , ',' , '.' ) }}</td>
                                     <td id="subtotal{{ $key }}" class="subtotal" price="{{ $harga_racik }}">{{ "Rp. ".number_format($harga_racik, 2 , ',' , '.' ) }}</td>
@@ -96,6 +95,7 @@
                                         <button class='btn btn-danger btn-sm' type="button"><a style='color: white' onclick="delete_keranjang({{ $item->id }})"><i class='bi bi-trash-fill'></i></a></button>
                                     </td>
                                 </tr>
+                                <?php $total+=$harga_racik ?>
                                 @endforeach
                             </tbody>
                             <tfoot>
@@ -324,7 +324,7 @@
         $.ajax({
             url: '/saka/transaksi/obat-racik/add-keranjang',
             type: "POST",
-            data: {"id_barang": id, "type": 3},
+            data: {"id_racik": id, "type": 3},
             success: function (response) {
                 setTimeout(function () {
                     $('#modal_loading').modal('hide');

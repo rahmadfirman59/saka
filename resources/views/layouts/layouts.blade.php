@@ -130,6 +130,7 @@
                         <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'penjualan') active @endif" href="{{ route('transaksi.penjualan') }}">Penjualan</a>
                         <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'pembelian') active @endif" href="{{ route('transaksi.pembelian') }}">Pembelian</a>
                         <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'obat-racik') active @endif" href="{{ route('transaksi.obat-racik') }}">Obat Racik</a>
+                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'pembayaran-tempo') active @endif" href="{{ route('transaksi.pembayaran-tempo') }}">Pembayaran Tempo</a>
                         
                     </div>
                 </div>

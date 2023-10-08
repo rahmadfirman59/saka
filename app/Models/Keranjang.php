@@ -17,7 +17,7 @@ class Keranjang extends Model
     }
 
     public function obat_racik(){
-        return $this->belongsTo(ObatRacik::class, 'id_barang', 'id');
+        return $this->belongsTo(ObatRacik::class, 'id_racik', 'id');
     }
     
 }

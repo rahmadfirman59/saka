@@ -77,6 +77,7 @@ class TransaksiPenjualanController extends Controller
 
         $sub_total = 0;
         $barang = Barang::all();
+
         
         DB::beginTransaction();
 
@@ -149,7 +150,6 @@ class TransaksiPenjualanController extends Controller
             $hpp = 0;
             foreach($request->idbarang as $key => $item){
                 //Ubah Stok Barang
-                
                 $sub_total = 0;
                 $barang_single = $barang->firstWhere('id', $item);
                 if(!isset($barang_single->jumlah_grosir) || $barang_single->jumlah_grosir < 1){
@@ -161,21 +161,34 @@ class TransaksiPenjualanController extends Controller
                 if($request->tipe[$key] == 0){
                     $stok = $barang_single->stok - $request->qty[$key];
                     $stok_grosir = floor($stok / $barang_single->jumlah_grosir);
-                    $sub_total += $barang->firstWhere('id', $item)->harga_jual * $request->qty[$key];
-                    $harga = $barang->firstWhere('id', $item)->harga_jual;
-                    $hpp += $barang_single->harga_beli * $request->qty[$key];
+                    if($request->is_markup[$key] == 1){
+                        $barang_new = $barang->firstWhere('id', $request->idbarang[$key -1]);
+                        $sub_total += $barang_new->harga_jual * $request->qty[$key];
+                        $harga = $barang_new->harga_jual;
+                        $hpp += $barang_new->harga_beli * $request->qty[$key];
+                    } else {
+                        $sub_total += $barang_single->harga_jual * $request->qty[$key];
+                        $harga = $barang_single->harga_jual;
+                        $hpp += $barang_single->harga_beli * $request->qty[$key];
+                    }
                 } else{
                     $stok = $barang_single->stok - ($request->qty[$key] * $barang_single->jumlah_grosir);
                     $stok_grosir = $barang_single->stok_grosir - $request->qty[$key];
-                    $sub_total += $barang->firstWhere('id', $item)->harga_jual_grosir * $request->qty[$key];
-                    $harga = $barang->firstWhere('id', $item)->harga_jual_grosir;
-                    $hpp += $barang_single->harga_beli_grosir * $request->qty[$key];
+                    if($request->is_markup[$key] == 1){
+                        $barang_new = $barang->firstWhere('id', $request->idbarang[$key-1]);
+                        $sub_total += $barang_new->harga_jual_grosir * $request->qty[$key];
+                        $harga = $barang_new->harga_jual_grosir;
+                        $hpp += $barang_new->harga_beli_grosir * $request->qty[$key];
+                    } else {
+                        $sub_total += $barang_single->harga_jual_grosir * $request->qty[$key];
+                        $harga = $barang_single->harga_jual_grosir;
+                        $hpp += $barang_single->harga_beli_grosir * $request->qty[$key];
+                    }
                 }
 
                 $barang_single->stok = $stok;
                 $barang_single->stok_grosir = $stok_grosir;
                 $barang_single->save();
-
 
                 Penjualan::create([
                     'id_barang' => $item,

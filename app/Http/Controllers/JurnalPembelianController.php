@@ -23,6 +23,16 @@ class JurnalPembelianController extends Controller
         return view('jurnal.jurnal-pembelian', $data);
     }
 
+    public function pembayaran_tempo(){
+        $data['transaksi'] = MasterTransaksi::whereHas('pembelian', function ($query) {
+            $query->where('status', 2);
+        })->with(['pembelian' => function ($query) {
+            $query->select('no_faktur', 'id_transaksi', 'id_supplier', 'status', 'tgl_tempo')->with('supplier');
+        }])->where('type', 1)->get();
+
+        return view('transaksi.pembayaran-tempo', $data);
+    }
+
     public function detail_pembelian ($id){
         $data['transaksi'] = MasterTransaksi::where('type', 1)->find($id);
         $data['pembelian'] = Pembelian::with('supplier')->with('barang')->where('id_transaksi', $data['transaksi']->id)->get();

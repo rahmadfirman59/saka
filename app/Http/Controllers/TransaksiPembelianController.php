@@ -35,14 +35,22 @@ class TransaksiPembelianController extends Controller
             'harga.*' => 'required',
             'ed.*' => 'required',
             'nm_supplier' => 'required',
-            'no_faktur' => 'required',
+            'no_faktur' => 'required||unique:pembelian,no_faktur',
             'tgl_faktur' => 'required',
             'status' => 'required',
             'kode_transaksi' => 'required',
+            'tgl_tempo' => 'required_if:status,2'
         ];
 
-        foreach ($request->idbarang as $index => $idbarang) {
-            $rules['no_batch.' . $index] = 'required|unique:barang,no_batch,' . $idbarang;
+        if(isset($request->idbarang)){
+            foreach ($request->idbarang as $index => $idbarang) {
+                $rules['no_batch.' . $index] = 'required|unique:barang,no_batch,' . $idbarang;
+            }
+        } else {
+            return [
+                'status' => 300,
+                'message' => "Keranjang Masih Kosong..!"
+            ];
         }
 
         $validator = Validator::make($request->all(), $rules, 

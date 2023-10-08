@@ -88,9 +88,11 @@
                                     </td>
                                     @if(array_key_exists($item->barang->batch_prefix, $lastBatchPrefixes))
                                     <?php $total+=$lastBatchPrefixes[$item->barang->batch_prefix]; ?>
+                                    <input type="hidden" name="is_markup[]" value="1">
                                     <td price="{{ $lastBatchPrefixes[$item->barang->batch_prefix] }}" class="display_harga{{ $key }} text-success-custom" data-toggle="tooltip" data-placement="top" title="Markup Harga Jual Terbaru">{{ "Rp. ".number_format($lastBatchPrefixes[$item->barang->batch_prefix], 2 , ',' , '.' ) }}</td>
                                     <td id="subtotal{{ $key }}" class="subtotal text-success-custom" data-toggle="tooltip" data-placement="top" title="Markup Harga Jual Terbaru" price="{{ $lastBatchPrefixes[$item->barang->batch_prefix] }}">{{ "Rp. ".number_format($lastBatchPrefixes[$item->barang->batch_prefix], 2 , ',' , '.' ) }}</td>
                                     @else 
+                                    <input type="hidden" name="is_markup[]" value="0">
                                     @php
                                         $total+=$item->barang->harga_jual;
                                         $lastBatchPrefixes[$item->barang->batch_prefix] = $item->barang->harga_jual; 

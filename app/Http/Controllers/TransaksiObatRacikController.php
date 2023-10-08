@@ -28,12 +28,13 @@ class TransaksiObatRacikController extends Controller
         $data['count_obat_racik'] = ObatRacik::count() + 1;
         $data['obat_racik'] = ObatRacik::with('barangs')->orderBy('created_at', 'desc')->get();
         $data['keranjang'] = Keranjang::with('obat_racik.barangs')->where('created_by', Session::get('useractive')->id)->where('type', 3)->get();
+        // return $data['keranjang'];
         return view('transaksi.obat-racik', $data);
     }
 
     public function add_keranjang(Request $request){
         $validator = Validator::make($request->all(), [
-            'id_barang' => 'required',
+            'id_racik' => 'required',
             'type' => 'required',
         ]);
 
@@ -44,7 +45,7 @@ class TransaksiObatRacikController extends Controller
             ];
         }
 
-        $keranjang = Keranjang::where('type', 3)->where('id_barang', $request->id_barang)->count();
+        $keranjang = Keranjang::where('type', 3)->where('id_racik', $request->id_racik)->count();
         if($keranjang > 0){
             return [
                 'status' => 300,
@@ -171,7 +172,7 @@ class TransaksiObatRacikController extends Controller
                 $sub_total += $harga * $request->qty[$keys];
 
                 Penjualan::create([
-                    'id_barang' => $item,
+                    'id_racik' => $item,
                     'jumlah' => $request->qty[$keys],
                     'harga' => $harga,
                     'subtotal' => $sub_total,
@@ -232,8 +233,7 @@ class TransaksiObatRacikController extends Controller
                 'jumlah' => $request->total_belanja
             ]);
             
-            Keranjang::where('created_by', Session::get('useractive')->id)->where('type', 3)->whereIn('id_barang', $request->idbarang)->delete();
-            
+            Keranjang::where('created_by', Session::get('useractive')->id)->where('type', 3)->whereIn('id_racik', $request->idbarang)->delete();
             DB::commit();
             return [
                 'status' => 200,

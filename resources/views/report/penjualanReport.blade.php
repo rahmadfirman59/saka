@@ -114,11 +114,17 @@
 										<td align="center">{{ $key + 1 }}</td>
 										<td align="center">{{ $item->obat_racik->nama_racik }}</td>
 										<td align="center">
+											@php
+												$harga_racik = 0;
+											@endphp
 											@foreach ($item->obat_racik->barangs as $barang)
+												@php
+													$harga_racik += $barang->harga_jual_tablet * $barang->pivot->jumlah;
+												@endphp
 												<span class="badge badge-primary" style="font-family: 'Nunito', sans-serif; padding: .35em .7em;">{{ $barang->nama_barang }} ({{ $barang->pivot->jumlah }})</span>
 											@endforeach
 										</td>
-										<td align="center">{{ $item->obat_racik->harga }}</td>
+										<td align="center">{{ $harga_racik }}</td>
 										<td align="center">{{ $item->jumlah }}</td>
 										<td align="center"><?php echo "Rp&nbsp". number_format($item->subtotal,2,'.',','); ?></td>
 									</tr>

@@ -90,7 +90,7 @@
                                         <input name="qty_grosir[]" type="number" id="qty_grosir{{ $key }}" onchange="change_item_box(this.value, {{ $key }})" value="1" class="form-control text-center">
                                     </td>
                                     <td><input type="text" class="form-control" style="font-size: .9rem" id="harga{{ $key }}" onchange="change_harga(this.value, {{ $key }})" name="harga[]"></td>
-                                    <td><input type="date" style="font-size: .8rem; height: 38px;" class="form-control" name="ed[]"></td>
+                                    <td><input type="date" style="font-size: .8rem; height: 38px;" class="form-control ed_custom" name="ed[]"></td>
                                     <td style="white-space: nowrap" id="subtotal{{ $key }}" class="subtotal" price="0"><?php echo "Rp. ".number_format(0, 2 , ',' , '.' ) ?></td>
                                     <td style="width: 10%">
                                         <button class='btn btn-danger btn-sm' type="button"><a style='color: white' onclick="delete_keranjang({{ $item->id }})"><i class='bi bi-trash-fill'></i></a></button>
@@ -164,7 +164,7 @@
                                 </div>
                                 <div>
                                     <label class="checkbox-inline"><input name='status' id="tempo" type='radio' value='2'></label>
-                                    <label>Bank</label>
+                                    <label>Tempo</label>
                                 </div>
                             </div>
                         </div>
@@ -205,9 +205,9 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Barang</th>
+                                <th>No.Batch</th>
                                 <th>Satuan Grosir</th>
                                 <th>Stok</th>
-                                <th>Satuan</th>
                                 <th>Kadaluarsa</th>
                                 <th>Aksi</th>
                             </tr>
@@ -218,13 +218,13 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>         
                                 <td>{{ $item->nama_barang }}</td>        
+                                <td>{{ $item->no_batch }}</td>                           
                                 @if(isset($item->satuan_grosir))                   
                                 <td>{{ $item->satuan_grosir . '(' . $item->jumlah_grosir .')' }}</td>                           
                                 @else
                                 <td></td>
                                 @endif
                                 <td>{{ $item->stok }}</td>                           
-                                <td>{{ $item->satuan }}</td>                           
                                 <td>{{ $item->ed }}</td>                           
                                 <td><button onclick="add_barang({{ $item->id }}, {{ $item->stok }})" class='btn btn-info btn-sm mr-1 mx-3'><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
                             </tr>
@@ -287,6 +287,24 @@
                 }
 			],
 		});
+
+        // Get the current date
+        const currentDate = new Date();
+
+        // Add 2 years to the current date
+        currentDate.setFullYear(currentDate.getFullYear() + 2);
+
+        // Format the date as "YYYY-MM-DD"
+        const formattedDate = currentDate.toISOString().split('T')[0];
+
+        // Get all elements with class "ed_custom"
+        const elements = document.getElementsByClassName("ed_custom");
+
+        // Loop through each element and set its default value
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].value = formattedDate;
+        }
+
 	});
 
     $("#tunai").click(function () {
