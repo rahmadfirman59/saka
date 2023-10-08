@@ -150,14 +150,14 @@
 								@endforeach
 								<br>
 							</tbody>
-                            <tbody id="tbody_laba">	
+              <tbody id="tbody_laba">	
 								<tr class="body">
 									<td colspan='9'><div align="right">Laba Kotor</div></td>
 									<td align="right"><?php  ?></td>
 									<td align="right"><?php  echo "Rp.".number_format($laba,2,'.',','); ?></td>
 								</tr>
 							</tbody>
-                            <tbody id="tbody_akun_beban">	
+              <tbody id="tbody_akun_beban">	
 								@foreach ($akun_beban as $beban )
 									<tr class="body">
 										<td colspan='9'><div align="left">{{ $beban->nama_akun }}</div></td>

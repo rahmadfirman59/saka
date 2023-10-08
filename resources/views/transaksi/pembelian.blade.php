@@ -168,12 +168,12 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label>Jatuh Tempo</label>
                                 <input type="date" name="tgl_tempo" disabled id="tgl_tempo" value="" class="form-control">
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
             </div>

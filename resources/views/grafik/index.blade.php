@@ -36,7 +36,7 @@
             <h6 class="m-0 card-title">Grafik Keuangan Apotek</h6>
         </div>
         <div class="card-body">
-            <div id="reportsChart"></div>
+            <div id="chart_keuangan"></div>
         </div>
     </div>
 </div>
@@ -47,114 +47,199 @@
 
 <script>
 
-document.addEventListener("DOMContentLoaded", () => {
-    initialize_chart();
-    fetchDataAndRefreshChart();
+// document.addEventListener("DOMContentLoaded", () => {
+//     initialize_chart();
+//     fetchDataAndRefreshChart();
+// });
+
+// let chart;
+
+// function initialize_chart(){
+//     let options = {
+//         chart: {
+//             height: 350,
+//             type: 'area',
+//             toolbar: {
+//             show: false
+//             },
+//         },
+//         markers: {
+//             size: 4
+//         },
+//         colors: ['#4154f1', '#2eca6a', '#ff771d', '#dc3545'],
+//         fill: {
+//             type: "gradient",
+//             gradient: {
+//             shadeIntensity: 1,
+//             opacityFrom: 0.3,
+//             opacityTo: 0.4,
+//             stops: [0, 90, 100]
+//             }
+//         },
+//         dataLabels: {
+//             enabled: false
+//         },
+//         xaxis: {
+//             categories: [ 'Jun', 'Jul', 'Aug','Sep','Oct', 'Nov', 'Dec','Jan', 'Feb', 'Mar','Apr','May',  ]
+//         },
+//         yaxis: {
+//             title: {
+//                 text: 'Jumlah'
+//             }
+//         },
+//         tooltip: {
+//             formatter: function() {
+//                 return '<b>'+ this.series.name +'</b><br/>'+
+//                     this.x +': '+'Rp.'+ this.y ;
+//             }
+//         },
+//         plotOptions: {
+//             line: {
+//                 dataLabels: {
+//                     enabled: true
+//                 },
+//                 enableMouseTracking: true
+//             }
+//         },
+//         series: [
+//         {
+//             name: 'Penjualan',
+//             data: [0,15]
+//         }, {
+//             name: 'Pembelian',
+//             data: [0, 120]
+//         },{
+//             name: 'Laba',
+//             data: [0, 18]
+//         },{
+//             name: 'Hutang',
+//             data: [0, 7]
+//         }]
+//     }
+    
+//     chart = new ApexCharts(document.querySelector("#reportsChart"), options);
+//     return chart.render();
+// }
+
+$.ajax({
+    url: '/saka/grafik/get-data',
+    type: 'GET',
+    dataType: 'json',
+    success: function (data) {
+        // Extract month names and totals from the data
+        const months = data.month;
+        const totals113 = data.kode_akun_113;
+        const totals411 = data.kode_akun_411;
+        const totals211 = data.kode_akun_211;
+        const totalsLaba = data.total_laba;
+
+        // Create and render the ApexCharts chart
+
+        const options = {
+            chart: {
+                height: 350,
+                type: 'area',
+                toolbar: {
+                show: false
+                },
+            },
+            markers: {
+                size: 4
+            },
+            colors: ['#4154f1', '#2eca6a', '#ff771d', '#dc3545'],
+            fill: {
+                type: "gradient",
+                gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.3,
+                opacityTo: 0.4,
+                stops: [0, 90, 100]
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            xaxis: {
+                // categories: [ 'Jun', 'Jul', 'Aug','Sep','Oct', 'Nov', 'Dec','Jan', 'Feb', 'Mar','Apr','May',  ]
+                categories: months, // Month names in English
+            },
+            yaxis: {
+                title: {
+                    text: 'Jumlah'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': '+'Rp.'+ this.y ;
+                }
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: true
+                }
+            },
+            series: [
+            {
+                name: 'Penjualan',
+                data: totals411
+            }, {
+                name: 'Pembelian',
+                data: totals113,
+            },{
+                name: 'Laba',
+                data: totalsLaba
+            },{
+                name: 'Hutang',
+                data: totals211
+            }]
+        }
+
+        const chart = new ApexCharts(document.querySelector('#chart_keuangan'), options);
+        chart.render();
+    },
+    error: function (error) {
+        console.error(error);
+    },
 });
 
-let chart;
+// function fetchDataAndRefreshChart(){
+//     $.ajax({
+//         url: '/saka/grafik/get-data',
+//         type: 'GET',
+//         dataType: 'json',
+//         async: true,
+//         cache: false,
+//         success: function (data) {
+//             // Verify that data is available and is an array
+//             if (Array.isArray(data) && data.length > 0) {
+//                 const chartData = data;
 
-function initialize_chart(){
-    let options = {
-        chart: {
-            height: 350,
-            type: 'area',
-            toolbar: {
-            show: false
-            },
-        },
-        markers: {
-            size: 4
-        },
-        colors: ['#4154f1', '#2eca6a', '#ff771d', '#dc3545'],
-        fill: {
-            type: "gradient",
-            gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.3,
-            opacityTo: 0.4,
-            stops: [0, 90, 100]
-            }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        xaxis: {
-            categories: [ 'Jun', 'Jul', 'Aug','Sep','Oct', 'Nov', 'Dec','Jan', 'Feb', 'Mar','Apr','May',  ]
-        },
-        yaxis: {
-            title: {
-                text: 'Jumlah'
-            }
-        },
-        tooltip: {
-            formatter: function() {
-                return '<b>'+ this.series.name +'</b><br/>'+
-                    this.x +': '+'Rp.'+ this.y ;
-            }
-        },
-        plotOptions: {
-            line: {
-                dataLabels: {
-                    enabled: true
-                },
-                enableMouseTracking: true
-            }
-        },
-        series: [
-        {
-            name: 'Penjualan',
-            data: [0,15]
-        }, {
-            name: 'Pembelian',
-            data: [0, 120]
-        },{
-            name: 'Laba',
-            data: [0, 18]
-        },{
-            name: 'Hutang',
-            data: [0, 7]
-        }]
-    }
-    
-    chart = new ApexCharts(document.querySelector("#reportsChart"), options);
-    return chart.render();
-}
+//                 // Example: Update the chart series data
 
-function fetchDataAndRefreshChart(){
-    $.ajax({
-        url: '/saka/grafik/get-data',
-        type: 'GET',
-        dataType: 'json',
-        async: true,
-        cache: false,
-        success: function (data) {
-            // Verify that data is available and is an array
-            if (Array.isArray(data) && data.length > 0) {
-                const chartData = data;
-
-                // Example: Update the chart series data
-
-                chart.updateSeries([
-                    {
-                        name: 'Penjualan',
-                        data: chartData.map(item => item.kode_akun_411 || 0),
-                    },
-                    {
-                        name: 'Pembelian',
-                        data: chartData.map(item => item.kode_akun_113 || 0),
-                    },
-                ]);
-            } else {
-                console.error("Data received from the server is empty, not an array, or invalid.");
-            }
-        },
-        error: function (error) {
-            // Handle any errors related to the AJAX request
-            console.error("Error in AJAX request:", error);
-        }
-    });
-}
+//                 chart.updateSeries([
+//                     {
+//                         name: 'Penjualan',
+//                         data: chartData.map(item => item.kode_akun_411 || 0),
+//                     },
+//                     {
+//                         name: 'Pembelian',
+//                         data: chartData.map(item => item.kode_akun_113 || 0),
+//                     },
+//                 ]);
+//             } else {
+//                 console.error("Data received from the server is empty, not an array, or invalid.");
+//             }
+//         },
+//         error: function (error) {
+//             // Handle any errors related to the AJAX request
+//             console.error("Error in AJAX request:", error);
+//         }
+//     });
+// }
 </script>
 @endsection
 
