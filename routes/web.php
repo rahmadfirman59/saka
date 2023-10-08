@@ -36,7 +36,7 @@ Route::post('login', [AuthController::class, 'login'])->name('post.login');
 Route::get('login', [AuthController::class, 'index'])->name('login');
 
 Route::group(['middleware' => ['ceklogin']], function () {
-    Route::get('/', function(){
+    Route::get('/', function () {
         return redirect()->route('dashboard');
     });
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -166,7 +166,7 @@ Route::group(['middleware' => ['ceklogin']], function () {
     Route::prefix('laporan')->group(function () {
         Route::prefix('rugi-laba')->group(function () {
             Route::get('/', [LaporanController::class, 'rugi_laba'])->name('laporan.rugiLaba');
-            Route::post('/change_priode', [LaporanController::class, 'change_priode']);
+            Route::post('/change-priode', [LaporanController::class, 'rugi_laba_change_priode']);
         });
         Route::prefix('neraca')->group(function () {
             Route::get('/', [LaporanController::class, 'neraca'])->name('laporan.neraca');
