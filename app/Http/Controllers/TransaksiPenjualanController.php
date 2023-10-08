@@ -24,8 +24,24 @@ class TransaksiPenjualanController extends Controller
         $data['dokters'] = Dokter::all();
         $data['pasiens'] = Pasien::all();
         $data['count_penjualan'] = Penjualan::count() + 1;
-        $data['barang'] = Barang::where('is_delete', 0)->orderBy('nama_barang', 'asc')->get();
-        $data['keranjang'] = Keranjang::with('barang')->where('created_by', Session::get('useractive')->id)->where('type', 2)->get();
+        // $data['barang'] = Barang::where('is_delete', 0)->orderBy('nama_barang', 'asc')->get();
+        $data['barang'] = DB::table('barang')
+                        ->where('is_delete', 0)
+                        ->join(DB::raw('(SELECT SUBSTRING(no_batch, 1, 4) as batch_prefix FROM barang GROUP BY batch_prefix) as sub'), function($join) {
+                            $join->on('barang.no_batch', 'LIKE', DB::raw('CONCAT(sub.batch_prefix, "%")'));
+                        })
+                        ->orderBy('batch_prefix')
+                        ->orderBy('no_batch')
+                        ->orderBy('created_at', 'ASC')
+                        ->get();
+                        
+        $data['keranjang'] = Keranjang::with(['barang' => function ($query) {
+                            $query->join(DB::raw('(SELECT SUBSTRING(no_batch, 1, 4) as batch_prefix FROM barang GROUP BY batch_prefix) as sub'), function($join) {
+                                $join->on('barang.no_batch', 'LIKE', DB::raw('CONCAT(sub.batch_prefix, "%")'));
+                            });
+                        }])
+                        ->where('created_by', Session::get('useractive')->id)->where('type', 2)->orderBy(Barang::select('no_batch')->whereColumn('id_barang', 'barang.id'), 'desc')->get();
+    // return $data['keranjang'];
         return view('transaksi.penjualan', $data);
     }
 
@@ -273,8 +289,16 @@ class TransaksiPenjualanController extends Controller
         ];
     }
 
-    public function get_keranjang($id){
-        $data = Keranjang::where('id', $id)->with('barang')->get();
+    public function get_keranjang($id, $batch_prefix){
+        $check_batch_prefix =  Keranjang::whereHas('barang', function ($query) use ($batch_prefix) {
+            $query->whereRaw('LEFT(no_batch, 4) = ?', [$batch_prefix]);
+        })->orderBy(Barang::select('no_batch')->whereColumn('id_barang', 'barang.id'), 'desc')->get();
+        
+        if(count($check_batch_prefix) > 1){
+            $data = Keranjang::where('id', $check_batch_prefix[0]['id'])->with('barang')->get();
+        } else {
+            $data = Keranjang::where('id', $id)->with('barang')->get();
+        }
         return $data;
     }
 

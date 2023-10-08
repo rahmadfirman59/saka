@@ -67,6 +67,18 @@ select.is-invalid {
   text-overflow: '';
 }
 
+table .tr-danger td {
+  color: red;
+}
+
+.tooltip{
+  z-index: 1000;
+}
+
+.text-success-custom{
+  color: #41a929;
+}
+
 .section-badge-success::before {
     content: '';
     border-radius: 5px;

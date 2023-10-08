@@ -17,17 +17,19 @@ class GrafikController extends Controller
         $data = DB::table('transaksi')
             ->select(
                 DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
+                DB::raw('MONTH(created_at) as month_number'),
                 DB::raw('SUM(CASE WHEN kode_akun = 113 THEN debt - IFNULL(potongan, 0) ELSE 0 END) as total_113'),
                 DB::raw('SUM(CASE WHEN kode_akun = 411 THEN kredit - IFNULL(potongan, 0) ELSE 0 END) as total_411'),
                 DB::raw('SUM(CASE WHEN kode_akun = 211 THEN kredit - IFNULL(potongan, 0) ELSE 0 END) as total_211'),
                 DB::raw('SUM(CASE WHEN kode_akun = 411 THEN kredit - IFNULL(potongan, 0) ELSE 0 END - CASE WHEN kode_akun = 119 THEN debt - IFNULL(potongan, 0) ELSE 0 END) as total_laba')
             )
-            ->groupBy('month')
+            ->groupBy('month', 'month_number')
             ->orderBy('month', 'ASC')
             ->get();
 
-                $formattedData = [
+        $formattedData = [
             'month' => [],
+            'month_number' => [],
             'kode_akun_113' => [],
             'kode_akun_411' => [],
             'kode_akun_211' => [],
@@ -36,6 +38,7 @@ class GrafikController extends Controller
 
         foreach ($data as $item) {
             $formattedData['month'][] = strftime('%B %Y', strtotime($item->month)); // Format month name in English
+            $formattedData['month_number'][] = $item->month_number; // Format month name in English
             $formattedData['kode_akun_113'][] = $item->total_113;
             $formattedData['kode_akun_411'][] = $item->total_411;
             $formattedData['kode_akun_211'][] = $item->total_211;

@@ -29,7 +29,7 @@ class TransaksiPembelianController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'idbarang.*' => 'required',
             'qty.*' => 'required',
             'harga.*' => 'required',
@@ -39,8 +39,14 @@ class TransaksiPembelianController extends Controller
             'tgl_faktur' => 'required',
             'status' => 'required',
             'kode_transaksi' => 'required',
-            'no_batch.*' => 'required',
-        ], [
+        ];
+
+        foreach ($request->idbarang as $index => $idbarang) {
+            $rules['no_batch.' . $index] = 'required|unique:barang,no_batch,' . $idbarang;
+        }
+
+        $validator = Validator::make($request->all(), $rules, 
+        [
             'harga.*.required' => 'Harga Barang Harus Diisi',
             'ed.*.required' => 'Kadaluarsa Harus Diisi',
             'qty.*.required' => 'Quantity Barang Harus Diisi',

@@ -58,8 +58,8 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Barang</th>
+                                    <th>No. Batch</th>
                                     <th>Jenis Penjualan</th>
-                                    <th>Satuan</th>
                                     <th>Stok</th>
                                     <th>Jumlah</th>
                                     <th>Harga</th>
@@ -67,33 +67,44 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-        
                             <tbody>
-                                <?php $total = 0 ?>
+                                <?php $total = 0; $id_keranjang = []; $lastBatchPrefixes = []; ?>
                                 @foreach ($keranjang as $key=> $item)
-                                <?php $total+=$item->barang->harga_jual ?>
+                                <?php array_push($id_keranjang, $item->id_barang) ?>
                                 <tr>
                                     <input type="hidden" value="{{ $item->barang->id }}" name="idbarang[]">
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $item->barang->nama_barang }}</td>
+                                    <td>{{ $item->barang->no_batch }}</td>
                                     <td>
-                                        <select name="tipe[]" onchange="ubah_tipe(this.value, {{ $key }}, {{ $item->id }})" id="tipe{{ $key }}" class="form-control">
+                                        <select name="tipe[]" onchange="ubah_tipe(this.value, {{ $key }}, {{ $item->id }}, '{{ $item->barang->batch_prefix }}')" id="tipe{{ $key }}" class="form-control">
                                             <option value="0" selected>Satuan</option>
                                             <option value="1">Grosir</option>
                                         </select>
                                     </td>
-                                    <td class="display_satuan{{ $key }}">{{ $item->barang->satuan }}</td>
                                     <td class="display_stok{{ $key }}">{{ $item->barang->stok }}</td>
                                     <td style="width: 10%">
                                         <input name="qty[]" type="number" id="qty{{ $key }}" value="1" class="form-control text-center" onchange="change_qty(this.value, {{ $key }}, {{ $item->barang->stok }}, {{ $item->barang->harga_jual }})">
                                     </td>
+                                    @if(array_key_exists($item->barang->batch_prefix, $lastBatchPrefixes))
+                                    <?php $total+=$lastBatchPrefixes[$item->barang->batch_prefix]; ?>
+                                    <td price="{{ $lastBatchPrefixes[$item->barang->batch_prefix] }}" class="display_harga{{ $key }} text-success-custom" data-toggle="tooltip" data-placement="top" title="Markup Harga Jual Terbaru">{{ "Rp. ".number_format($lastBatchPrefixes[$item->barang->batch_prefix], 2 , ',' , '.' ) }}</td>
+                                    <td id="subtotal{{ $key }}" class="subtotal text-success-custom" data-toggle="tooltip" data-placement="top" title="Markup Harga Jual Terbaru" price="{{ $lastBatchPrefixes[$item->barang->batch_prefix] }}">{{ "Rp. ".number_format($lastBatchPrefixes[$item->barang->batch_prefix], 2 , ',' , '.' ) }}</td>
+                                    @else 
+                                    @php
+                                        $total+=$item->barang->harga_jual;
+                                        $lastBatchPrefixes[$item->barang->batch_prefix] = $item->barang->harga_jual; 
+                                    @endphp 
                                     <td price="{{ $item->barang->harga_jual }}" class="display_harga{{ $key }}">{{ "Rp. ".number_format($item->barang->harga_jual, 2 , ',' , '.' ) }}</td>
                                     <td id="subtotal{{ $key }}" class="subtotal" price="{{ $item->barang->harga_jual }}">{{ "Rp. ".number_format($item->barang->harga_jual, 2 , ',' , '.' ) }}</td>
+                                    @endif
                                     <td>
                                         <button class='btn btn-danger btn-sm' type="button"><a style='color: white' onclick="delete_keranjang({{ $item->id }})"><i class='bi bi-trash-fill'></i></a></button>
                                     </td>
                                 </tr>
                                 @endforeach
+
+                               
                             </tbody>
                             <tfoot>
                                 <tr>
@@ -235,6 +246,9 @@
                         </thead>
     
                         <tbody>
+                            @php
+                                $firstBatchPrefixes = [];
+                            @endphp
                             @foreach ($barang as $key=> $item)
                             <tr>
                                 <td>{{ $key + 1 }}</td>         
@@ -242,11 +256,20 @@
                                 <td>{{ $item->no_batch }}</td>                           
                                 <td>{{ $item->harga_jual }}</td>                           
                                 <td>{{ $item->stok }}</td>                              
-                                <td>{{ $item->ed }}</td>           
-                                @if($item->ed > \Carbon\Carbon::today()->addDays(30)->format('Y-m-d'))                
-                                <td><button class='btn btn-info btn-sm mr-1 mx-3' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
+                                <td>{{ $item->ed }}</td>        
+                                @if (in_array($item->batch_prefix, $firstBatchPrefixes))
+                                    <td><button class='btn btn-warning btn-sm mr-1 mx-3' onclick="add_barang_validation()"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>
+                                @elseif(in_array($item->id, $id_keranjang))
+                                    <td><p class="text-danger m-0" style="font-size: .8rem">Barang Sudah Didalam Keranjang</p></td>
                                 @else
-                                <td><p class="text-danger"; style="font-size: .9rem">Barang Sudah Expired</p></td>
+                                    @if($item->ed > \Carbon\Carbon::today()->addDays(90)->format('Y-m-d'))                
+                                    <td><button class='btn btn-info btn-sm mr-1 mx-3' onclick="add_barang({{ $item->id }}, {{ $item->stok }})"><a style='color: white;'><i class='fa fa-plus'></i></a></button></td>                           
+                                    @php
+                                        array_Push($firstBatchPrefixes, $item->batch_prefix)
+                                    @endphp
+                                    @else
+                                    <td><p class="text-danger"; style="font-size: .9rem">Barang Sudah Expired</p></td>
+                                    @endif
                                 @endif
                             </tr>
                             @endforeach
@@ -310,11 +333,11 @@
         $("#modal_barang").modal('show');
     }
 
-    function ubah_tipe(val, id, id_keranjang){
+    function ubah_tipe(val, id, id_keranjang, batch_prefix){
         $('#qty'+id).val(1);
         $('#modal_loading').modal('show');
         $.ajax({
-            url: '/saka/transaksi/penjualan/get-keranjang/' + id_keranjang,
+            url: '/saka/transaksi/penjualan/get-keranjang/' + id_keranjang + '/' + batch_prefix,
             type: "GET",
             success: function (response) {
                 setTimeout(function () {
@@ -323,8 +346,6 @@
                 let query_barang = response[0]['barang'];
                 let grosir
                 if(val == 1){grosir = '_grosir';}else{grosir = ''}
-
-                $('.display_satuan' + id).text(query_barang['satuan' + grosir]);
                 $('.display_stok' + id).text(query_barang['stok' + grosir]);
                 $('.display_harga' + id).text(fungsiRupiah(query_barang['harga_jual' + grosir]));
                 $('.display_harga' + id).attr('price', query_barang['harga_jual' + grosir]);
@@ -351,6 +372,14 @@
                 });
             }
         })
+    }
+
+    function add_barang_validation(){
+        swal({
+            icon: 'warning',
+            title: 'Dahulukan Barang Pertama'
+        });
+        return;
     }
 
     function add_barang(id, stok){

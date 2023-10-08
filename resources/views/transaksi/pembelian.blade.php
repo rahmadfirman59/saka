@@ -68,7 +68,7 @@
                                     <th>Nama Barang</th>
                                     <th style="width: 13%">No. Batch Dirubah</th>
                                     <th style="width: 9%">Jumlah</th>
-                                    <th style="width: 5%">Item Per Box</th>
+                                    <th style="width: 5%">PCS Per Box</th>
                                     <th>Harga</th>
                                     <th>Kadaluarsa</th>
                                     <th>Subtotal</th>

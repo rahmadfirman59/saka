@@ -128,10 +128,38 @@ $.ajax({
     success: function (data) {
         // Extract month names and totals from the data
         const months = data.month;
+        const months_number = data.month_number;
         const totals113 = data.kode_akun_113;
         const totals411 = data.kode_akun_411;
         const totals211 = data.kode_akun_211;
         const totalsLaba = data.total_laba;
+
+        if(months.length === 1 && totals113.length === 1 && totals411.length === 1 && totals211.length === 1 && totalsLaba.length === 1){      
+            const today = new Date();
+            const day = today.getDate();
+            const monthIndex = today.getMonth();
+            const year = today.getFullYear();
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            
+            const formattedDate = day + ' ' + monthNames[monthIndex] + ' ' + year;
+            if(months_number == monthIndex + 1 ){
+                months[0] = formattedDate;
+                months.unshift('1 ' + monthNames[monthIndex] + '' + year);
+                totals113.unshift(0);
+                totals411.unshift(0);
+                totals211.unshift(0);
+                totalsLaba.unshift(0);
+            } else if (months_number < monthIndex + 1){
+                months.push(formattedDate);
+                totals113.push(0);
+                totals411.push(0);
+                totals211.push(0);
+                totalsLaba.push(0);
+            }
+        }
 
         // Create and render the ApexCharts chart
 

@@ -51,9 +51,9 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Barang</th>
+                            <th>No. Batch</th>
                             <th>Jenis</th>
                             <th>Satuan</th>
-                            <th>No. Batch</th>
                             <th>Stok</th>
                             <th>Dibuat</th>
                             <th>Diubah</th>
@@ -63,12 +63,12 @@
 
                     <tbody>
                         @foreach ($barang as $key=> $item )
-                        <tr>
+                        <tr @if($item->stok > 0 && !isset($item->harga_jual)) data-toggle="tooltip" data-placement="top" title="Harga Jual Belum Terisi" class="tr-danger" @endif>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $item->nama_barang }}</td>
+                            <td>{{ $item->no_batch }}</td>
                             <td>{{ $item->jenis }}</td>
                             <td>{{ $item->satuan }}</td>
-                            <td>{{ $item->no_batch }}</td>
                             <td>{{ $item->stok }}</td>
                             <td>{{ isset($item->user_created_by->name) ? $item->user_created_by->name : '-' }}</td>
                             <td>{{ isset($item->user_updated_by->name) ? $item->user_updated_by->name : '-' }}</td>
@@ -116,7 +116,7 @@
                               <span class="d-flex text-danger invalid-feedback" id="invalid-no_batch-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label>Jenis</label>
                             <select id='jenis' name="jenis" class="form-control form-select">
@@ -132,7 +132,7 @@
                             <span class="d-flex text-danger invalid-feedback" id="invalid-jenis-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label>Satuan PCS</label>
                             <select name="satuan" onchange="change_satuan(this)" class="form-control form-select">
@@ -148,7 +148,7 @@
                             <span class="d-flex text-danger invalid-feedback" id="invalid-satuan-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label>Satuan BOX</label>
                             <select id='satuan_grosir' name="satuan_grosir" class="form-control form-select">
@@ -158,7 +158,7 @@
                             <span class="d-flex text-danger invalid-feedback" id="invalid-satuan_grosir-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label>Jumlah PCS Per BOX</label>
                               <input class="form-control" type="text" id="jumlah_grosir" name="jumlah_grosir" >
@@ -179,37 +179,30 @@
                               <span class="d-flex text-danger invalid-feedback" id="invalid-stok_minim-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label>Kadaluarsa</label>
-                            <input type="date" name="ed" id="ed_custom" class="form-control">
-                        </div>
-                    </div>
                 </div>
 
                 <div class="row mt-1 pt-3 container-persediaan-manual">
                     <div class="col-12">
                         <h5 style="font-size: 20px;font-weight: 700;color: #012970;">Tambah Persediaan Manual</h5>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label>Jumlah Barang</label>
+                            <label>Jumlah Grosir</label>
                             <input type="text" name="jumlah_barang" id="jumlah_barang" class="form-control">
                             <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_barang-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 col-lg-3">
-                        <div class="form-group">
-                            <label>Harga Beli</label>
-                            <input type="text" name="harga_beli" id="harga_beli" class="form-control">
-                            <span class="d-flex text-danger invalid-feedback" id="invalid-harga_beli-feedback"></span>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3 col-lg-3">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
                             <label>Harga Beli Grosir</label>
                             <input type="text" name="harga_beli_grosir" id="harga_beli_grosir" class="form-control">
                             <span class="d-flex text-danger invalid-feedback" id="invalid-harga_beli_grosir-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-5 col-lg-5">
+                        <div class="form-group">
+                            <label>Kadaluarsa</label>
+                            <input type="date" name="ed" id="ed_custom" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -321,7 +314,7 @@
                               <span class="d-flex text-danger invalid-feedback" id="invalid-jumlah_pecahan-feedback"></span>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 col-lg-3">
+                    <div class="col">
                         <div class="form-group">
                             <label>Sisa Tablet</label>
                               <input class="form-control" type="text" id="sisa_pecahan" name="sisa_pecahan" >
@@ -462,7 +455,7 @@
 			sDom: 'lBfrtip',
 			columnDefs: [{
 					className: 'text-center',
-					targets: [0,3,4,5,6,7]
+					targets: [0,2,3,4,5,6,7]
 				},
                 {
                     className: 'justify-content-center text-center', // Add this className
@@ -495,6 +488,7 @@
 				}
 			],
 		});
+            $('[data-toggle="tooltip"]').tooltip();
 	});
 
      $('#form_upload_edit').submit(function(e){
@@ -547,7 +541,7 @@
 
     function add(){
         $("#modal").modal('show');
-        $(".modal-title").text('Tambah Barang');
+        $("#modal .modal-title").text('Tambah Barang');
         $("#form_upload")[0].reset();
         reset_all_select();
         $('.invalid-feedback').text('');
@@ -592,6 +586,9 @@
        $("#modal_loading").modal('show');
        $('.invalid-feedback').text('');
        $('input, select').removeClass('is-invalid');
+       $('#harga_beli_tablet').parent().show()
+       $('#harga_jual_tablet').parent().show()
+       $('#jumlah_pecahan_edit').parent().parent().show()
        $.ajax({
           url : url,
           type: "GET",
@@ -629,6 +626,12 @@
                     }
                 }
              });
+             const ValidationSatuan = ["Ampul", "Tube", "Flatbot", "Botol"];
+             if (ValidationSatuan.includes(response['satuan'])) {
+                $('#harga_beli_tablet').parent().hide()
+                $('#harga_jual_tablet').parent().hide()
+                $('#jumlah_pecahan_edit').parent().parent().hide()
+             }
              $('#harga_beli_tablet').val((response['harga_beli'] / response['jumlah_pecahan']).toFixed());
           },error: function (jqXHR, textStatus, errorThrown){
              setTimeout(function () {  $('#modal_loading').modal('hide'); }, 500);

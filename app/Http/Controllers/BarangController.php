@@ -28,16 +28,15 @@ class BarangController extends Controller
     public function store_update(Request $request){
         $validator = Validator::make($request->all(), [
             'nama_barang' => 'required',
-            'no_batch' => 'required',
+            'no_batch' => 'required|unique:barang,no_batch,' . $request->id,
             'jenis' => 'required',
             'satuan_grosir' => 'required',
             'jumlah_grosir' => 'required|numeric',
             'satuan' => 'required_without:id',
             'stok_minim' => 'required|numeric',
-            'ed' => 'required|date',
-            'jumlah_barang' => 'numeric|required_with_all:harga_beli,harga_beli_grosir',
-            'harga_beli' => 'numeric|required_with_all:harga_beli_grosir,jumlah_barang',
-            'harga_beli_grosir' => 'numeric|required_with_all:jumlah_barang,harga_beli',
+            'ed' => 'required_with_all:harga_beli_grosir, jumlah_barang|date',
+            'jumlah_barang' => 'numeric|required_with_all:harga_beli_grosir, ed',
+            'harga_beli_grosir' => 'numeric|required_with_all:jumlah_barang, ed',
         ],
         [
             'nama_barang.required' => 'Nama Barang Belum Diisi',
@@ -57,23 +56,25 @@ class BarangController extends Controller
                 'message' => $validator->errors()
             ];
         }
-        DB::beginTransaction();
 
+        DB::beginTransaction();
+        
 		try{
         
-            if(isset($request->jumlah_barang) && isset($request->harga_beli)){
+            if(isset($request->jumlah_barang) && isset($request->harga_beli_grosir) && isset($request->ed)){
                 $akun_persediaan_barang = Akun::where('kode_akun', 113)->first();
-                $akun_persediaan_barang->jumlah += $request->jumlah_barang * $request->harga_beli;
+                $akun_persediaan_barang->jumlah += $request->jumlah_barang * $request->harga_beli_grosir;
                 $akun_persediaan_barang->save();
 
                 $akun_modal = Akun::where('kode_akun', 311)->first();
-                $akun_modal->jumlah += $request->jumlah_barang * $request->harga_beli;
+                $akun_modal->jumlah += $request->jumlah_barang * $request->harga_beli_grosir;
                 $akun_modal->save();
-
-                $request->merge(["stok_grosir" => floor($request->jumlah_barang / $request->jumlah_grosir)]);
-                $request->merge(["stok" => $request->jumlah_barang]);
+                
+                $request->merge(["harga_beli" => $request->harga_beli_grosir / $request->jumlah_grosir]);
+                $request->merge(["stok_grosir" => $request->jumlah_barang]);
+                $request->merge(["stok" => $request->jumlah_barang * $request->jumlah_grosir]);
             }
-
+            
             if(isset($request->id)){
                 $request->request->add(['updated_by' => Session::get('useractive')->id]);
             }
