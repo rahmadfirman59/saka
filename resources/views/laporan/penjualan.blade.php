@@ -125,7 +125,7 @@
                                     <button type="submit" class="btn btn-success">Tampilkan</button>
                             </form>
 
-                            <a href="/saka/laporan/penjualan/pdf" target="_blank" class="mx-3">
+                            <a href="{{ route('laporan.penjualan') }}/pdf" target="_blank" class="mx-3">
                                 <button type="submit" class="btn btn-warning">Print PDF</button>
                             </a>
                         </div>
@@ -193,7 +193,7 @@
         e.preventDefault();
         $("#modal_loading").modal('show');
         $.ajax({
-            url: '/saka/laporan/penjualan/change-priode',
+            url: "{{ route('laporan.penjualan') }}/change-priode",
             type: "POST",
             data: $('#form_penjualan').serialize(),
             success: function (response) {
@@ -208,6 +208,7 @@
                         <td class='text-center'>${i + 1}</td>
                         <td class='text-center'>${element.transaksi.tanggal ?? 0}</td>
                         <td class='text-center'>${element.transaksi.kode ?? 0}</td>
+                        <td class='text-center'>${element.tipe_text ?? 0}</td>
                         <td class='text-center'>${element.dokter.nama_dokter ?? 0}</td>
                         <td style='text-align: end'>`+ fungsiRupiah(parseInt(element.subtotal ?? 0)) +`</td>
                     </tr>

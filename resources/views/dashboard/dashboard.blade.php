@@ -25,7 +25,7 @@
                             <i class="bi bi-cart"></i>
                         </div>
                         <div class="pl-3">
-                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/transaksi/penjualan" style="color: #012970" class="penjualan-href">Penjualan</a></h6>
+                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="{{ route('transaksi.penjualan') }}" style="color: #012970" class="penjualan-href">Penjualan</a></h6>
 
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                             <i class="bi bi-currency-dollar"></i>
                         </div>
                         <div class="pl-3">
-                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/transaksi/pembelian" style="color: #012970" class="pembelian-href">Pembelian</a></h6>
+                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="{{ route('transaksi.pembelian') }}" style="color: #012970" class="pembelian-href">Pembelian</a></h6>
 
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                             <i class="bi bi-book"></i>
                         </div>
                         <div class="pl-3">
-                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/laporan/rugi-laba" style="color: #012970" class="llb-href">Rugi/Laba</a></h6>
+                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="{{ route('laporan.rugiLaba') }}" style="color: #012970" class="llb-href">Rugi/Laba</a></h6>
 
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                             <i class="bi bi-bar-chart-line-fill"></i>
                         </div>
                         <div class="pl-3">
-                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="/saka/grafik" style="color: #012970" class="grafik-href">Grafik</a></h6>
+                            <h6 style="font-size: 1.4rem; font-weight: 700;"><a href="{{ route('grafik') }}" style="color: #012970" class="grafik-href">Grafik</a></h6>
 
                         </div>
                     </div>
@@ -220,9 +220,11 @@
                                 <td>1 Bln</td>
                                 <td>{{ 'Rp. ' .  number_format($data->debt,2,'.',',');}}</td>
                                 <td>
-                                    <button class='btn btn-info btn-sm mr-1'><a style='color: white' href='/saka/jurnal/jurnal-pembelian/detail-pembelian/{{ $data->id }}'>
-                                        <i class='bi bi-credit-card-2-back-fill'></i>
-                                    </a></button>
+                                    <a style='color: white' href='{{ route('jurnal.pembelian') }}/detail-pembelian/{{ $data->id }}'>
+                                        <button class='btn btn-info btn-sm mr-1'>
+                                            <i class='bi bi-credit-card-2-back-fill'></i>
+                                        </button>
+                                    </a>
                                 </td>
                             </tr>
                             <?php $total_hutang += $data->debt ?>

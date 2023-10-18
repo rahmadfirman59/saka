@@ -47,7 +47,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Jurnal</a></li>
-                <li class="breadcrumb-item"><a href="/saka/jurnal/jurnal-pembelian">Jurnal Pembelian</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('jurnal.pembelian') }}">Jurnal Pembelian</a></li>
                 <li class="breadcrumb-item active"><a href="#">Detail Pembelian</a></li>
                 
             </ol>
@@ -214,7 +214,7 @@
              <span aria-hidden="true">&times;</span>
              </button>
           </div>
-          <form id="form_admin" action="/saka/jurnal/jurnal-pembelian/login-admin" method="POST" autocomplete="off">
+          <form id="form_admin" action="{{ route('jurnal.pembelian') }}/login-admin" method="POST" autocomplete="off">
              @csrf
              <div class="modal-body">
                 <div class="row">
@@ -278,7 +278,7 @@
 		   if(willDelete){
 			   $("#modal_loading").modal('show');
 			   $.ajax({
-				   url: '/saka/jurnal/jurnal-pembelian/batal-pembelian',
+				   url: "{{ route('jurnal.pembelian') }}/batal-pembelian",
 				   data: {id: id},
 				   type: "POST",
 				   success: function (response) {
@@ -287,7 +287,7 @@
 					   }, 500);
 					   if (response.status === 200) {
 						   swal(response.message, { icon: 'success', }).then(function() {
-							   window.location.href = "/saka/transaksi/pembelian";
+							   window.location.href = "{{ route('transaksi.pembelian') }}";
 						   });
 					   } else{
 						   swal(response.message, { icon: 'error', })
@@ -305,7 +305,7 @@
 		   } else {
 				$("#modal_loading").modal('show');
 				$.ajax({
-					url: '/saka/jurnal/jurnal-pembelian/clear-session',
+					url: "{{ route('jurnal.pembelian') }}/clear-session",
 					type: "POST",
 					success: function (response) {
 						setTimeout(function () {

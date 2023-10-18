@@ -56,8 +56,12 @@
                             <td>{{ isset($item->user_created_by->name) ? $item->user_created_by->name : '-' }}</td>
                             <td>{{ isset($item->user_updated_by->name) ? $item->user_updated_by->name : '-' }}</td>
                             <td>
-                                <button class='btn btn-info btn-sm mr-1'><a style='color: white;' onclick="edit('supplier/detail/{{ $item->id }}')"><i class='fa fa-edit'></i></a></button>
-                                <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('supplier/delete/{{ $item->id }}', '{{ $item->nama_supplier }}')"><i class='bi bi-trash-fill'></i></a></button>
+                                <a style='color: white;' onclick="edit('supplier/detail/{{ $item->id }}')">
+                                    <button class='btn btn-info btn-sm mr-1'><i class='fa fa-edit'></i></button>
+                                </a>
+                                <a style='color: white'; Onclick="delete_action('supplier/delete/{{ $item->id }}', '{{ $item->nama_supplier }}')">
+                                    <button class='btn btn-danger btn-sm'><i class='bi bi-trash-fill'></i></button>
+                                </a>
                             </td>
                         </tr>
                         @endforeach
@@ -80,7 +84,7 @@
              <span aria-hidden="true">&times;</span>
              </button>
           </div>
-          <form id="form_upload" action="/saka/master/supplier/store-update" method="POST" autocomplete="off">
+          <form id="form_upload" action="{{ route('supplier') }}/store-update" method="POST" autocomplete="off">
              @csrf
              <div class="modal-body">
                 <div class="row">

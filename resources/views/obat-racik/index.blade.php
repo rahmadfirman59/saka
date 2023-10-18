@@ -60,8 +60,12 @@
                             </td>
                             <td>{{ "Rp. ".number_format($harga_racik, 2 , ',' , '.' ) }}</td>
                             <td>
-                                <button class='btn btn-info btn-sm mr-1'><a style='color: white;' href="obat-racik/detail/{{ $item->id }}"><i class='fa fa-edit'></i></a></button>
-                                <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('obat-racik/delete/{{ $item->id }}', '{{ $item->nama_racik }}')"><i class='bi bi-trash-fill'></i></a></button>
+                                <a style='color: white;' href="obat-racik/detail/{{ $item->id }}">
+                                    <button class='btn btn-info btn-sm mr-1'><i class='fa fa-edit'></i></button>
+                                </a>
+                                <a style='color: white'; Onclick="delete_action('obat-racik/delete/{{ $item->id }}', '{{ $item->nama_racik }}')">
+                                    <button class='btn btn-danger btn-sm'><i class='bi bi-trash-fill'></i></button>
+                                </a>
                             </td>
                         </tr>
                         @endforeach

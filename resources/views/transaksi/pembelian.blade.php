@@ -93,7 +93,7 @@
                                     <td><input type="date" style="font-size: .8rem; height: 38px;" class="form-control ed_custom" name="ed[]"></td>
                                     <td style="white-space: nowrap" id="subtotal{{ $key }}" class="subtotal" price="0"><?php echo "Rp. ".number_format(0, 2 , ',' , '.' ) ?></td>
                                     <td style="width: 10%">
-                                        <button class='btn btn-danger btn-sm' type="button"><a style='color: white' onclick="delete_keranjang({{ $item->id }})"><i class='bi bi-trash-fill'></i></a></button>
+                                        <button class='btn btn-danger btn-sm' type="button" onclick="delete_keranjang({{ $item->id }})"><a style='color: white'><i class='bi bi-trash-fill'></i></a></button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -322,7 +322,7 @@
     function add_barang(id, stok){
         $('#modal_loading').modal('show');
         $.ajax({
-            url: '/saka/transaksi/pembelian/add-keranjang',
+            url: "{{ route('transaksi.pembelian') }}/add-keranjang",
             type: "POST",
             data: {"id_barang": id, "type": 1},
             success: function (response) {
@@ -360,7 +360,7 @@
        .then((willDelete) => {
              if (willDelete) {
                  $.ajax({
-                     url: '/saka/transaksi/pembelian/delete-keranjang/' + id,
+                     url: "{{ route('transaksi.pembelian') }}/delete-keranjang/" + id,
                      type: "GET",
                      success: function (response) {
                          setTimeout(function () {
@@ -471,7 +471,7 @@
             if (willDelete) {
                 $("#modal_loading").modal('show');
                 $.ajax({
-                    url: '/saka/transaksi/pembelian/store',
+                    url: "{{ route('transaksi.pembelian') }}/store",
                     type: "POST",
                     data: $('#form_pembelian').serialize() + '&total_belanja=' + $('#total').attr('price') + '&kode_transaksi=' + $('#kode_transaksi').val(),
                     success: function (response) {
@@ -480,7 +480,7 @@
                         }, 500);
                         if (response.status === 200) {
                              swal(response.message, { icon: 'success', }).then(function() {
-                            window.location.href = '/saka/jurnal/jurnal-pembelian/detail-pembelian/' + response.id
+                            window.location.href = "{{ route('jurnal.pembelian') }}/detail-pembelian/" + response.id
                             });
                         } else {
                             swal(response.message, {

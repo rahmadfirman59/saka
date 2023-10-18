@@ -44,10 +44,16 @@
                             <td>{{ "Rp. ".number_format($item->jumlah, 2 , ',' , '.' ) }}</td>
                             <td>
                                 @if($item->kode_akun == 311)
-                                <button class='btn btn-warning btn-sm mr-1'><a style='color: white;' onclick="tambah_modal()"><i class='fa fa-plus'></i></a></button>
+                                <a style='color: white;' onclick="tambah_modal()">
+                                    <button class='btn btn-warning btn-sm mr-1'><i class='fa fa-plus'></i></button>
+                                </a>
                                 @endif
-                                <button class='btn btn-info btn-sm mr-1'><a style='color: white;' onclick="edit('akun/detail/{{ $item->id }}')"><i class='fa fa-edit'></i></a></button>
-                                <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('akun/delete/{{ $item->id }}', '{{ $item->nama_akun }}')"><i class='bi bi-trash-fill'></i></a></button>
+                                <a style='color: white;' onclick="edit('akun/detail/{{ $item->id }}')">
+                                    <button class='btn btn-info btn-sm mr-1'><i class='fa fa-edit'></i></button>
+                                </a>
+                                <a style='color: white'; Onclick="delete_action('akun/delete/{{ $item->id }}', '{{ $item->nama_akun }}')">
+                                    <button class='btn btn-danger btn-sm'><i class='bi bi-trash-fill'></i></button>
+                                </a>
                             </td>
                         </tr>
                         @endforeach
@@ -69,7 +75,7 @@
              <span aria-hidden="true">&times;</span>
              </button>
           </div>
-          <form id="form_upload" action="/saka/master/akun/store-update" method="POST" autocomplete="off">
+          <form id="form_upload" action="{{ route('akun') }}/store-update" method="POST" autocomplete="off">
              @csrf
              <div class="modal-body">
                 <div class="row">
@@ -201,7 +207,7 @@
         e.preventDefault();
         $('#modal_loading').modal('show');
         $.ajax({
-            url: '/saka/master/akun/tambah-modal',
+            url: "{{ route('akun') }}/tambah-modal",
             type: "POST",
             data: $('#form_tambah_modal').serialize(),
             success: function (response) {

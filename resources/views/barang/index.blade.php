@@ -73,8 +73,12 @@
                             <td>{{ isset($item->user_created_by->name) ? $item->user_created_by->name : '-' }}</td>
                             <td>{{ isset($item->user_updated_by->name) ? $item->user_updated_by->name : '-' }}</td>
                             <td class="d-flex">
-                                <button class='btn btn-info btn-sm mr-1'><a style='color: white;' onclick="edit('barang/detail/{{ $item->id }}')"><i class='fa fa-edit'></i></a></button>
-                                <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('barang/delete/{{ $item->id }}', '{{ $item->nama_barang }}')"><i class='bi bi-trash-fill'></i></a></button>
+                                <a style='color: white;' onclick="edit('barang/detail/{{ $item->id }}')">
+                                    <button class='btn btn-info btn-sm mr-1'><i class='fa fa-edit'></i></button>
+                                </a>
+                                <a style='color: white'; onclick="delete_action('barang/delete/{{ $item->id }}', '{{ $item->nama_barang }}')">
+                                    <button class='btn btn-danger btn-sm'><i class='bi bi-trash-fill'></i></button>
+                                </a>
                             </td>
                         </tr>
                         @endforeach
@@ -97,7 +101,7 @@
              <span aria-hidden="true">&times;</span>
              </button>
           </div>
-          <form id="form_upload" action="/saka/master/barang/store-update" method="POST" autocomplete="off">
+          <form id="form_upload" action="{{ route('barang') }}/store-update" method="POST" autocomplete="off">
              @csrf
              <div class="modal-body">
                 <div class="row">
@@ -225,7 +229,7 @@
              <span aria-hidden="true">&times;</span>
              </button>
           </div>
-          <form id="form_upload_edit" action="/saka/master/barang/store-update" method="POST" autocomplete="off">
+          <form id="form_upload_edit" action="{{ route('barang') }}/store-update" method="POST" autocomplete="off">
              @csrf
              <div class="modal-body">
                 <div class="row">
@@ -420,7 +424,9 @@
                                 <td>{{ "Rp. ".number_format($item->harga_jual, 2 , ',' , '.' ) }}</td>
                                 <td align="center">{{ $item->stok }}</td>
                                 <td align="center">
-                                    <button class='btn btn-info btn-sm'><a style='color: white'; Onclick="restore_barang('barang/restore/{{ $item->id }}', '{{ $item->nama_barang }}')"><i class='fas fa-history'></i></a></button>
+                                    <a style='color: white'; Onclick="restore_barang('barang/restore/{{ $item->id }}', '{{ $item->nama_barang }}')">
+                                        <button class='btn btn-info btn-sm'><i class='fas fa-history'></i></button>
+                                    </a>
                                 </td>
                             </tr>
                             @endforeach
@@ -652,7 +658,7 @@
             if (willDelete) {
             $("#modal_loading").modal('show');
             $.ajax({
-                url: '/saka/master/' + url,
+                url: url,
                 type: "GET",
                 success: function (response) {
                     setTimeout(function () {

@@ -253,4 +253,22 @@ class TransaksiObatRacikController extends Controller
 		}
 
     }
+
+    public function delete_keranjang($id){
+
+        $delete = Keranjang::find($id);
+
+        if($delete <> ""){
+            $delete->delete();
+            return [
+                'status' => 200,
+                'message' => 'Data berhasil dihapus'
+            ];
+        }
+
+        return [
+            'status' => 300,
+            'message' => 'Data tidak ditemukan'
+        ];
+    }
 }

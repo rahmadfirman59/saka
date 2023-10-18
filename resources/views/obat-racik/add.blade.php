@@ -243,7 +243,7 @@
             if (willDelete) {
                 $("#modal_loading").modal('show');
                 $.ajax({
-                    url: '/saka/master/obat-racik/store',
+                    url: "{{ route('obat-racik') }}/store",
                     type: "POST",
                     data: $('#form_obat_racik').serialize(),
                     success: function (response) {
@@ -252,7 +252,7 @@
                         }, 500);
                         if (response.status === 200) {
                             swal(response.message, { icon: 'success', }).then(function() {
-                            window.location.href = '/saka/master/obat-racik/'
+                            window.location.href = "{{ route('obat-racik') }}"
                             });
                         } else {
                             swal(response.message, {

@@ -101,7 +101,7 @@
                                     <td id="subtotal{{ $key }}" class="subtotal" price="{{ $item->barang->harga_jual }}">{{ "Rp. ".number_format($item->barang->harga_jual, 2 , ',' , '.' ) }}</td>
                                     @endif
                                     <td>
-                                        <button class='btn btn-danger btn-sm' type="button"><a style='color: white' onclick="delete_keranjang({{ $item->id }})"><i class='bi bi-trash-fill'></i></a></button>
+                                        <button class='btn btn-danger btn-sm' type="button" onclick="delete_keranjang({{ $item->id }})"><a style='color: white'><i class='bi bi-trash-fill'></i></a></button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -339,7 +339,7 @@
         $('#qty'+id).val(1);
         $('#modal_loading').modal('show');
         $.ajax({
-            url: '/saka/transaksi/penjualan/get-keranjang/' + id_keranjang + '/' + batch_prefix,
+            url: "{{ route('transaksi.penjualan') }}/get-keranjang/" + id_keranjang + '/' + batch_prefix,
             type: "GET",
             success: function (response) {
                 setTimeout(function () {
@@ -393,7 +393,7 @@
         }
         $('#modal_loading').modal('show');
         $.ajax({
-            url: '/saka/transaksi/penjualan/add-keranjang',
+            url: "{{ route('transaksi.penjualan') }}/add-keranjang",
             type: "POST",
             data: {"id_barang": id, "type": 2},
             success: function (response) {
@@ -431,7 +431,7 @@
        .then((willDelete) => {
              if (willDelete) {
                  $.ajax({
-                     url: '/saka/transaksi/penjualan/delete-keranjang/' + id,
+                     url: "{{ route('transaksi.penjualan') }}/delete-keranjang/" + id,
                      type: "GET",
                      success: function (response) {
                          setTimeout(function () {
@@ -547,7 +547,7 @@
             if (willDelete) {
                 $("#modal_loading").modal('show');
                 $.ajax({
-                    url: '/saka/transaksi/penjualan/store',
+                    url: "{{ route('transaksi.penjualan') }}/store",
                     type: "POST",
                     data: $('#form_penjualan').serialize() + '&total_belanja=' + $('#total').attr('price') + '&kode_transaksi=' + $('#kode_transaksi').val(),
                     success: function (response) {
@@ -557,7 +557,7 @@
                         console.log(response);
                         if (response.status === 200) {
                              swal(response.message, { icon: 'success', }).then(function() {
-                            window.location.href = '/saka/jurnal/jurnal-penjualan/detail-penjualan/' + response.id
+                            window.location.href = "{{ route('jurnal.penjualan') }}/detail-penjualan/" + response.id
                             });
                         } else {
                             swal(response.message, {

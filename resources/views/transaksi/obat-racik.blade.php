@@ -322,7 +322,7 @@
         }
         $('#modal_loading').modal('show');
         $.ajax({
-            url: '/saka/transaksi/obat-racik/add-keranjang',
+            url: "{{ route('transaksi.obat-racik') }}/add-keranjang",
             type: "POST",
             data: {"id_racik": id, "type": 3},
             success: function (response) {
@@ -360,7 +360,7 @@
        .then((willDelete) => {
              if (willDelete) {
                  $.ajax({
-                     url: '/saka/transaksi/penjualan/delete-keranjang/' + id,
+                     url: "{{ route('transaksi.obat-racik') }}/delete-keranjang/" + id,
                      type: "GET",
                      success: function (response) {
                          setTimeout(function () {
@@ -479,7 +479,7 @@
             if (willDelete) {
                 $("#modal_loading").modal('show');
                 $.ajax({
-                    url: '/saka/transaksi/obat-racik/store',
+                    url: "{{ route('transaksi.obat-racik') }}/store",
                     type: "POST",
                     data: $('#form_penjualan').serialize() + '&total_belanja=' + $('#total').attr('price') + '&kode_transaksi=' + $('#kode_transaksi').val(),
                     success: function (response) {
@@ -489,7 +489,7 @@
                         console.log(response);
                         if (response.status === 200) {
                              swal(response.message, { icon: 'success', }).then(function() {
-                            window.location.href = '/saka/jurnal/jurnal-penjualan/detail-penjualan/' + response.id
+                            window.location.href = "{{ route('jurnal.penjualan') }}/detail-penjualan/" + response.id
                             });
                         } else {
                             swal(response.message, {

@@ -182,9 +182,9 @@
                                     <td>{{ $item->tanggal }}</td>
                                     <td>
                                         @if($item->type == 1)
-                                        <a href="/saka/jurnal/jurnal-pembelian/detail-pembelian/{{ $item->id }}" target="_blank">{{ $item->kode }}</a>
+                                        <a href="{{ route('jurnal.pembelian') }}/detail-pembelian/{{ $item->id }}" target="_blank">{{ $item->kode }}</a>
                                         @elseif($item->type == 2)
-                                        <a href="/saka/jurnal/jurnal-penjualan/detail-penjualan/{{ $item->id }}" target="_blank">{{ $item->kode }}</a>
+                                        <a href="{{ route('jurnal.penjualan') }}/detail-penjualan/{{ $item->id }}" target="_blank">{{ $item->kode }}</a>
                                         @elseif($item->type == 6)
                                         <a onclick="show_modal_manual('{{ $item->kode }}', '{{ $item->keterangan }}')" style="color: #4e73df; cursor: pointer">
                                             {{ $item->kode }}
@@ -222,7 +222,7 @@
              <span aria-hidden="true">&times;</span>
              </button>
           </div>
-          <form id="form_upload" action="/saka/jurnal/jurnal-umum/store" method="POST" autocomplete="off">
+          <form id="form_upload" action="{{ route('jurnal.umum') }}/store" method="POST" autocomplete="off">
              @csrf
              <div class="modal-body">
                 <div class="row">
@@ -352,7 +352,7 @@
         e.preventDefault();
         $("#modal_loading").modal('show');
         $.ajax({
-            url: '/saka/jurnal/jurnal-umum/change_priode',
+            url: "{{ route('jurnal.umum') }}/change_priode",
             type: "POST",
             data: $('#form_jurnal_umum').serialize(),
             success: function (response) {

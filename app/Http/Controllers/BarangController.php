@@ -79,7 +79,6 @@ class BarangController extends Controller
                 $request->request->add(['updated_by' => Session::get('useractive')->id]);
             }
             
-            // return $request->all();
             Barang::updateOrCreate(['id' => $request->id],$request->all() );
 
             DB::commit();

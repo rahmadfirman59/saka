@@ -58,7 +58,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/saka/dashboard">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
                 <img src="{{ asset('public\sbadmin\img\logo-sasmitra.png') }}" width="50" alt="logo_sasmitra">
                 <div class="sidebar-brand-text mr-3">Apotik Saka Sasmitra</div>
             </a>
@@ -319,7 +319,7 @@
                                 <div class="tab-pane fade show active" id="semua" role="tabpanel" aria-labelledby="semua-tab">
                                     <div style="height: 350px; overflow-y: auto">
                                         @foreach(App::get_barang_all() as $item)
-                                        <a class="dropdown-item d-flex align-items-center justify-content-between" @if(auth()->user()->level == 'superadmin' || auth()->user()->level == 'pembelian') href="/saka/master/barang?search={{ $item->nama_barang }}" @endif style="gap: 30px">
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between" @if(auth()->user()->level == 'superadmin' || auth()->user()->level == 'pembelian') href="{{ route('barang') }}?search={{ $item->nama_barang }}" @endif style="gap: 30px">
                                             <div>
                                                 <div class="small text-gray-500">Expired At <span style="color: #817d7d; font-weight: 700; margin-left: .15rem">{{ App::tgl_indo($item->ed) }}</span></div>
                                                 <span class="font-weight-bold">{{ $item->nama_barang }}</span>
@@ -335,12 +335,12 @@
                                         </a>
                                         @endforeach
                                     </div>
-                                    <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="/saka/dashboard#expired_barang_table">Show All</a>
+                                    <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="{{ route('dashboard') }}#expired_barang_table">Show All</a>
                                 </div>
                                 <div class="tab-pane fade" id="expired" role="tabpanel" aria-labelledby="expired-tab">
                                     <div style="height: 350px; overflow-y: auto">
                                         @foreach(App::get_barang_expired() as $item)
-                                        <a class="dropdown-item d-flex align-items-center justify-content-between" @if(auth()->user()->level == 'superadmin' || auth()->user()->level == 'pembelian') href="/saka/master/barang?search={{ $item->nama_barang }}" @endif style="gap: 30px">
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between" @if(auth()->user()->level == 'superadmin' || auth()->user()->level == 'pembelian') href="{{ route('barang') }}?search={{ $item->nama_barang }}" @endif style="gap: 30px">
                                             <div>
                                                 <div class="small text-gray-500">Expired At <span style="color: #817d7d; font-weight: 700; margin-left: .15rem">{{ App::tgl_indo($item->ed) }}</span></div>
                                                 <span class="font-weight-bold">{{ $item->nama_barang }}</span>
@@ -351,12 +351,12 @@
                                         </a>
                                         @endforeach
                                     </div>
-                                    <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="/saka/dashboard#expired_barang_table">Show All</a>
+                                    <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="{{ route('dashboard') }}#expired_barang_table">Show All</a>
                                 </div>
                                 <div class="tab-pane fade" id="stock" role="tabpanel" aria-labelledby="stock-tab">
                                     <div style="height: 350px; overflow-y: auto">
                                         @foreach(App::get_barang_stock() as $item)
-                                        <a class="dropdown-item d-flex align-items-center justify-content-between" @if(auth()->user()->level == 'superadmin' || auth()->user()->level == 'pembelian') href="/saka/master/barang?search={{ $item->nama_barang }}" @endif style="gap: 30px">
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between" @if(auth()->user()->level == 'superadmin' || auth()->user()->level == 'pembelian') href="{{ route('barang') }}?search={{ $item->nama_barang }}" @endif style="gap: 30px">
                                             <div>
                                                 <span class="font-weight-bold">{{ $item->nama_barang }}</span>
                                             </div>
@@ -366,7 +366,7 @@
                                         </a>
                                         @endforeach
                                     </div>
-                                    <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="/saka/dashboard#expired_barang_table">Show All</a>
+                                    <a class="dropdown-item text-center small text-gray-500" style="border-top: 1px solid #e3e6f0" href="{{ route('dashboard') }}#expired_barang_table">Show All</a>
                                 </div>
                             </div>
                         </li>
@@ -447,7 +447,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="/saka/logout">Logout</a>
+                    <a class="btn btn-primary" href="{{ route('logout') }}">Logout</a>
                 </div>
             </div>
         </div>

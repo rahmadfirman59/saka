@@ -51,7 +51,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Jurnal</a></li>
-                <li class="breadcrumb-item"><a href="/saka/jurnal/jurnal-penjualan">Jurnal Penjualan</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('jurnal.penjualan') }}">Jurnal Penjualan</a></li>
                 <li class="breadcrumb-item active"><a href="#">Detail Penjualan</a></li>
                 
             </ol>
@@ -183,7 +183,7 @@
 							@else
 							<p></p>
 							@endif
-							<button class="btn btn-warning btn-icon icon-left" <?= "onclick=\"window.open('/saka/jurnal/jurnal-penjualan/cetak-penjualan/$transaksi->id','Print','menubar=no,navigator=no,width=500,height=450,left=200,top=150,toolbar=no')\";" ?>><i class="bi bi-printer-fill"></i></i> Print</button>
+							<button class="btn btn-warning btn-icon icon-left" <?= "onclick=\"window.open('{{ route('jurnal.penjualan') }}/cetak-penjualan/$transaksi->id','Print','menubar=no,navigator=no,width=500,height=450,left=200,top=150,toolbar=no')\";" ?>><i class="bi bi-printer-fill"></i></i> Print</button>
 						</div>
 					</div>
 				</div>
@@ -207,7 +207,7 @@
              <span aria-hidden="true">&times;</span>
              </button>
           </div>
-          <form id="form_admin" action="/saka/jurnal/jurnal-penjualan/login-admin" method="POST" autocomplete="off">
+          <form id="form_admin" action="{{ route('jurnal.penjualan') }}/login-admin" method="POST" autocomplete="off">
              @csrf
              <div class="modal-body">
                 <div class="row">
@@ -270,7 +270,7 @@
 		   if(willDelete){
 			   $("#modal_loading").modal('show');
 			   $.ajax({
-				   url: '/saka/jurnal/jurnal-penjualan/batal-penjualan',
+				   url: "{{ route('jurnal.penjualan') }}/batal-penjualan",
 				   data: {id: id},
 				   type: "POST",
 				   success: function (response) {
@@ -279,7 +279,7 @@
 					   }, 500);
 					   if (response.status === 200) {
 						   swal(response.message, { icon: 'success', }).then(function() {
-							   window.location.href = "/saka/transaksi/penjualan";
+							   window.location.href = "{{ route('transaksi.penjualan') }}";
 						   });
 					   } else{
 						   swal(response.message, { icon: 'error', })
@@ -297,7 +297,7 @@
 		   } else {
 				$("#modal_loading").modal('show');
 				$.ajax({
-					url: '/saka/jurnal/jurnal-penjualan/clear-session',
+					url: "{{ route('jurnal.penjualan') }}/clear-session",
 					type: "POST",
 					success: function (response) {
 						setTimeout(function () {

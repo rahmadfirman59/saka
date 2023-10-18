@@ -122,7 +122,7 @@
 // }
 
 $.ajax({
-    url: '/saka/grafik/get-data',
+    url: "{{ route('grafik') }}/get-data",
     type: 'GET',
     dataType: 'json',
     success: function (data) {

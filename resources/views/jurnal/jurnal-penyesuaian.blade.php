@@ -73,7 +73,7 @@
              <span aria-hidden="true">&times;</span>
              </button>
           </div>
-          <form id="form_upload" action="/saka/jurnal/jurnal-penyesuaian/store-update" method="POST" autocomplete="off">
+          <form id="form_upload" action="{{ route('jurnal.penyesuaian') }}/store-update" method="POST" autocomplete="off">
              @csrf
              <div class="modal-body">
                 <div class="row">
@@ -162,7 +162,7 @@
     function change_biaya(value){
         $("#modal_loading").modal('show');
         $.ajax({
-            url: '/saka/jurnal/jurnal-penyesuaian/detail/' + value,
+            url: "{{ route('jurnal.penyesuaian') }}/detail/" + value,
             type: "GET",
             success: function (response) {
                 setTimeout(function () {

@@ -54,9 +54,15 @@
                             <td>{{ isset($item->user_updated_by->name) ? $item->user_updated_by->name : '-' }}</td>
                             <td>{{ App\Helpers\App::tgl_indo($item->created_at->format('Y-m-d')) }}</td>
                             <td>
-                                <button class='btn btn-warning btn-sm'><a style='color: white'; Onclick="check_history('{{ $item->id }}')"><i class="bi bi-file-text-fill"></i></a></button>
-                                <button class='btn btn-info btn-sm mr-1'><a style='color: white;' onclick="edit('pasien/detail/{{ $item->id }}')"><i class='fa fa-edit'></i></a></button>
-                                <button class='btn btn-danger btn-sm'><a style='color: white'; Onclick="delete_action('pasien/delete/{{ $item->id }}', '{{ $item->nama_pasien }}')"><i class='bi bi-trash-fill'></i></a></button>
+                                <a style='color: white'; Onclick="check_history('{{ $item->id }}')">
+                                    <button class='btn btn-warning btn-sm'><i class="bi bi-file-text-fill"></i></button>
+                                </a>
+                                <a style='color: white;' onclick="edit('pasien/detail/{{ $item->id }}')">
+                                    <button class='btn btn-info btn-sm mr-1'><i class='fa fa-edit'></i></button>
+                                </a>
+                                <a style='color: white'; Onclick="delete_action('pasien/delete/{{ $item->id }}', '{{ $item->nama_pasien }}')">
+                                    <button class='btn btn-danger btn-sm'><i class='bi bi-trash-fill'></i></button>
+                                </a>
                             </td>
                         </tr>
                         @endforeach
@@ -79,7 +85,7 @@
              <span aria-hidden="true">&times;</span>
              </button>
           </div>
-          <form id="form_upload" action="/saka/master/pasien/store-update" method="POST" autocomplete="off">
+          <form id="form_upload" action="{{ route('pasien') }}/store-update" method="POST" autocomplete="off">
              @csrf
              <div class="modal-body">
                 <div class="row">
@@ -203,7 +209,7 @@
     function check_history(id){
         $("#modal_loading").modal('show');
         $.ajax({
-            url: '/saka/master/pasien/check-history/' + id,
+            url: "{{ route('pasien') }}/check-history/" + id,
             type: "GET",
             success: function (response) {
                 setTimeout(function () {
@@ -213,10 +219,10 @@
                 Datatable_history.fnClearTable();
                 Datatable_history.fnDestroy();
                 $.each(response, function(i, response_single){
-                    if(typeof(response_single['transaksi']['potongan']) == "undefined" || response_single['transaksi']['potongan'] === null) {
+                    if(response_single['transaksi']['potongan'] === null) {
                         response_single['transaksi']['potongan'] = 0;
                     }
-                    $('#table-history tbody').append(`<tr><td>${i + 1}</td><td>${response_single['tanggal']}</td><td>${fungsiRupiah(response_single['transaksi']['potongan'])}</td><td>${fungsiRupiah(response_single['transaksi']['kredit'])}</td><td><button class='btn btn-info btn-sm'><a style='color: white'; Onclick="window.location.href = '/saka/jurnal/jurnal-penjualan/detail-penjualan/${response_single['id_transaksi']}'"><i class='bi bi-file-text-fill'></i></a></button></td></tr>`);
+                    $('#table-history tbody').append(`<tr><td>${i + 1}</td><td>${response_single['tanggal']}</td><td>${fungsiRupiah(response_single['transaksi']['potongan'])}</td><td>${fungsiRupiah(response_single['transaksi']['kredit'])}</td><td><a style='color: white'; Onclick="window.location.href = '{{ route('jurnal.penjualan') }}/detail-penjualan/${response_single['id_transaksi']}'"><button class='btn btn-info btn-sm'><i class='bi bi-file-text-fill'></i></button></a></td></tr>`);
                 })
                 $('.datatable-history-jquery').dataTable({
                     sDom: 'lBfrtip',

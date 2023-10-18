@@ -33,7 +33,7 @@
         </div>
         <div class="card-body">
             <div class="mb-3 d-flex justify-content-end">
-                <a href="/saka/laporan/persediaan/pdf" class="btn btn-secondary" style="font-size: .9rem" target='_blank'><i class="bi bi-file-earmark-break-fill mr-2"></i>Print To PDF</a>
+                <a href="{{ route('laporan.persediaan') }}/pdf" class="btn btn-secondary" style="font-size: .9rem" target='_blank'><i class="bi bi-file-earmark-break-fill mr-2"></i>Print To PDF</a>
             </div>
             <div class="table-responsive">
                 <table class="table datatable-primary table-striped table-hover datatable-jquery" width="100%" cellspacing="0">

@@ -52,9 +52,11 @@
                                         <td><?php echo "Rp. ".number_format($item->kredit, 2 , ',' , '.' ) ?></td>
                                     @endif
                                     <td>
-                                        <button class='btn btn-warning btn-sm mr-1'><a style='color: white' href='/saka/jurnal/jurnal-penjualan/detail-penjualan/{{ $item->id }}'>
-                                            <i class='bi bi-file-earmark-text-fill'></i>
-                                        </a></button>
+                                        <a style='color: white' href='{{ route('jurnal.penjualan') }}/detail-penjualan/{{ $item->id }}'>
+                                            <button class='btn btn-warning btn-sm mr-1'>
+                                                <i class='bi bi-file-earmark-text-fill'></i>
+                                            </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 @endforeach

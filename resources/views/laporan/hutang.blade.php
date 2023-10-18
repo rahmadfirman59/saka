@@ -61,7 +61,9 @@
                                     <td>{{ $item->keterangan }}</td>
                                     <td><?php echo "Rp. ".number_format($item->pembelian[0]->total, 2 , ',' , '.' ) ?></td>
                                     <td>
-                                        <button class='btn btn-info btn-sm mr-1'><a style='color: white' href='/saka/jurnal/jurnal-pembelian/detail-pembelian/{{ $item->id }}'>Detail</a></button>    
+                                        <a style='color: white' href='/saka/jurnal/jurnal-pembelian/detail-pembelian/{{ $item->id }}'>
+                                            <button class='btn btn-info btn-sm mr-1' type="button">Detail</button>
+                                        </a>    
                                     </td> 
                                 </tr>
                                 @endforeach

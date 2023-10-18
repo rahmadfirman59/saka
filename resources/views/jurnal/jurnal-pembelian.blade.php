@@ -60,9 +60,11 @@
                                         <td><?php echo "Rp. ".number_format($item->kredit, 2 , ',' , '.' ) ?></td>
                                     @endif
                                     <td>
-                                        <button class='btn btn-warning btn-sm mr-1'><a style='color: white' href='/saka/jurnal/jurnal-pembelian/detail-pembelian/{{ $item->id }}'>
-                                            <i class='bi bi-file-earmark-text-fill'></i>
-                                        </a></button>
+                                        <a style='color: white' href='{{ route('jurnal.pembelian') }}/detail-pembelian/{{ $item->id }}'>
+                                            <button class='btn btn-warning btn-sm mr-1'>
+                                                <i class='bi bi-file-earmark-text-fill'></i>
+                                            </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 @endforeach
