@@ -61,7 +61,7 @@
                                     <td>{{ $item->keterangan }}</td>
                                     <td><?php echo "Rp. ".number_format($item->pembelian[0]->total, 2 , ',' , '.' ) ?></td>
                                     <td>
-                                        <a style='color: white' href='/saka/jurnal/jurnal-pembelian/detail-pembelian/{{ $item->id }}'>
+                                        <a style='color: white' href='{{ route('jurnal.pembelian') }}/detail-pembelian/{{ $item->id }}'>
                                             <button class='btn btn-info btn-sm mr-1' type="button">Detail</button>
                                         </a>    
                                     </td> 

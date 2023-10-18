@@ -112,7 +112,7 @@
 
     <!-- DataTales Example -->
     <div class="row" style="gap: 40px">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
 
 			<div class="card">
 				<div class="card-header">
@@ -146,7 +146,8 @@
 											combothn(2000,date("Y"),'thn_2',date("Y"));
 								}?>
 							
-							<input type="submit" class="btn btn-success" />
+							<input type="submit" class="btn btn-success ml-3" />
+                            <button type="button" class="btn btn-secondary ml-2" onclick="reset_date_action()">Reset</button>
 						</form>
                     </div>
 				</div>
@@ -348,11 +349,56 @@
         $('#uraian').val(keterangan);
     }
 
+    function reset_date_action(){
+        swal({
+            title: 'Yakin?',
+            text: 'Apakah anda yakin akan mereset tanggal ini?',
+            icon: 'warning',
+            buttons: true,
+            dangerMode: true,
+       })
+       .then((willReset) => {
+            if(willReset){
+                $("#modal_loading").modal('show');
+                $.ajax({
+                    url: "{{ route('jurnal.umum') }}/reset-priode",
+                    type: "POST",
+                    success: function (response) {
+                        setTimeout(function () {
+                            $('#modal_loading').modal('hide');
+                        }, 500);
+                        $('#tbody-jquery').empty();
+                        response.forEach(element => {
+                            $('#tbody-jquery').append(`
+                            <tr>
+                                <td class='text-center'>${element.tanggal}</td>
+                                <td class='text-center'>${element.kode}</td>
+                                <td class='text-center'>${element.kode_akun}</td>
+                                <td class='text-center'>${element.keterangan}</td>
+                                <td style='text-align: end'>`+ fungsiRupiah(parseInt(element.debt ?? 0)) +`</td>
+                                <td style='text-align: end'>`+ fungsiRupiah(parseInt(element.kredit ?? 0)) +`</td>
+                            </tr>
+                            `)
+                        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        setTimeout(function () {
+                            $('#modal_loading').modal('hide');
+                        }, 500);
+                        swal("Oops! Terjadi kesalahan", {
+                            icon: 'error',
+                        });
+                    }
+                });
+            }
+       });
+    }
+
     $('#form_jurnal_umum').submit(function(e){
         e.preventDefault();
         $("#modal_loading").modal('show');
         $.ajax({
-            url: "{{ route('jurnal.umum') }}/change_priode",
+            url: "{{ route('jurnal.umum') }}/change-priode",
             type: "POST",
             data: $('#form_jurnal_umum').serialize(),
             success: function (response) {

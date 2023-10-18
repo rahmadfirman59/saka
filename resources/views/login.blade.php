@@ -69,9 +69,6 @@
                                                     <i class="fas fa-eye-slash" id="hide_password" style="position: absolute; right: 25px; top: 16px; cursor: pointer"></i>
                                                 </div>
                                             </div>
-                                            {{-- <a href="index.html" class="btn btn-primary btn-user btn-block">
-                                                Login
-                                            </a> --}}
                                             <button type="submit" class="btn btn-primary btn-user btn-block">Login</button>
                                             
                                             

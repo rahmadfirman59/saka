@@ -27,6 +27,10 @@ class JurnalUmumController extends Controller
         return MasterTransaksi::whereBetween('tanggal', [$tanggal1, $tanggal2])->get();
     }
 
+    public function reset_priode(){
+        return MasterTransaksi::all();
+    }
+
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
             'pilih_akun_debit' => 'required|numeric',
