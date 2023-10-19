@@ -170,7 +170,41 @@ class LaporanController extends Controller
         $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
         $data['aktiva'] = Akun::where('kode_akun', 113)->sum('jumlah') + $data['kas'] + $data['kas_bank'];
 
-        // return $data['laba'];
+        $aktiva = Akun::whereIn("kode_akun", [113, 111, 112])
+            ->orderBy('kode_akun', 'asc')
+            ->get();
+        foreach ($aktiva as  $value) {
+            $kas = 0;
+            $kas_bank = 0;
+            $hpp = 0;
+            $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)->get();
+            foreach ($transaksi as $values) {
+                switch ($values->kode_akun) {
+                    case '111':
+                        $kas += $values->kredit;
+                        break;
+                    case '112':
+                        $$kas_bank += $values->kredit;
+                        break;
+                    case '113':
+                        $hpp += $values->debt;
+                        break;
+                }
+            }
+            switch ($value->kode_akun) {
+                case '111':
+                    $value->total = $kas;
+                    break;
+                case '112':
+                    $value->total = $kas_bank;
+                    break;
+                case '113':
+                    $value->total = $hpp;
+                    break;
+            }
+            $value->transaksi = $transaksi;
+        }
+        return $aktiva;
 
         return view('laporan.neraca', $data);
     }
