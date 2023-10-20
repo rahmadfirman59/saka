@@ -54,6 +54,10 @@
                                     <td><span class="p-2 badge badge-success">Tunai</span></td>
                                     <td>{{ $item->tanggal }}</td>
                                     <td><?php echo "Rp. ".number_format($item->debt, 2 , ',' , '.' ) ?></td>
+                                    @elseif($item->pembelian[0]->status == 2)
+                                        <td><span class="p-2 badge badge-danger">Tempo</span></td>
+                                        <td>{{ $item->tanggal }}</td>
+                                        <td><?php echo "Rp. ".number_format($item->kredit, 2 , ',' , '.' ) ?></td>
                                     @else
                                         <td><span class="p-2 badge badge-info">Tempo</span></td>
                                         <td>{{ $item->tanggal }}</td>

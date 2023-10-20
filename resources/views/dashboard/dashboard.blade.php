@@ -98,8 +98,7 @@
     <!-- Content Row -->
 
     <div class="row">
-        <!-- Operasional Table -->
-
+        
         <div class="col-md-6 col-sm-12 col-xs-12">
             <div class="card recent-sales overflow-auto" id="expired_barang_table">
                 <div class="card-body">
@@ -192,7 +191,7 @@
                 </div>
 
             </div>
-        </div><!-- End Operasional Table -->
+        </div>
 
         <!-- Hutang Table -->
         <div class="col-md-7 col-sm-12 col-xs-12">
@@ -204,9 +203,9 @@
                     <table class="table table-borderless datatable-jquery datatable-primary">
                         <thead>
                             <tr>
-                                <th scope="col">Tanggal</th>
+                                <th scope="col">Barang</th>
                                 <th scope="col">No. Faktur</th>
-                                <th scope="col">Keterangan</th>
+                                <th scope="col">Jatuh Tempo</th>
                                 <th scope="col">Total</th>
                                 <th scope="col">Bayar</th>
                             </tr>
@@ -214,20 +213,20 @@
                         <tbody>
                             <?php $total_hutang = 0 ?>
                             @foreach ($hutangDagang as $data)
+                            <?php $total_hutang += $data->kredit - $data->potongan; $date_now = Carbon\Carbon::createFromFormat('Y-m-d', $data->pembelian[0]->tgl_tempo) ?>
                             <tr>
                                 <td>{{ $data->tanggal }}</td>
                                 <td>{{ $data->pembelian[0]->no_faktur }}</td>
-                                <td>1 Bln</td>
-                                <td>{{ 'Rp. ' .  number_format($data->debt,2,'.',',');}}</td>
+                                <td>{{ $date_now->format('d-m-Y') }}</td>
+                                <td>{{ 'Rp. ' .  number_format($data->kredit - $data->potongan,2,'.',',');}}</td>
                                 <td>
-                                    <a style='color: white' href='{{ route('jurnal.pembelian') }}/detail-pembelian/{{ $data->id }}'>
+                                    <a style='color: white' href='{{ route('transaksi.pembayaran-tempo') }}/pelunasan/{{ $data->kode }}'>
                                         <button class='btn btn-info btn-sm mr-1'>
                                             <i class='bi bi-credit-card-2-back-fill'></i>
                                         </button>
                                     </a>
                                 </td>
                             </tr>
-                            <?php $total_hutang += $data->debt ?>
                             @endforeach
                         </tbody>
                         <tfoot>
@@ -241,7 +240,8 @@
                 </div>
 
             </div>
-        </div><!-- End Hutang Table -->
+        </div>
+        <!-- End Hutang Table -->
     </div>
 
 </div> 

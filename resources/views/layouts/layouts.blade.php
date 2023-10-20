@@ -14,9 +14,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta name="author" content="">
 
-    <title>Akutansi SAKA SASMITRA</title>
+    <title>Akuntansi SAKA SASMITRA</title>
+    <link rel="icon" type="image/png" href="{{ asset('public\sbadmin\img\icon\favicon-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ asset('public\sbadmin\img\icon\favicon-16x16.png') }}" sizes="16x16"/> 
 
-    <!-- Custom fonts for this template-->
     <link href="{{ asset('public/sbadmin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('public/plugins/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
     <link

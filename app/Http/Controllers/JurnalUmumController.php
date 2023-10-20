@@ -52,21 +52,23 @@ class JurnalUmumController extends Controller
 
         try{
             $akun_debit = Akun::where('kode_akun', $request->pilih_akun_debit)->first();
-            $akun_debit->jumlah += $request->total_belanja;
+            $akun_debit->jumlah += $request->nominal_debit;
             $akun_debit->save();
-
+            
             $akun_kredit = Akun::where('kode_akun', $request->pilih_akun_kredit)->first();
-            $akun_kredit->jumlah -= $request->total_belanja;
+            $akun_kredit->jumlah -= $request->nominal_kredit;
             $akun_kredit->save();
 
-            $count_manual = MasterTransaksi::where('type', 5)->count();
+            $count_manual = MasterTransaksi::where('type', 6)->count() / 2;
+            $final_count = $count_manual === 0 ? 1 : $count_manual + 1;
+            $formattedValue = str_pad($final_count, 4, '0', STR_PAD_LEFT);
 
             MasterTransaksi::create([
                 'kode_akun' => $request->pilih_akun_debit,
                 'keterangan' => $request->uraian_debit,
                 'debt' => $request->nominal_debit,
                 'type' => 6,
-                'kode' => "MNL" . $count_manual . date('Ymd'),
+                'kode' => "MNL" . $formattedValue,
                 'tanggal' => date('Y-m-d'),
             ]);
 
@@ -75,7 +77,7 @@ class JurnalUmumController extends Controller
                 'keterangan' => $request->uraian_kredit,
                 'kredit' => $request->nominal_kredit,
                 'type' => 6,
-                'kode' => "MNL" . $count_manual . date('Ymd'),
+                'kode' => "MNL" . $formattedValue,
                 'tanggal' => date('Y-m-d'),
             ]);
 

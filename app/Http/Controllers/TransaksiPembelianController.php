@@ -14,6 +14,7 @@ use App\Models\Akun;
 use App\Models\Supplier;
 use App\Models\Log;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 
 class TransaksiPembelianController extends Controller
 {
@@ -41,10 +42,17 @@ class TransaksiPembelianController extends Controller
             'kode_transaksi' => 'required',
             'tgl_tempo' => 'required_if:status,2'
         ];
-
+        
         if(isset($request->idbarang)){
             foreach ($request->idbarang as $index => $idbarang) {
-                $rules['no_batch.' . $index] = 'required|unique:barang,no_batch,' . $idbarang;
+                $same_batch_data =  DB::table('barang')
+                    ->where('no_batch', 'LIKE', substr(Barang::where('id', $idbarang)->pluck('no_batch')->first(), 0, 4) . '%')
+                    ->pluck('id')
+                    ->toArray();
+                $rules['no_batch.' . $index] = ['required', Rule::unique('barang', 'no_batch')->where(function ($query) use ($same_batch_data) {
+                    $query->whereNotIn('id', $same_batch_data);
+                    return $query;
+                })];
             }
         } else {
             return [
@@ -112,12 +120,13 @@ class TransaksiPembelianController extends Controller
                 $akun2 = Akun::where('kode_akun', 111)->first();
                 $akun2->jumlah -= $request->total_belanja;
                 $akun2->save();
+
             } else {
                 MasterTransaksi::create([
-                    'kode_akun' => '111',
-                    'keterangan' => 'Pembelian Barang Kas',
+                    'kode_akun' => '113',
+                    'keterangan' => 'Persediaan Barang',
                     'debt' => $request->total_belanja,
-                    'type' => 3,
+                    'type' => 1,
                     'kode' => $request->kode_transaksi,
                     'tanggal' => date('Y-m-d'),
                     'potongan' => $request->potongan
@@ -133,9 +142,13 @@ class TransaksiPembelianController extends Controller
                     'potongan' => $request->potongan
                 ]);
 
-                $akun = Akun::where('kode_akun', 211)->first();
+                $akun = Akun::where('kode_akun', 113)->first();
                 $akun->jumlah += $request->total_belanja;
                 $akun->save();
+
+                $akun2 = Akun::where('kode_akun', 211)->first();
+                $akun2->jumlah += $request->total_belanja;
+                $akun2->save();
             }
 
             Log::create([
@@ -145,6 +158,7 @@ class TransaksiPembelianController extends Controller
                 'keterangan' => 'Pembelian Barang Dari Transaksi ' . $request->kode_transaksi,
                 'jumlah' => $request->total_belanja
             ]);
+
             Keranjang::where('created_by', Session::get('useractive')->id)->where('type', 1)->whereIn('id_barang', $request->idbarang)->delete();
 
             foreach ($request->idbarang as $key => $item) {

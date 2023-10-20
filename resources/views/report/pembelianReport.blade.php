@@ -117,11 +117,15 @@
 						</div>
 						<div class="row mt-4" style="width: 100%">
 							<div class="col-lg-8">
+								@if($pembelian[0]->status == 1)
 								<div class="section-badge-success m-0">Metode Pembayaran</div>
-                                @if($pembelian[0]->status == 1)
 								<div class="section-title" style="margin-left: 45px; margin-top: 6px;font-family: 'nunito';color: green;font-weight: 700;font-size: 1.1rem;">Tunai</div>
+								@elseif($pembelian[0]->status == 2)
+								<div class="section-badge-danger m-0">Metode Pembayaran</div>
+                                <div class="section-title text-danger" style="margin-left: 45px; margin-top: 6px;font-family: 'nunito';font-weight: 700;font-size: 1.1rem;">Tempo (Belum Lunas)</div>
                                 @else
-                                <div class="section-title text-info" style="margin-left: 45px; margin-top: 6px;font-family: 'nunito';font-weight: 700;font-size: 1.1rem;">Tempo</div>
+								<div class="section-badge-success m-0">Metode Pembayaran</div>
+                                <div class="section-title" style="color: green; margin-left: 45px; margin-top: 6px;font-family: 'nunito';font-weight: 700;font-size: 1.1rem;">Tempo (Lunas)</div>
                                 @endif
 							</div>
 							<div class="col-lg-4 text-right">
@@ -170,7 +174,7 @@
 						<div class="d-flex justify-content-between mt-4" style="width: 100%">
                             @if ($pembelian[0]->status == 2)
                             <input type=hidden id='kode' value='{{ $transaksi->kode }}'>
-                            <a href='?module=transaksi&act=detailpelunasan&id=$sql[kd_pmb]' class="btn btn-primary" id='lunas' >Pembayaran&nbsp<i class='icon-tags'></i></a>
+                            <a href='{{ route('transaksi.pembayaran-tempo') }}/pelunasan/{{ $transaksi->kode }}' class="btn btn-primary" id='lunas' >Pembayaran&nbsp<i class='icon-tags'></i></a>
                             {{-- @else
                             <div>
                                 <button class="btn btn-warning btn-icon icon-left">

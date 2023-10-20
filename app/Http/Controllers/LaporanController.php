@@ -31,7 +31,7 @@ class LaporanController extends Controller
     {
         $data['total_beban'] = 0;
         $data['perusahaan'] = $this->perusahaan;
-        $data['tanggal'] = $this->tanggal;
+        $data['bulan'] = Carbon::now()->isoFormat("MMMM");
 
         $akun_laba = Akun::whereIn("kode_akun", [411, 119, 422])->get();
         $data['laba_kotor'] = 0;
@@ -304,14 +304,9 @@ class LaporanController extends Controller
     public function rugi_laba_change_priode(Request $request)
     {
 
-        $tanggal1 = $request->thn_1 . '-' . $request->bln_1 . '-' . $request->tgl_1;
-        $tanggal2 = $request->thn_2 . '-' . $request->bln_2 . '-' . $request->tgl_2;
-
-        // return $tanggal1;
-
         $data['total_beban'] = 0;
         $data['perusahaan'] = $this->perusahaan;
-        $data['tanggal'] = $this->tanggal;
+        // $data['tanggal'] = $this->tanggal;
 
         $akun_laba = Akun::whereIn("kode_akun", [411, 119, 422])->get();
         $data['laba_kotor'] = 0;
@@ -321,7 +316,7 @@ class LaporanController extends Controller
             $hpp = 0;
             $potongan = 0;
             $transaksi = MasterTransaksi::where("kode_akun", $item->kode_akun)
-                ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                ->whereMonth('tanggal', '=', $request->priode_bulan)
                 ->get();
             foreach ($transaksi as  $value) {
                 switch ($value->kode_akun) {
@@ -368,7 +363,7 @@ class LaporanController extends Controller
             $biaya_air = 0;
             $biaya_gaji = 0;
             $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)
-                ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                ->whereMonth('tanggal', '=', $request->priode_bulan)
                 ->get();
             foreach ($transaksi as $values) {
                 switch ($values->kode_akun) {
@@ -409,6 +404,7 @@ class LaporanController extends Controller
 
         $data['akun_beban'] = $akun_beban;
         $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
+        $data['month'] = Carbon::create(null, $request->priode_bulan, 1)->isoFormat('MMMM');
 
 
         return $data;

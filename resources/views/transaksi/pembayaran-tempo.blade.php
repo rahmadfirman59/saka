@@ -51,12 +51,12 @@
                                     <td>{{ $item->pembelian[0]->no_faktur }}</td>
                                     <td>{{ $item->pembelian[0]->supplier->nama_supplier }}</td>
                                     @if($item->pembelian[0]->status == 2)
-                                        <td><span class="p-2 badge badge-warning">Tempo</span></td>
+                                        <td><span class="p-2 badge badge-danger">Tempo</span></td>
                                         <td>{{ $item->pembelian[0]->tgl_tempo }}</td>
                                         <td><?php echo "Rp. ".number_format($item->kredit, 2 , ',' , '.' ) ?></td>
                                     @endif
                                     <td>
-                                        <a style='color: white' onclick="swal('Oopss... This Feature Isnt Completed yet...', {icon: 'warning'})">
+                                        <a style='color: white' onclick="window.location.href = '{{ route('transaksi.pembayaran-tempo') }}/pelunasan/{{ $item->kode }}'">
                                         <button class='btn btn-warning btn-sm mr-1'>
                                             <i class="bi bi-credit-card-2-back-fill"></i>
                                         </button>

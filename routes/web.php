@@ -17,6 +17,7 @@ use App\Http\Controllers\ObatRacikController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TransaksiObatRacikController;
+use App\Http\Controllers\TransaksiPembayaranTempoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransaksiPembelianController;
 use App\Http\Controllers\TransaksiPenjualanController;
@@ -131,7 +132,9 @@ Route::group(['middleware' => ['ceklogin']], function () {
         });
 
         Route::prefix('pembayaran-tempo')->group(function () {
-            Route::get('/', [JurnalPembelianController::class, 'pembayaran_tempo'])->name('transaksi.pembayaran-tempo');
+            Route::get('/', [TransaksiPembayaranTempoController::class, 'index'])->name('transaksi.pembayaran-tempo');
+            Route::get('pelunasan/{kode}', [TransaksiPembayaranTempoController::class, 'view_pembayaran_tempo']);
+            Route::post('pelunasan/store-update', [TransaksiPembayaranTempoController::class, 'store_update']);
         });
     });
 
