@@ -80,7 +80,7 @@ class LaporanController extends Controller
 
         $data['laba'] = $data['laba_kotor'] - $data['hpp'];
         $data['akun_laba'] = $akun_laba;
-        return $data;
+        // return $data;
 
         $akun_beban = Akun::whereIn("kode_akun", [611, 622, 612, 911])->get();
         foreach ($akun_beban as  $value) {
