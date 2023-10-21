@@ -60,7 +60,7 @@ class LaporanController extends Controller
             }
             switch ($item->kode_akun) {
                 case '411':
-                    $item->total = $penjualan_kotor;
+                    $item->total = $penjualan_kotor - $potongan;
                     $item->nama_akun = "Penjualan Bersih";
                     break;
                 case '119':
@@ -80,7 +80,7 @@ class LaporanController extends Controller
 
         $data['laba'] = $data['laba_kotor'] - $data['hpp'];
         $data['akun_laba'] = $akun_laba;
-        // return $data;
+        return $data;
 
         $akun_beban = Akun::whereIn("kode_akun", [611, 622, 612, 911])->get();
         foreach ($akun_beban as  $value) {
