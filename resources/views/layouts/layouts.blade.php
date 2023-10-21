@@ -140,14 +140,14 @@
                 <a class="nav-link collapsed @if($url_menu == "jurnal") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages3"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="bi bi-journal-bookmark-fill"></i>
-                    <span>Jurnal</span>
+                    <span>Data</span>
                 </a>
                 <div id="collapsePages3" class="collapse @if($url_menu == "jurnal") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-umum') active @endif" href="{{ route('jurnal.umum') }}">Jurnal Umum</a>
                         <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penjualan') active @endif" href="{{ route('jurnal.penjualan') }}">Data Penjualan</a>
                         <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-pembelian') active @endif" href="{{ route('jurnal.pembelian') }}">Data Pembelian</a>
-                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penyesuaian') active @endif" href="{{ route('jurnal.penyesuaian') }}">Jurnal Penyesuaian</a>
+                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penyesuaian') active @endif" href="{{ route('jurnal.penyesuaian') }}">Data biaya</a>
                         
                     </div>
                 </div>

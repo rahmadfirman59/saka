@@ -33,7 +33,8 @@ class LaporanController extends Controller
         $data['perusahaan'] = $this->perusahaan;
         $data['bulan'] = Carbon::now()->isoFormat("MMMM");
 
-        $akun_laba = Akun::whereIn("kode_akun", [411, 119, 422])->get();
+        $akun_laba = Akun::whereIn("kode_akun", [411, 119, 422])->orderBy('kode_akun', "desc")->get();
+        // return $akun_laba;
         $data['laba_kotor'] = 0;
         $data['hpp'] = 0;
         foreach ($akun_laba as  $item) {
@@ -60,6 +61,7 @@ class LaporanController extends Controller
             switch ($item->kode_akun) {
                 case '411':
                     $item->total = $penjualan_kotor;
+                    $item->nama_akun = "Penjualan Bersih";
                     break;
                 case '119':
                     $item->total = $hpp;
@@ -78,6 +80,7 @@ class LaporanController extends Controller
 
         $data['laba'] = $data['laba_kotor'] - $data['hpp'];
         $data['akun_laba'] = $akun_laba;
+        // return $data;
 
         $akun_beban = Akun::whereIn("kode_akun", [611, 622, 612, 911])->get();
         foreach ($akun_beban as  $value) {
@@ -127,7 +130,7 @@ class LaporanController extends Controller
         $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
 
 
-        // return $data;
+
         return view('laporan.rugi-laba', $data);
     }
 
