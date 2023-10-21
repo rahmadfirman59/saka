@@ -12,7 +12,8 @@ use Illuminate\Database\Events\TransactionBeginning;
 
 class TransaksiPembayaranTempoController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $data['transaksi'] = MasterTransaksi::whereHas('pembelian', function ($query) {
             $query->where('status', 2);
         })->with(['pembelian' => function ($query) {
@@ -22,7 +23,8 @@ class TransaksiPembayaranTempoController extends Controller
         return view('transaksi.pembayaran-tempo', $data);
     }
 
-    public function view_pembayaran_tempo($kode){
+    public function view_pembayaran_tempo($kode)
+    {
         $data['transaksi'] = MasterTransaksi::has('pembelian')->where('kode', $kode)->first();
         $data['pembelian'] = Pembelian::with('supplier')->with('barang')->where('id_transaksi', $data['transaksi']->id)->where('status', 2)->get();
         if ($data['pembelian']->isEmpty()) {
@@ -31,23 +33,24 @@ class TransaksiPembayaranTempoController extends Controller
         return view('transaksi.pembayaran-tempo-add', $data);
     }
 
-    public function store_update(Request $request){
+    public function store_update(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'kode' => 'required',
             'type_pembayaran' => 'required',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return [
                 'status' => 300,
                 'message' => $validator->errors()
             ];
         }
-        
+
         DB::beginTransaction();
-        try{
+        try {
             $transaksi = MasterTransaksi::has('pembelian')->where('kode', $request->kode)->first();
-            if($request->type_pembayaran == 0){
+            if ($request->type_pembayaran == 0) {
                 MasterTransaksi::create([
                     'kode_akun' => '211',
                     'keterangan' => 'Pembayaran Hutang Dagang',
@@ -60,7 +63,7 @@ class TransaksiPembayaranTempoController extends Controller
 
                 MasterTransaksi::create([
                     'kode_akun' => '111',
-                    'keterangan' => 'Pengurangan Kas Untuk Pembayaran Hutang',
+                    'keterangan' => 'Kas',
                     'kredit' => $transaksi->kredit,
                     'type' => 3,
                     'kode' => $request->kode,
