@@ -168,7 +168,7 @@
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'penjualan') active @endif" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a>
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'pembelian') active @endif" href="{{ route('laporan.pembelian') }}">Laporan Pembelian</a>
                         {{-- {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'retur-pembelian') active @endif" href="{{ route('laporan.retur-pembelian') }}">Laporan Retur Penjualan</a> --}}
-                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'perubahan-modal') active @endif" href="{{ route('laporan.perubahan-modal') }}">Laporan Perubahan Modal</a>
+                        {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'perubahan-modal') active @endif" href="{{ route('laporan.perubahan-modal') }}">Laporan Perubahan Modal</a> --}}
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'persediaan') active @endif" href="{{ route('laporan.persediaan') }}">Laporan Persediaan</a>
                     </div>
                 </div>

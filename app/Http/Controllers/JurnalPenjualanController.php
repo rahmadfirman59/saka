@@ -26,20 +26,22 @@ class JurnalPenjualanController extends Controller
         $this->perusahaan = (object) [
             'nm_perusahaan' => 'APOTEK SAKA SASMITRA',
             'email' => 'ichimentei.indo@gmail.com',
-            'alamat' => 'JALAN DIPONEGORO SEMARANG',
+            'alamat' => 'Jl. Kimar I No.249, Pandean Lamper, Kec. Gayamsari, Kota Semarang, Jawa Tengah',
         ];
     }
 
-    public function index(){
+    public function index()
+    {
         $transaksi = MasterTransaksi::where('type', 2)->orderBy('created_at', 'desc')->get();
         return view('jurnal.jurnal-penjualan')
             ->with('transaksi', $transaksi);
     }
 
-    public function detail_penjualan($id){
+    public function detail_penjualan($id)
+    {
         $data['transaksi'] = MasterTransaksi::where('type', 2)->find($id);
         $data['type_penjualan'] = Penjualan::where('id_transaksi', $data['transaksi']->id)->select('tipe')->first();
-        if($data['type_penjualan']->tipe == 2){
+        if ($data['type_penjualan']->tipe == 2) {
             $data['penjualan'] = Penjualan::with('dokter')->with('obat_racik')->where('id_transaksi', $data['transaksi']->id)->get();
         } else {
             $data['penjualan'] = Penjualan::with('dokter')->with('barang')->where('id_transaksi', $data['transaksi']->id)->get();
@@ -51,10 +53,11 @@ class JurnalPenjualanController extends Controller
             ->with($data);
     }
 
-    public function cetak_penjualan($id){
+    public function cetak_penjualan($id)
+    {
         $data['transaksi'] = MasterTransaksi::where('type', 2)->find($id);
         $data['type_penjualan'] = Penjualan::where('id_transaksi', $data['transaksi']->id)->select('tipe')->first();
-        if($data['type_penjualan']->tipe == 2){
+        if ($data['type_penjualan']->tipe == 2) {
             $data['penjualan'] = Penjualan::with('dokter')->with('obat_racik')->where('id_transaksi', $data['transaksi']->id)->get();
         } else {
             $data['penjualan'] = Penjualan::with('dokter')->with('barang')->where('id_transaksi', $data['transaksi']->id)->get();
@@ -65,13 +68,14 @@ class JurnalPenjualanController extends Controller
             ->with($data);
     }
 
-    public function login_admin(Request $request){
+    public function login_admin(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email:dns',
             'password' => 'required',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return [
                 'status' => 301,
                 'message' => $validator->errors()
@@ -79,10 +83,10 @@ class JurnalPenjualanController extends Controller
         }
 
         $check = User::where("email", '=', $request->email)->count();
-        if($check == 1){
+        if ($check == 1) {
             $user = User::where("email", '=', $request->email)->first();
             if ($request->password == decrypt($user->password)) {
-                if($user->level == 'superadmin'){
+                if ($user->level == 'superadmin') {
                     Session::put('admin_temporary', 'active');
                     return [
                         'status' => 200,
@@ -100,7 +104,7 @@ class JurnalPenjualanController extends Controller
                     'message' => "Password Salah..!"
                 ];
             }
-        } else{
+        } else {
             return [
                 'status' => 300,
                 'message' => "Email Tidak Ditemukan..!"
@@ -108,13 +112,14 @@ class JurnalPenjualanController extends Controller
         }
     }
 
-    public function batal_penjualan(Request $request){
+    public function batal_penjualan(Request $request)
+    {
         $transaksi = MasterTransaksi::find($request->id);
         $barang = Barang::all();
-        
+
         DB::beginTransaction();
-        
-		try{
+
+        try {
             //hapus transaksi kas dan kurangi jumlah akun kas dan pendapatan
             MasterTransaksi::where('type', 3)->where('kode', $transaksi->kode)->delete();
             $akun = Akun::where('kode_akun', 111)->first();
@@ -128,10 +133,10 @@ class JurnalPenjualanController extends Controller
             $penjualan = Penjualan::where('id_transaksi', $transaksi->id)->get();
 
             Keranjang::query()->truncate();
-            
-            foreach($penjualan as $item){
+
+            foreach ($penjualan as $item) {
                 $barang_single = $barang->firstWhere('id', $item->id_barang);
-                if($item->tipe == 0){
+                if ($item->tipe == 0) {
                     $stok = $barang_single->stok + $item->jumlah;
                     $stok_grosir = floor($stok / $barang_single->jumlah_grosir);
                     $barang_single->stok = $stok;
@@ -153,7 +158,7 @@ class JurnalPenjualanController extends Controller
 
                 $item->delete();
             }
-            
+
             Log::create([
                 'user_id' => Session::get('useractive')->id,
                 'nomor_transaksi' => $transaksi->kode,
@@ -161,7 +166,7 @@ class JurnalPenjualanController extends Controller
                 'keterangan' => 'Pembatalan Transaksi ' . $transaksi->kode,
                 'jumlah' => $transaksi->kredit
             ]);
-            
+
             HistoryPasien::where('id_transaksi', $transaksi->id)->delete();
 
             $transaksi->delete();
@@ -169,24 +174,24 @@ class JurnalPenjualanController extends Controller
             DB::commit();
 
             Session::forget('admin_temporary');
-            
+
             return [
                 'status' => 200,
                 'message' => 'Transaksi Berhasil Dihapus'
             ];
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             Session::forget('admin_temporary');
 
-			return [
-				'status' 	=> 300, // GAGAL
-				'message'       => (env('APP_DEBUG', 'true') == 'true')? $e->getMessage() : 'Operation error'
-			];
-
-		}
+            return [
+                'status'     => 300, // GAGAL
+                'message'       => (env('APP_DEBUG', 'true') == 'true') ? $e->getMessage() : 'Operation error'
+            ];
+        }
     }
 
-    public function clear_session(){
+    public function clear_session()
+    {
         Session::forget('admin_temporary');
-    } 
+    }
 }

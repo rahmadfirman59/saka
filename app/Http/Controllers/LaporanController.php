@@ -27,7 +27,7 @@ class LaporanController extends Controller
         $this->tanggal = Carbon::now()->isoFormat('D MMMM Y');
     }
 
-    public function rugi_laba()
+    public function rugi_laba($neraca = false)
     {
         $data['total_beban'] = 0;
         $data['perusahaan'] = $this->perusahaan;
@@ -37,21 +37,23 @@ class LaporanController extends Controller
         // return $akun_laba;
         $data['laba_kotor'] = 0;
         $data['hpp'] = 0;
+        $potongan = 0;
         foreach ($akun_laba as  $item) {
             $penjualan_kotor = 0;
             $hpp = 0;
-            $potongan = 0;
+
             $transaksi = MasterTransaksi::where("kode_akun", $item->kode_akun)->get();
             foreach ($transaksi as  $value) {
                 switch ($value->kode_akun) {
-                    case '411':
-                        $penjualan_kotor += $value->kredit;
-                        break;
+
                     case '119':
                         $hpp += $value->debt;
                         break;
                     case '422':
                         $potongan += $value->debt;
+                        break;
+                    case '411':
+                        $penjualan_kotor += $value->kredit;
                         break;
                     default:
                         # code...
@@ -59,24 +61,31 @@ class LaporanController extends Controller
                 }
             }
             switch ($item->kode_akun) {
-                case '411':
-                    $item->total = $penjualan_kotor - $potongan;
-                    $item->nama_akun = "Penjualan Bersih";
-                    break;
+
                 case '119':
                     $item->total = $hpp;
                     break;
                 case '422':
                     $item->total = $potongan;
                     break;
+                case '411':
+                    $item->total = $penjualan_kotor;
+                    $item->nama_akun = "Penjualan Bersih";
+                    break;
                 default:
                     # code...
                     break;
             }
+
+
             $item->transaksi = $transaksi;
             $data['laba_kotor'] += $penjualan_kotor;
             $data['hpp'] += $hpp;
+            if ($item->kode_akun == '411') {
+                $item->total = $penjualan_kotor - $potongan;
+            }
         }
+
 
         $data['laba'] = $data['laba_kotor'] - $data['hpp'];
         $data['akun_laba'] = $akun_laba;
@@ -131,6 +140,9 @@ class LaporanController extends Controller
 
 
 
+        if ($neraca == true) {
+            return $data['laba_rugi'];
+        }
         return view('laporan.rugi-laba', $data);
     }
 
@@ -147,16 +159,17 @@ class LaporanController extends Controller
         $data['potongan'] = MasterTransaksi::where('type', 1)->sum('potongan');
         $data['persediaan'] = Akun::where('kode_akun', 113)->select('jumlah')->first();
 
+        $data['gedung'] = Akun::where('kode_akun', 116)->sum('jumlah');
+        $data['kendaraan'] = Akun::where('kode_akun', 115)->sum('jumlah');
+        $data['peralatan_kantor'] = Akun::where('kode_akun', 118)->sum('jumlah');
+
+        // return $data;
         //me
         $data['hpp'] = Akun::where('kode_akun', 119)->sum('jumlah');
         $data['penjualan'] = Akun::where('kode_akun', 411)->sum('jumlah');
-
         $data['retur'] = Akun::select('jumlah')->where('kode_akun', 511)->first();
-
         $data['total_harga_beli_produk'] = Barang::select(DB::raw('sum(harga_beli * stok) as total'))->get();
-
         $data['pasiva'] = Akun::where('kode_akun', 311)->first();
-
 
         //pasiva 
         $data['hpp'] = Akun::where('kode_akun', 119)->sum('jumlah');
@@ -173,9 +186,189 @@ class LaporanController extends Controller
         $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
         $data['aktiva'] = Akun::where('kode_akun', 113)->sum('jumlah') + $data['kas'] + $data['kas_bank'];
 
+
         // return $data['laba'];
 
         return view('laporan.neraca', $data);
+    }
+
+
+    public function neraca2()
+    {
+        $data['perusahaan'] = $this->perusahaan;
+        $data['tanggal'] = $this->tanggal;
+
+        $akun_aktiva = Akun::whereIn("kode_akun", [111, 112, 115, 116, 118, 113])->orderBy('kode_akun', "asc")->get();
+        $akun_pasiva =
+            Akun::whereIn("kode_akun", [211, 311])->orderBy('kode_akun', "asc")->get();
+
+        $aktiva = 0;
+        $pasiva = 0;
+        foreach ($akun_aktiva as $value) {
+
+            if ($value->kode_akun == 111) {
+                $kas_debit = 0;
+                $kas_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $kas_debit += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $kas_kredit += $values->kredit;
+                    }
+                }
+
+                $value->kas_debit = $kas_debit;
+                $value->kas_kredit = $kas_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->kas_debit - $value->kas_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 112) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 115) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 116) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 118) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 113) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            }
+        }
+
+        foreach ($akun_pasiva as $v) {
+            if ($v->kode_akun == 211) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $v->kode_akun)->get();
+                foreach ($transaksi as  $vs) {
+                    if ($vs->debt != null) {
+                        $jml_debt += $vs->debt;
+                    }
+                    if ($vs->kredit != null) {
+                        $jml_kredit += $vs->kredit;
+                    }
+                }
+
+                $v->jml_debt = $jml_debt;
+                $v->jml_kredit = $jml_kredit;
+                $v->transaksi = $transaksi;
+                $v->total = $v->jml_debt - $v->jml_kredit;
+            }
+
+            if ($v->kode_akun == 311) {
+
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $v->kode_akun)->get();
+                foreach ($transaksi as  $vs) {
+                    if ($vs->debt != null) {
+                        $jml_debt += $vs->debt;
+                    }
+                    if ($vs->kredit != null) {
+                        $jml_kredit += $vs->kredit;
+                    }
+                }
+
+                $v->jml_debt = $jml_debt;
+                $v->jml_kredit = $jml_kredit;
+                $v->transaksi = $transaksi;
+                $v->total = $v->jml_debt - $v->jml_kredit;
+            }
+        }
+
+
+
+        $get_laba_rugi = $this->rugi_laba(true);
+
+        $data['aktiva'] = $akun_aktiva;
+        $data['pasiva'] = $akun_pasiva;
+        $data['total_aktiva'] = $aktiva;
+        $data['total_pasiva'] = $pasiva + $get_laba_rugi;
+        $data['laba_rugi'] = $get_laba_rugi;
+        // return $data;
+        return view('laporan.neraca2', $data);
     }
 
     public function persediaan()
@@ -409,6 +602,315 @@ class LaporanController extends Controller
         $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
         $data['month'] = Carbon::create(null, $request->priode_bulan, 1)->isoFormat('MMMM');
 
+
+        return $data;
+    }
+
+    public function rugi_laba_change_priode2($awal, $akhir)
+    {
+
+        $data['total_beban'] = 0;
+        $data['perusahaan'] = $this->perusahaan;
+        // $data['tanggal'] = $this->tanggal;
+
+        $akun_laba = Akun::whereIn("kode_akun", [411, 119, 422])->get();
+        $data['laba_kotor'] = 0;
+        $data['hpp'] = 0;
+        foreach ($akun_laba as  $item) {
+            $penjualan_kotor = 0;
+            $hpp = 0;
+            $potongan = 0;
+            $transaksi = MasterTransaksi::where("kode_akun", $item->kode_akun)
+                ->whereBetween('tanggal', [$awal, $akhir])
+                ->get();
+            foreach ($transaksi as  $value) {
+                switch ($value->kode_akun) {
+                    case '411':
+                        $penjualan_kotor += $value->kredit;
+                        break;
+                    case '119':
+                        $hpp += $value->debt;
+                        break;
+                    case '422':
+                        $potongan += $value->debt;
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+            switch ($item->kode_akun) {
+                case '411':
+                    $item->total = $penjualan_kotor;
+                    break;
+                case '119':
+                    $item->total = $hpp;
+                    break;
+                case '422':
+                    $item->total = $potongan;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $item->transaksi = $transaksi;
+            $data['laba_kotor'] += $penjualan_kotor;
+            $data['hpp'] += $hpp;
+        }
+
+        $data['laba'] = $data['laba_kotor'] - $data['hpp'];
+        $data['akun_laba'] = $akun_laba;
+
+        $akun_beban = Akun::whereIn("kode_akun", [611, 622, 612, 911])->get();
+        foreach ($akun_beban as  $value) {
+            $biaya_listrik = 0;
+            $biaya_sewa = 0;
+            $biaya_air = 0;
+            $biaya_gaji = 0;
+            $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)
+                ->whereBetween('tanggal', [$awal, $akhir])
+                ->get();
+            foreach ($transaksi as $values) {
+                switch ($values->kode_akun) {
+                    case '611':
+                        $biaya_listrik += $values->debt;
+                        break;
+                    case '622':
+                        $biaya_gaji += $values->debt;
+                        break;
+                    case '612':
+                        $biaya_air += $values->debt;
+                        break;
+                    case '911':
+                        $biaya_sewa += $value->debt;
+                        break;
+                }
+            }
+            switch ($value->kode_akun) {
+                case '611':
+                    $value->total = $biaya_listrik;
+                    break;
+                case '622':
+                    $value->total = $biaya_gaji;
+                    break;
+                case '612':
+                    $value->total = $biaya_air;
+                    break;
+                case '911':
+                    $value->total = $biaya_sewa;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $value->transaksi = $transaksi;
+            $data['total_beban'] += $biaya_listrik + $biaya_air + $biaya_gaji +  $biaya_sewa;
+        }
+
+        $data['akun_beban'] = $akun_beban;
+        $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
+
+
+
+        return
+            $data['laba_rugi'];
+    }
+
+    public function neraca_change_priode(Request $request)
+    {
+
+        $tanggal1 = $request->thn_1 . '-' . $request->bln_1 . '-' . $request->tgl_1;
+        $tanggal2 = $request->thn_2 . '-' . $request->bln_2 . '-' . $request->tgl_2;
+        $data['perusahaan'] = $this->perusahaan;
+        $data['tanggal'] = $this->tanggal;
+
+        $akun_aktiva = Akun::whereIn("kode_akun", [111, 112, 115, 116, 118, 113])->orderBy('kode_akun', "asc")->get();
+        $akun_pasiva =
+            Akun::whereIn("kode_akun", [211, 311])->orderBy('kode_akun', "asc")->get();
+
+        $aktiva = 0;
+        $pasiva = 0;
+        foreach ($akun_aktiva as $value) {
+
+            if ($value->kode_akun == 111) {
+                $kas_debit = 0;
+                $kas_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)
+                    ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                    ->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $kas_debit += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $kas_kredit += $values->kredit;
+                    }
+                }
+
+                $value->kas_debit = $kas_debit;
+                $value->kas_kredit = $kas_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->kas_debit - $value->kas_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 112) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)
+                    ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                    ->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 115) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)
+                    ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                    ->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 116) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)
+                    ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                    ->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 118) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)
+                    ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                    ->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            } elseif ($value->kode_akun == 113) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)
+                    ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                    ->get();
+                foreach ($transaksi as  $values) {
+                    if ($values->debt != null) {
+                        $jml_debt += $values->debt;
+                    }
+                    if ($values->kredit != null) {
+                        $jml_kredit += $values->kredit;
+                    }
+                }
+
+                $value->jml_debt = $jml_debt;
+                $value->jml_kredit = $jml_kredit;
+                $value->transaksi = $transaksi;
+                $value->total = $value->jml_debt - $value->jml_kredit;
+                $aktiva += $value->total;
+            }
+        }
+
+        foreach ($akun_pasiva as $v) {
+            if ($v->kode_akun == 211) {
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $v->kode_akun)
+                    ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                    ->get();
+                foreach ($transaksi as  $vs) {
+                    if ($vs->debt != null) {
+                        $jml_debt += $vs->debt;
+                    }
+                    if ($vs->kredit != null) {
+                        $jml_kredit += $vs->kredit;
+                    }
+                }
+
+                $v->jml_debt = $jml_debt;
+                $v->jml_kredit = $jml_kredit;
+                $v->transaksi = $transaksi;
+                $v->total = $v->jml_debt - $v->jml_kredit;
+            }
+
+            if ($v->kode_akun == 311) {
+
+                $jml_debt = 0;
+                $jml_kredit = 0;
+                $transaksi = MasterTransaksi::where("kode_akun", $v->kode_akun)
+                    ->whereBetween('tanggal', [$tanggal1, $tanggal2])
+                    ->get();
+                foreach ($transaksi as  $vs) {
+                    if ($vs->debt != null) {
+                        $jml_debt += $vs->debt;
+                    }
+                    if ($vs->kredit != null) {
+                        $jml_kredit += $vs->kredit;
+                    }
+                }
+
+                $v->jml_debt = $jml_debt;
+                $v->jml_kredit = $jml_kredit;
+                $v->transaksi = $transaksi;
+                $v->total = $v->jml_debt - $v->jml_kredit;
+            }
+        }
+
+
+
+        $get_laba_rugi = $this->rugi_laba_change_priode2($tanggal1, $tanggal2);
+        // return $get_laba_rugi;
+
+        $data['aktiva'] = $akun_aktiva;
+        $data['pasiva'] = $akun_pasiva;
+        $data['total_aktiva'] = $aktiva;
+        $data['total_pasiva'] = $pasiva + $get_laba_rugi;
+        $data['laba_rugi'] = $get_laba_rugi;
+        
 
         return $data;
     }
