@@ -452,6 +452,7 @@ class LaporanController extends Controller
         $data['penjualan'] = Penjualan::with('transaksi', 'dokter')->get();
         $data['Totalpenjualan'] = Penjualan::sum('subtotal');
         $data['tanggal'] = $this->tanggal;
+        // return $data;
         return view('laporan.penjualan', $data);
     }
 
@@ -910,7 +911,7 @@ class LaporanController extends Controller
         $data['total_aktiva'] = $aktiva;
         $data['total_pasiva'] = $pasiva + $get_laba_rugi;
         $data['laba_rugi'] = $get_laba_rugi;
-        
+
 
         return $data;
     }
