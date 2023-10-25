@@ -44,9 +44,9 @@
                             <td>{{ "Rp. ".number_format($item->jumlah, 2 , ',' , '.' ) }}</td>
                             <td>
                                 @if($item->kode_akun == 311)
-                                <a style='color: white;' onclick="tambah_modal()">
+                                {{-- <a style='color: white;' onclick="tambah_modal()">
                                     <button class='btn btn-warning btn-sm mr-1'><i class='fa fa-plus'></i></button>
-                                </a>
+                                </a> --}}
                                 @endif
                                 <a style='color: white;' onclick="edit('akun/detail/{{ $item->id }}')">
                                     <button class='btn btn-info btn-sm mr-1'><i class='fa fa-edit'></i></button>

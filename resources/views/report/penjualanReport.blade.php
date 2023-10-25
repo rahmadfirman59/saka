@@ -175,11 +175,11 @@
 						<p style="color: red; font-family: 'nunito', arial; font-size: .9rem; margin-bottom: 50px; display: block; width: 100%">*barang yang sudah dibeli tidak bisa dikembalikan</p>
 						<div class="d-flex justify-content-between" style="width: 100%">
 							@if($type_penjualan->tipe != 2)
-							<button class="btn btn-danger btn-icon icon-left" onclick="batal_penjualan({{ $transaksi->id }}, '{{ Session::get('useractive')->level }}')">
+							{{-- <button class="btn btn-danger btn-icon icon-left" onclick="batal_penjualan({{ $transaksi->id }}, '{{ Session::get('useractive')->level }}')">
 								<p style="color: white; margin: 0">
 									<i class="bi bi-x-circle-fill"></i> Batal
 								</p>
-							</button>
+							</button> --}}
 							@else
 							<p></p>
 							@endif

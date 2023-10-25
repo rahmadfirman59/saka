@@ -30,6 +30,7 @@
     </div>
 <h5 style="color: red" >*Pastikan nominal pada aktiva dan pasiva sama</h5>
     <div class="row">
+        
 		<div class="col-lg-12">
 			<section class="section">
 				<div class="row">
@@ -68,6 +69,18 @@
                                                         <td><?php  echo "Rp.".number_format($persediaan->jumlah,2,'.',','); ?></td>
                                                     </tr>
                                                     <tr>
+                                                        <td colspan="3">Gedung</td>
+                                                        <td><?php  echo "Rp.".number_format($gedung,2,'.',','); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3">Kendaraan</td>
+                                                        <td><?php  echo "Rp.".number_format($kendaraan,2,'.',','); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3">Peralatan Kantor</td>
+                                                        <td><?php  echo "Rp.".number_format($peralatan_kantor,2,'.',','); ?></td>
+                                                    </tr>
+                                                    <tr>
                                                         <td colspan="3">Total</td>
                                                         <td align="right"><?php  echo "Rp.".number_format($aktiva ,2,'.',','); ?></td>
                                                     </tr>
@@ -99,7 +112,7 @@
                                                       
                                                     </tr>
                                                       <tr>
-                                                        <td colspan="3">Laba/Rugi  </td>
+                                                        <td colspan="3">Laba/Rugi periode berjalan  </td>
                                                         
                                                         <td ><?php  echo "Rp.".number_format($laba_rugi,2,'.',','); ?></td>
                                                     </tr>

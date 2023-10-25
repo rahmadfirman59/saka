@@ -12,8 +12,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 class JurnalUmumController extends Controller
 {
-    
-    
+
+
     public function index()
     {
         $data['transaksi'] = MasterTransaksi::all();
@@ -21,17 +21,20 @@ class JurnalUmumController extends Controller
         return view('jurnal.jurnal-umum', $data);
     }
 
-    public function change_priode(Request $request){
-        $tanggal1=$request->thn_1.'-'.$request->bln_1.'-'.$request->tgl_1;
-		$tanggal2=$request->thn_2.'-'.$request->bln_2.'-'.$request->tgl_2;
+    public function change_priode(Request $request)
+    {
+        $tanggal1 = $request->thn_1 . '-' . $request->bln_1 . '-' . $request->tgl_1;
+        $tanggal2 = $request->thn_2 . '-' . $request->bln_2 . '-' . $request->tgl_2;
         return MasterTransaksi::whereBetween('tanggal', [$tanggal1, $tanggal2])->get();
     }
 
-    public function reset_priode(){
+    public function reset_priode()
+    {
         return MasterTransaksi::all();
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'pilih_akun_debit' => 'required|numeric',
             'pilih_akun_kredit' => 'required|numeric',
@@ -41,7 +44,7 @@ class JurnalUmumController extends Controller
             'uraian_kredit' => 'required',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return [
                 'status' => 300,
                 'message' => $validator->errors()
@@ -50,11 +53,11 @@ class JurnalUmumController extends Controller
 
         DB::beginTransaction();
 
-        try{
+        try {
             $akun_debit = Akun::where('kode_akun', $request->pilih_akun_debit)->first();
             $akun_debit->jumlah += $request->nominal_debit;
             $akun_debit->save();
-            
+
             $akun_kredit = Akun::where('kode_akun', $request->pilih_akun_kredit)->first();
             $akun_kredit->jumlah -= $request->nominal_kredit;
             $akun_kredit->save();
@@ -65,7 +68,7 @@ class JurnalUmumController extends Controller
 
             MasterTransaksi::create([
                 'kode_akun' => $request->pilih_akun_debit,
-                'keterangan' => $request->uraian_debit,
+                'keterangan' => $akun_debit->nama_akun,
                 'debt' => $request->nominal_debit,
                 'type' => 6,
                 'kode' => "MNL" . $formattedValue,
@@ -74,7 +77,7 @@ class JurnalUmumController extends Controller
 
             MasterTransaksi::create([
                 'kode_akun' => $request->pilih_akun_kredit,
-                'keterangan' => $request->uraian_kredit,
+                'keterangan' => $akun_kredit->nama_akun,
                 'kredit' => $request->nominal_kredit,
                 'type' => 6,
                 'kode' => "MNL" . $formattedValue,
@@ -87,8 +90,7 @@ class JurnalUmumController extends Controller
                 'status' => 200,
                 'message' => 'Transaksi Manual Berhasil Ditambahkan',
             ];
-
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
 
             DB::rollBack();
             return [
@@ -96,7 +98,5 @@ class JurnalUmumController extends Controller
                 'message' => (env('APP_ENV', 'true') == true ? $e->getMessage() : "Operation Error")
             ];
         }
-
-        
     }
 }

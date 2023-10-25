@@ -179,7 +179,8 @@ Route::group(['middleware' => ['ceklogin']], function () {
             Route::post('/change-priode', [LaporanController::class, 'rugi_laba_change_priode']);
         });
         Route::prefix('neraca')->group(function () {
-            Route::get('/', [LaporanController::class, 'neraca'])->name('laporan.neraca');
+            Route::get('/', [LaporanController::class, 'neraca2'])->name('laporan.neraca');
+            Route::post('/change-priode', [LaporanController::class, 'neraca_change_priode'])->name('neraca.filter');
         });
         Route::prefix('persediaan')->group(function () {
             Route::get('/', [LaporanController::class, 'persediaan'])->name('laporan.persediaan');

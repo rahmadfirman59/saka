@@ -30,7 +30,7 @@ class JurnalPembelianController extends Controller
         $data['perusahaan'] = (object) [
             'nm_perusahaan' => 'APOTEK SAKA SASMITRA',
             'email' => 'ichimentei.indo@gmail.com',
-            'alamat' => 'JALAN DIPONEGORO SEMARANG',
+            'alamat' => 'Jl. Kimar I No.249, Pandean Lamper, Kec. Gayamsari, Kota Semarang, Jawa Tengah',
         ];
         return view('report.pembelianReport')
             ->with($data);
@@ -43,7 +43,7 @@ class JurnalPembelianController extends Controller
         $data['perusahaan'] = (object) [
             'nm_perusahaan' => 'APOTEK SAKA SASMITRA',
             'email' => 'ichimentei.indo@gmail.com',
-            'alamat' => 'JALAN DIPONEGORO SEMARANG',
+            'alamat' => 'Jl. Kimar I No.249, Pandean Lamper, Kec. Gayamsari, Kota Semarang, Jawa Tengah',
         ];
         return view('pdf.penjualanPDF')
             ->with($data);

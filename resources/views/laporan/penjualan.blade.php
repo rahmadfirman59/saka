@@ -145,8 +145,8 @@
                                 @foreach ($penjualan as $key=> $item )
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $item->transaksi->tanggal }}</td>
-                                    <td>{{ $item->transaksi->kode }}</td>
+                                    <td>{{ $item->transaksi->tanggal ?? "" }}</td>
+                                    <td>{{ $item->transaksi->kode ??""}}</td>
                                     <td>{{ $item->tipe_text }}</td>
                                     <td>{{ $item->dokter->nama_dokter }}</td>
                                     <td style="text-align: end"><?php echo "Rp. ".number_format($item->subtotal, 2 , ',' , '.' ) ?></td>
