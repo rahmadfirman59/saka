@@ -43,8 +43,22 @@
             </thead>
 
             <tbody>
+                @php
+                  $total_persediaan = [
+                      'pembelian' => 0,
+                      'penjualan' => 0,
+                      'stok' => 0,
+                      'subTotal' => 0,
+                  ];
+                @endphp
                 @foreach ($barang as $key=> $item )
                 <tr>
+                    @php
+                        $total_persediaan['pembelian'] += $item->pembelian_sum_jumlah;
+                        $total_persediaan['penjualan'] += $item->penjualan_sum_jumlah;
+                        $total_persediaan['stok'] += $item->stok;
+                        $total_persediaan['subTotal'] += ($item->harga_beli * $item->stok);
+                    @endphp
                     <td align="center">{{ $key + 1 }}</td>
                     <td>{{ $item->nama_barang }}</td>
                     <td align="center">{{ $item->satuan }}</td>
@@ -55,7 +69,14 @@
                     <td align="right"><?php echo "Rp." . number_format($item->harga_beli * $item->stok,2,'.',','); ?></td>
                 </tr>
                 @endforeach
-
+                <tr>
+                  <td colspan="3" align="center">Total Persediaan</td>
+                  <td align="center">{{ $total_persediaan['pembelian'] }}</td>
+                  <td align="center">{{ $total_persediaan['penjualan'] }}</td>
+                  <td align="center">{{ $total_persediaan['stok'] }}</td>
+                  <td align="center">*</td>
+                  <td align="center"><?php echo "Rp." . number_format($total_persediaan['subTotal'],2,'.',','); ?></td>
+                </tr>
             </tbody>
         </table>
     </main>

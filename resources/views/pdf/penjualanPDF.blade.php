@@ -50,13 +50,61 @@
                             </tr>
                             @endforeach
                             @else
-                            @foreach ($penjualan as $key=> $item)
+                            @php
+                                $batchPrefixes = [];
+                            @endphp
+
+                            @foreach($penjualan as $penjualanItem)
+                                @php
+                                    $barang = $penjualanItem['barang'];
+                                    $stok = $penjualanItem['jumlah'];
+                                    $tipe = $penjualanItem['tipe'];
+                                    if($tipe == 0){
+                                        $batchPrefix = $barang['batch_prefix'];
+                                    } elseif($tipe == 1) {
+                                        $batchPrefix = $barang['batch_prefix'] . "-GSR";
+                                    }
+                                    
+                                    // Initialize the new_stok_grosir and new_stok_satuan for this batch_prefix
+                                    if (!isset($batchPrefixes[$batchPrefix])) {
+                                        $batchPrefixes[$batchPrefix] = [
+                                            'new_stok_grosir' => 0,
+                                            'new_stok_satuan' => 0,
+                                            'harga' => 0,
+                                            'subtotal' => 0,
+                                        ];
+                                    }
+
+                                    $batchPrefixes[$batchPrefix]['barang'] = $barang['nama_barang'];
+                                    $batchPrefixes[$batchPrefix]['harga'] = $penjualanItem['harga'];
+                                    $batchPrefixes[$batchPrefix]['subtotal'] += $penjualanItem['subtotal'];
+
+
+                                    // Update the new_stok_grosir and new_stok_satuan based on the tipe
+                                    if ($tipe == 1) {
+                                        $batchPrefixes[$batchPrefix]['new_stok_grosir'] += $stok;
+                                        $batchPrefixes[$batchPrefix]['satuan_grosir'] = $barang['satuan_grosir'];
+                                    } elseif ($tipe == 0) {
+                                        $batchPrefixes[$batchPrefix]['new_stok_satuan'] += $stok;
+                                        $batchPrefixes[$batchPrefix]['satuan'] = $barang['satuan'];
+                                    }
+                                @endphp
+                            @endforeach
+                            <?php $key = 0;?>
+                            @foreach ($batchPrefixes as $item)
                             <tr class="body">
                                 <td align="center">{{ $key + 1 }}</td>
-                                <td align="center">{{ $item->barang->nama_barang }}</td>
-                                <td align="center">{{ $item->harga }}</td>
-                                <td align="center">{{ $item->jumlah . ' ' . $item->barang->satuan }}</td>
-                                <td align="center"><?php echo "Rp&nbsp". number_format($item->subtotal,2,'.',','); ?></td>
+                                <td align="center">{{ $item['barang'] }}</td>
+                                <td align="center">{{ $item['harga'] }}</td> 
+                                <td align="center">
+                                    @if(isset($item['satuan_grosir']))
+                                    {{ $item['new_stok_grosir'] . ' ' . $item['satuan_grosir'] }}
+                                    @endif
+                                    @if(isset($item['satuan']))
+                                    {{ $item['new_stok_satuan'] . ' ' . $item['satuan'] }}
+                                    @endif
+                                </td>
+                                <td align="center"><?php echo "Rp&nbsp". number_format($item['subtotal'],2,'.',','); $key = $key+1?></td>
                             </tr>
                             @endforeach
                             @endif

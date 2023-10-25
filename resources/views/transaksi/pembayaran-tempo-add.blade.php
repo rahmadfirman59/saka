@@ -35,33 +35,6 @@
         margin: 0;
     }
 
-    .custom-radio input[type="radio"] + label {
-        z-index: 10;
-        position: relative;
-        color: #b9b9b9;
-        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
-        font-weight: bold;
-        background-color: #f9f9f9;
-        border: 2px solid #e5e5e5;
-        cursor: pointer;
-        width: 100%;
-        transition: all 200ms ease;
-    }
-
-    .custom-radio input[type="radio"] {
-        display: none;
-    }
-
-    .custom-radio input[type="radio"]:checked + label {
-        color: white;
-        background-color: #4E73DF;
-        border: 2px solid #3c5ab3;
-    }   
-
-    .custom-radio input[type="radio"] + label {
-        padding: 10px 20px;
-    }
-
     .child-padding > * {
         padding-left: 20px;
         padding-right: 20px;

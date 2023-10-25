@@ -57,7 +57,15 @@ class JurnalPenjualanController extends Controller
         if($data['type_penjualan']->tipe == 2){
             $data['penjualan'] = Penjualan::with('dokter')->with('obat_racik')->where('id_transaksi', $data['transaksi']->id)->get();
         } else {
-            $data['penjualan'] = Penjualan::with('dokter')->with('barang')->where('id_transaksi', $data['transaksi']->id)->get();
+            $data['penjualan'] = Penjualan::with('dokter')->with('barang', function($query){
+                $query->join(DB::raw('(SELECT SUBSTRING(no_batch, 1, 4) as batch_prefix FROM barang GROUP BY batch_prefix) as sub'), function($join) {
+                            $join->on('barang.no_batch', 'LIKE', DB::raw('CONCAT(sub.batch_prefix, "%")'));
+                        })
+                        ->orderBy('batch_prefix')
+                        ->orderBy('no_batch')
+                        ->orderBy('created_at', 'ASC')
+                        ->get();
+            })->where('id_transaksi', $data['transaksi']->id)->get();
         }
         $data['petugas'] = User::find($data['transaksi']->created_by)->first();
         $data['perusahaan'] = $this->perusahaan;

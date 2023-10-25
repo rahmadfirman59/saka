@@ -50,7 +50,11 @@
                                     <td>{{ $item->kode }}</td>
                                     <td>{{ $item->pembelian[0]->no_faktur }}</td>
                                     <td>{{ $item->pembelian[0]->supplier->nama_supplier }}</td>
-                                    @if($item->pembelian[0]->status == 1)
+                                    @if($item->pembelian[0]->status == 0)
+                                    <td><span class="p-2 badge badge-secondary">Bank</span></td>
+                                    <td>{{ $item->tanggal }}</td>
+                                    <td><?php echo "Rp. ".number_format($item->debt, 2 , ',' , '.' ) ?></td>
+                                    @elseif($item->pembelian[0]->status == 1)
                                     <td><span class="p-2 badge badge-success">Tunai</span></td>
                                     <td>{{ $item->tanggal }}</td>
                                     <td><?php echo "Rp. ".number_format($item->debt, 2 , ',' , '.' ) ?></td>

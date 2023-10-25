@@ -157,20 +157,18 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6 d-flex align-items-center justify-content-center">
-                            <div class="form-group d-flex justify-content-around" style="margin: 0; gap: 40px">
-                                <div>
-                                    <label class="checkbox-inline"><input name='status' id="tunai" checked type='radio' value='1'></label>
-                                    <label>Kas</label>
-                                </div>
-                                <div>
-                                    <label class="checkbox-inline"><input name='status' id="tempo" type='radio' value='2'></label>
-                                    <label>Tempo</label>
+                            <div class="form-group d-flex justify-content-around" style="margin: 0 4px; width: 100%; flex-direction: column">
+                                <label class="mb-2">Tipe Pembayaran</label>
+                                <div class="form-group custom-radio d-flex justify-content-center">
+                                    <input type="radio" id="tunai" name="status" value="1" checked><label for="tunai" style="border-right: none; text-align: center">Kas</label>
+                                    <input type="radio" id="bank" name="status" value="0"><label for="bank" style="text-align: center">Bank</label>
+                                    <input type="radio" id="tempo" name="status" value="2"><label for="tempo" style="border-left: none; text-align: center">Tempo</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label>Jatuh Tempo</label>
+                                <label style="margin-bottom: .68rem;">Jatuh Tempo</label>
                                 <input type="date" name="tgl_tempo" disabled id="tgl_tempo" value="" class="form-control">
                             </div>
                         </div>
@@ -308,6 +306,10 @@
 	});
 
     $("#tunai").click(function () {
+        document.getElementById("tgl_tempo").disabled = true;
+    });
+
+    $("#bank").click(function () {
         document.getElementById("tgl_tempo").disabled = true;
     });
 

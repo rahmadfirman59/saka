@@ -183,7 +183,7 @@
 							@else
 							<p></p>
 							@endif
-							<button class="btn btn-warning btn-icon icon-left" <?= "onclick=\"window.open('{{ route('jurnal.penjualan') }}/cetak-penjualan/$transaksi->id','Print','menubar=no,navigator=no,width=500,height=450,left=200,top=150,toolbar=no')\";" ?>><i class="bi bi-printer-fill"></i></i> Print</button>
+							<button class="btn btn-warning btn-icon icon-left" onclick="window.open('{{ route('jurnal.penjualan') }}/cetak-penjualan/{{ $transaksi->id }}', 'Print', 'menubar=no,navigator=no,width=500,height=450,left=200,top=150,toolbar=no');"><i class="bi bi-printer-fill"></i></i> Print</button>
 						</div>
 					</div>
 				</div>

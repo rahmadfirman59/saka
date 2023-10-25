@@ -35,6 +35,8 @@ use App\Http\Controllers\TransaksiPenjualanController;
 
 Route::post('login', [AuthController::class, 'login'])->name('post.login');
 Route::get('login', [AuthController::class, 'index'])->name('login');
+Route::get('contoh/rugi-laba/{month?}', [LaporanController::class, 'testing']);
+
 
 Route::group(['middleware' => ['ceklogin']], function () {
     Route::get('/', function () {

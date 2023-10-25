@@ -7,6 +7,10 @@
 	.card-header{
 		background: #fff;
 	}
+
+    #month-header{
+        display: none;
+    }
 </style>
 @endsection
 @section('content')
@@ -28,7 +32,7 @@
 		<div class="col-lg-12">
 			<div class="card">
 				<div class="card-header text-center">
-					<h5 class="card-title p-0" style="display: inline-block">{{ $perusahaan->nm_perusahaan }}<br>{{ $perusahaan->alamat }}<br>Laporan Rugi/Laba Priode Bulan <span id="month-header">{{ $bulan }}</span></h5>
+					<h5 class="card-title p-0" style="display: inline-block">{{ $perusahaan->nm_perusahaan }}<br>{{ $perusahaan->alamat }}<br>Laporan Rugi/Laba <span id="month-header"></span></h5>
 				</div>
 				<div class="card-body mt-3">
 					<div class="table-responsive">
@@ -40,8 +44,10 @@
                                     $list_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
                                 ?>
                                 <select  name="priode_bulan" class='form-control form-select mx-2' style='display: inline-block; width: unset'>
+                                    <option value="null" disabled selected>-- Pilih Bulan --</option>
                                     @foreach ($list_bulan as $key => $item)
-                                        <option value="{{ $key + 1 }}" {{ $key + 1 == date('m') ? 'selected' : '' }}>{{ $item }}</option>
+                                        {{-- <option value="{{ $key + 1 }}" {{ $key + 1 == date('m') ? 'selected' : '' }}>{{ $item }}</option> --}}
+                                        <option value="{{ $key + 1 }}">{{ $item }}</option>
                                     @endforeach
                                 </select>
                                 <button type="submit" class="btn btn-success">Tampilkan</button>
@@ -146,62 +152,69 @@
                 setTimeout(function () {
                     $('#modal_loading').modal('hide');
                 }, 500);
-                $('#month-header').text(`${response.month}`);
-                $('#tbody_akun_laba').empty();
-                response['akun_laba'].forEach((element, i) => {
-                    $('#tbody_akun_laba').append(`
-                    <tr class='body'>
-                        <td colspan='9'><div align='left'>${element.nama_akun}</div></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(element.total ?? 0)) +`</td>
-                        <td class='text-center'></td>
-					</tr>	
-                    `)
-                });
-                $('#tbody_laba_kotor').empty();
-                $('#tbody_laba_kotor').append(`
-                    <tr class='body'>
-                        <td colspan='9'><div align='left'>Penjualan Kotor</div></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(response['laba_kotor'] ?? 0)) +`</td>
-                        <td class='text-center'></td>
-					</tr>	
-                    `)
-                $('#tbody_laba').empty();
-                $('#tbody_laba').append(`
-                    <tr class='body'>
-                        <td colspan='9'><div align='right'>Laba Kotor</div></td>
-                        <td class='text-center'></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(response['laba'] ?? 0)) +`</td>
-					</tr>	
-                    `)
-
-                $('#tbody_akun_beban').empty();
-                response['akun_beban'].forEach((element, i) => {
-                    $('#tbody_akun_beban').append(`
-                    <tr class='body'>
-                        <td colspan='9'><div align='left'>${element.nama_akun}</div></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(element.total ?? 0)) +`</td>
-                        <td class='text-center'></td>
-					</tr>	
-                    `)
-                });
-
-                $('#tbody_total_biaya').empty();
-                $('#tbody_total_biaya').append(`
-                    <tr class='body'>
-                        <td colspan='9'><div align='right'>Laba Kotor</div></td>
-                        <td class='text-center'></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(response['total_beban'] ?? 0)) +`</td>
-					</tr>	
-                    `)
-
-                $('#tbody_laba_rugi').empty();
-                $('#tbody_laba_rugi').append(`
-                    <tr class='body'>
-                        <td colspan='9'><div align='right'>Laba/Rugi Bersih</div></td>
-                        <td class='text-center'></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(response['laba_rugi'] ?? 0)) +`</td>
-					</tr>	
-                    `)
+                if(response.status == 200){
+                    $('#month-header').css(`display`, 'inline-block');
+                    $('#month-header').text(`Priode Bulan ${response.data.month}`);
+                    $('#tbody_akun_laba').empty();
+                    response.data['akun_laba'].forEach((element, i) => {
+                        $('#tbody_akun_laba').append(`
+                        <tr class='body'>
+                            <td colspan='9'><div align='left'>${element.nama_akun}</div></td>
+                            <td style='text-align: right'>`+ fungsiRupiah(parseInt(element.total ?? 0)) +`</td>
+                            <td class='text-center'></td>
+                        </tr>	
+                        `)
+                    });
+                    $('#tbody_laba_kotor').empty();
+                    $('#tbody_laba_kotor').append(`
+                        <tr class='body'>
+                            <td colspan='9'><div align='left'>Penjualan Kotor</div></td>
+                            <td style='text-align: right'>`+ fungsiRupiah(parseInt(response.data['laba_kotor'] ?? 0)) +`</td>
+                            <td class='text-center'></td>
+                        </tr>	
+                        `)
+                    $('#tbody_laba').empty();
+                    $('#tbody_laba').append(`
+                        <tr class='body'>
+                            <td colspan='9'><div align='right'>Laba Kotor</div></td>
+                            <td class='text-center'></td>
+                            <td style='text-align: right'>`+ fungsiRupiah(parseInt(response.data['laba'] ?? 0)) +`</td>
+                        </tr>	
+                        `)
+    
+                    $('#tbody_akun_beban').empty();
+                    response.data['akun_beban'].forEach((element, i) => {
+                        $('#tbody_akun_beban').append(`
+                        <tr class='body'>
+                            <td colspan='9'><div align='left'>${element.nama_akun}</div></td>
+                            <td style='text-align: right'>`+ fungsiRupiah(parseInt(element.total ?? 0)) +`</td>
+                            <td class='text-center'></td>
+                        </tr>	
+                        `)
+                    });
+    
+                    $('#tbody_total_biaya').empty();
+                    $('#tbody_total_biaya').append(`
+                        <tr class='body'>
+                            <td colspan='9'><div align='right'>Laba Kotor</div></td>
+                            <td class='text-center'></td>
+                            <td style='text-align: right'>`+ fungsiRupiah(parseInt(response.data['total_beban'] ?? 0)) +`</td>
+                        </tr>	
+                        `)
+    
+                    $('#tbody_laba_rugi').empty();
+                    $('#tbody_laba_rugi').append(`
+                        <tr class='body'>
+                            <td colspan='9'><div align='right'>Laba/Rugi Bersih</div></td>
+                            <td class='text-center'></td>
+                            <td style='text-align: right'>`+ fungsiRupiah(parseInt(response.data['laba_rugi'] ?? 0)) +`</td>
+                        </tr>	
+                        `)
+                } else {
+                    swal(response.message, {
+                        icon: 'error',
+                    });
+                }
                     
                     
             },

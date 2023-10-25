@@ -146,14 +146,11 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-12 d-flex align-items-center justify-content-center">
-                            <div class="form-group d-flex justify-content-around" style="margin: 0; gap: 40px">
-                                <div>
-                                    <label class="checkbox-inline"><input name="tipe_pembayaran" id="tunai" checked="" type="radio" value="1"></label>
-                                    <label>Kas</label>
-                                </div>
-                                <div>
-                                    <label class="checkbox-inline"><input name="tipe_pembayaran" id="tempo" type="radio" value="2"></label>
-                                    <label>Bank</label>
+                            <div class="form-group d-flex justify-content-around" style="margin: 0 4px; width: 100%; flex-direction: column">
+                                <label class="mb-2">Tipe Pembayaran</label>
+                                <div class="form-group custom-radio d-flex justify-content-center">
+                                    <input type="radio" id="tunai" name="tipe_pembayaran" value="1" checked><label for="tunai" style="border-right: none; text-align: center">Kas</label>
+                                    <input type="radio" id="tempo" name="tipe_pembayaran" value="2"><label for="tempo" style="text-align: center">Bank</label>
                                 </div>
                             </div>
                         </div>

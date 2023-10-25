@@ -121,7 +121,7 @@ class TransaksiPembelianController extends Controller
                 $akun2->jumlah -= $request->total_belanja;
                 $akun2->save();
 
-            } else {
+            } else if($request->status == 2){
                 MasterTransaksi::create([
                     'kode_akun' => '113',
                     'keterangan' => 'Persediaan Barang',
@@ -149,6 +149,40 @@ class TransaksiPembelianController extends Controller
                 $akun2 = Akun::where('kode_akun', 211)->first();
                 $akun2->jumlah += $request->total_belanja;
                 $akun2->save();
+            } 
+            else if($request->status == 0) {
+                $transaksi = MasterTransaksi::create([
+                    'kode_akun' => '113',
+                    'keterangan' => 'Persediaan Barang',
+                    'debt' => $request->total_belanja,
+                    'type' => 1,
+                    'kode' => $request->kode_transaksi,
+                    'tanggal' => date('Y-m-d'),
+                    'potongan' => $request->potongan
+                ]);
+
+                MasterTransaksi::create([
+                    'kode_akun' => '112',
+                    'keterangan' => 'Kas Bank',
+                    'kredit' => $request->total_belanja,
+                    'type' => 3,
+                    'kode' => $request->kode_transaksi,
+                    'tanggal' => date('Y-m-d'),
+                    'potongan' => $request->potongan
+                ]);
+
+                $akun = Akun::where('kode_akun', 113)->first();
+                $akun->jumlah += $request->total_belanja;
+                $akun->save();
+
+                $akun2 = Akun::where('kode_akun', 112)->first();
+                $akun2->jumlah -= $request->total_belanja;
+                $akun2->save();
+            } else {
+                return [
+                    'status' => 300,
+                    'message' => "Tipe Pembayaran Tidak Valid (Refresh Halaman dan coba lagi...!)"
+                ];
             }
 
             Log::create([

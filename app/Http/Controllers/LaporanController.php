@@ -27,6 +27,110 @@ class LaporanController extends Controller
         $this->tanggal = Carbon::now()->isoFormat('D MMMM Y');
     }
 
+    public function testing($month = null){
+        $data['tanggal'] = $this->tanggal;
+        $data['total_beban'] = 0;
+        $data['perusahaan'] = $this->perusahaan;
+        $data['bulan'] = Carbon::now()->isoFormat("MMMM");
+
+        $akun_laba = Akun::whereIn("kode_akun", [411, 119, 422])->get();
+        $data['laba_kotor'] = 0;
+        $data['hpp'] = 0;
+        foreach ($akun_laba as  $item) {
+            $penjualan_kotor = 0;
+            $hpp = 0;
+            $potongan = 0;
+            $transaksi = MasterTransaksi::where("kode_akun", $item->kode_akun)->get();
+            foreach ($transaksi as  $value) {
+                switch ($value->kode_akun) {
+                    case '411':
+                        $penjualan_kotor += $value->kredit;
+                        break;
+                    case '119':
+                        $hpp += $value->debt;
+                        break;
+                    case '422':
+                        $potongan += $value->debt;
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+            switch ($item->kode_akun) {
+                case '411':
+                    $item->total = $penjualan_kotor;
+                    break;
+                case '119':
+                    $item->total = $hpp;
+                    break;
+                case '422':
+                    $item->total = $potongan;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $item->transaksi = $transaksi;
+            $data['laba_kotor'] += $penjualan_kotor;
+            $data['hpp'] += $hpp;
+        }
+
+        $data['laba'] = $data['laba_kotor'] - $data['hpp'];
+        $data['akun_laba'] = $akun_laba;
+
+        $akun_beban = Akun::whereIn("kode_akun", [611, 622, 612, 911])->get();
+        foreach ($akun_beban as  $value) {
+            $biaya_listrik = 0;
+            $biaya_sewa = 0;
+            $biaya_air = 0;
+            $biaya_gaji = 0;
+            $transaksi = MasterTransaksi::where("kode_akun", $value->kode_akun)->get();
+            foreach ($transaksi as $values) {
+                switch ($values->kode_akun) {
+                    case '611':
+                        $biaya_listrik += $values->debt;
+                        break;
+                    case '622':
+                        $biaya_gaji += $values->debt;
+                        break;
+                    case '612':
+                        $biaya_air += $values->debt;
+                        break;
+                    case '911':
+                        $biaya_sewa += $value->debt;
+                        break;
+                }
+            }
+            switch ($value->kode_akun) {
+                case '611':
+                    $value->total = $biaya_listrik;
+                    break;
+                case '622':
+                    $value->total = $biaya_gaji;
+                    break;
+                case '612':
+                    $value->total = $biaya_air;
+                    break;
+                case '911':
+                    $value->total = $biaya_sewa;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $value->transaksi = $transaksi;
+            $data['total_beban'] += $biaya_listrik + $biaya_air + $biaya_gaji +  $biaya_sewa;
+        }
+
+        $data['akun_beban'] = $akun_beban;
+        $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
+
+
+        // return $data;
+        return view('atesting.rugi-laba', $data);
+    }
+
     public function rugi_laba()
     {
         $data['total_beban'] = 0;
@@ -303,6 +407,12 @@ class LaporanController extends Controller
 
     public function rugi_laba_change_priode(Request $request)
     {
+        if(!isset($request->priode_bulan)){
+            return [
+                'status' => 300, 
+                'message' => "Pilih Bulan Terlebih Dahulu"
+            ];
+        }
 
         $data['total_beban'] = 0;
         $data['perusahaan'] = $this->perusahaan;
@@ -407,6 +517,9 @@ class LaporanController extends Controller
         $data['month'] = Carbon::create(null, $request->priode_bulan, 1)->isoFormat('MMMM');
 
 
-        return $data;
+        return [
+            'status' => 200, 
+            'data' => $data
+        ];
     }
 }

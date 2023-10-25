@@ -117,7 +117,10 @@
 						</div>
 						<div class="row mt-4" style="width: 100%">
 							<div class="col-lg-8">
-								@if($pembelian[0]->status == 1)
+								@if($pembelian[0]->status == 0)
+								<div class="section-badge-info m-0">Metode Pembayaran</div>
+								<div class="section-title" style="color: #3791ad;margin-left: 45px; margin-top: 6px;font-family: 'nunito';font-weight: 700;font-size: 1.1rem;">Bank</div>
+								@elseif($pembelian[0]->status == 1)
 								<div class="section-badge-success m-0">Metode Pembayaran</div>
 								<div class="section-title" style="margin-left: 45px; margin-top: 6px;font-family: 'nunito';color: green;font-weight: 700;font-size: 1.1rem;">Tunai</div>
 								@elseif($pembelian[0]->status == 2)
@@ -140,7 +143,7 @@
 									</div>
 									<div class="col-6">
 										<div class="invoice-detail-item">
-		                                    @if($pembelian[0]->status == 1)
+		                                    @if($pembelian[0]->status == 1 || $pembelian[0]->status == 0)
 											<div style="margin-top: .8rem; margin-bottom: .8rem" class="invoice-detail-value"><?php echo"Rp&nbsp".number_format($transaksi->debt,2,'.',','); ?></div>
 											@else
 											<div style="margin-top: .8rem; margin-bottom: .8rem" class="invoice-detail-value"><?php echo"Rp&nbsp".number_format($transaksi->kredit,2,'.',','); ?></div>
@@ -161,7 +164,7 @@
                                             @endif
                                         </div>
 											<hr class="mt-4 mb-4" style="opacity: 0;">
-											@if($pembelian[0]->status == 1)
+											@if($pembelian[0]->status == 1 || $pembelian[0]->status == 0)
 											<div style="margin-top: .8rem; margin-bottom: .8rem" class="invoice-detail-value invoice-detail-value-lg"><?php echo"Rp&nbsp".number_format($transaksi->debt - $transaksi->potongan,2,'.',','); ?></div>
 											@else
 											<div style="margin-top: .8rem; margin-bottom: .8rem" class="invoice-detail-value invoice-detail-value-lg"><?php echo"Rp&nbsp".number_format($transaksi->kredit - $transaksi->potongan,2,'.',','); ?></div>
