@@ -103,7 +103,7 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header text-center">
-                    <h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Pembelian Priode <?php echo $tanggal;?></h5>
+                    <h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Penjualan Priode <?php echo $tanggal;?></h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

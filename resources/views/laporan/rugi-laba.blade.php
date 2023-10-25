@@ -53,9 +53,9 @@
                                 <button type="submit" class="btn btn-success">Tampilkan</button>
                             </form>
 
-                            <a href="{{ route('laporan.penjualan') }}/pdf" target="_blank" class="mx-3">
+                            {{-- <a href="{{ route('laporan.penjualan') }}/pdf" target="_blank" class="mx-3">
                                 <button type="submit" class="btn btn-warning">Print PDF</button>
-                            </a>
+                            </a> --}}
                         </div>
 						<table class="table table-hover">
 							<thead>

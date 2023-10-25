@@ -335,6 +335,7 @@ class LaporanController extends Controller
                 $v->jml_kredit = $jml_kredit;
                 $v->transaksi = $transaksi;
                 $v->total = $v->jml_debt - $v->jml_kredit;
+                $pasiva += $v->total;
             }
 
             if ($v->kode_akun == 311) {
@@ -355,6 +356,7 @@ class LaporanController extends Controller
                 $v->jml_kredit = $jml_kredit;
                 $v->transaksi = $transaksi;
                 $v->total = $v->jml_debt - $v->jml_kredit;
+                $pasiva += $v->total;
             }
         }
 
@@ -500,9 +502,9 @@ class LaporanController extends Controller
 
     public function rugi_laba_change_priode(Request $request)
     {
-        if(!isset($request->priode_bulan)){
+        if (!isset($request->priode_bulan)) {
             return [
-                'status' => 300, 
+                'status' => 300,
                 'message' => "Pilih Bulan Terlebih Dahulu"
             ];
         }
@@ -611,7 +613,7 @@ class LaporanController extends Controller
 
 
         return [
-            'status' => 200, 
+            'status' => 200,
             'data' => $data
         ];
     }
@@ -885,6 +887,7 @@ class LaporanController extends Controller
                 $v->jml_kredit = $jml_kredit;
                 $v->transaksi = $transaksi;
                 $v->total = $v->jml_debt - $v->jml_kredit;
+                $pasiva +=  $v->total;
             }
 
             if ($v->kode_akun == 311) {
@@ -907,6 +910,7 @@ class LaporanController extends Controller
                 $v->jml_kredit = $jml_kredit;
                 $v->transaksi = $transaksi;
                 $v->total = $v->jml_debt - $v->jml_kredit;
+                $pasiva +=  $v->total;
             }
         }
 
