@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 
@@ -31,7 +32,7 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), $validate, $messages);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return redirect('login')
                 ->with('message', $validator->errors()->first())
                 ->with('message_type', 'error');
@@ -42,20 +43,22 @@ class AuthController extends Controller
             'password'  => $request->input('password'),
         ];
 
-        auth::attempt($data);
-        
-        if (Auth::check()) {
-            $user = User::where("email", '=', $request->username)->first();
-            Session::put('useractive', $user);
+        // auth::attempt($data);
 
-            return redirect('')
-                ->with('message', 'Login Success')
-                ->with('message_type', 'success');
-        } else {
+        $user = User::where("email", '=', $request->username)->first();
+        if (empty($user)) {
+        }
+        if (!Hash::check($request->input('password'), $user->password)) {
             return redirect('login')
                 ->with('message', 'Password Salah')
                 ->with('message_type', 'error');
         }
+        Session::put('useractive', $user);
+
+
+        return redirect('')
+            ->with('message', 'Login Success')
+            ->with('message_type', 'success');
     }
 
     public function logout()
