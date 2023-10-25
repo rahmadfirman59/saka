@@ -334,7 +334,7 @@ class LaporanController extends Controller
                 $v->jml_debt = $jml_debt;
                 $v->jml_kredit = $jml_kredit;
                 $v->transaksi = $transaksi;
-                $v->total = $v->jml_debt - $v->jml_kredit;
+                $v->total = abs($v->jml_debt - $v->jml_kredit);
                 $pasiva += $v->total;
             }
 
@@ -355,7 +355,7 @@ class LaporanController extends Controller
                 $v->jml_debt = $jml_debt;
                 $v->jml_kredit = $jml_kredit;
                 $v->transaksi = $transaksi;
-                $v->total = $v->jml_debt - $v->jml_kredit;
+                $v->total = abs($v->jml_debt - $v->jml_kredit);
                 $pasiva += $v->total;
             }
         }
@@ -886,7 +886,7 @@ class LaporanController extends Controller
                 $v->jml_debt = $jml_debt;
                 $v->jml_kredit = $jml_kredit;
                 $v->transaksi = $transaksi;
-                $v->total = $v->jml_debt - $v->jml_kredit;
+                $v->total = abs($v->jml_debt - $v->jml_kredit);
                 $pasiva +=  $v->total;
             }
 
@@ -909,7 +909,7 @@ class LaporanController extends Controller
                 $v->jml_debt = $jml_debt;
                 $v->jml_kredit = $jml_kredit;
                 $v->transaksi = $transaksi;
-                $v->total = $v->jml_debt - $v->jml_kredit;
+                $v->total = abs($v->jml_debt - $v->jml_kredit);
                 $pasiva +=  $v->total;
             }
         }
