@@ -17,7 +17,7 @@ class CekLogin
             return $next($request);
         } else if (auth()->user()->level == 'kasir') {
             // User with status 1 can access routes within the specified prefixes
-            $allowedPrefixes = ['transaksi/penjualan', 'master/pasien', 'master/dokter', '', 'grafik', 'logout']; // Replace with your desired prefixes
+            $allowedPrefixes = ['transaksi/penjualan', 'master/pasien', 'master/dokter', '', 'grafik', 'logout', 'jurnal/jurnal-penjualan']; // Replace with your desired prefixes
             $currentPrefix = $request->route()->getPrefix();
             
             // dd($currentPrefix);

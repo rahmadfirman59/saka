@@ -127,7 +127,7 @@ class LaporanController extends Controller
         $data['laba_rugi'] =  $data['laba'] - $data['total_beban'];
 
 
-        // return $data;
+        return $data;
         return view('atesting.rugi-laba', $data);
     }
 

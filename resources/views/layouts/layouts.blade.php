@@ -202,6 +202,12 @@
                 </div>
             </li>
 
+            <li class="nav-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penjualan') active @endif">
+                <a class="nav-link" href="{{ route('grafik') }}">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Jurnal Penjualan</span></a>
+            </li>
+
             @elseif (auth()->user()->level == 'pembelian')
             <li class="nav-item @if($url_menu == "master") active @endif">
                 <a class="nav-link @if($url_menu == "master") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages"
