@@ -163,19 +163,15 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'rugi-laba') active @endif" href="{{ route('laporan.rugiLaba') }}">Laporan Rugi Laba</a>
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'neraca') active @endif" href="{{ route('laporan.neraca') }}">Laporan Neraca</a>
-                        {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'perubahan-modal') active @endif" href="{{ route('laporan.perubahanModal') }}">Laporan Perubahan Modal</a> --}}
-                        {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'hutang') active @endif" href="{{ route('laporan.hutang') }}">Laporan Hutang</a> --}}
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'penjualan') active @endif" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a>
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'pembelian') active @endif" href="{{ route('laporan.pembelian') }}">Laporan Pembelian</a>
-                        {{-- {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'retur-pembelian') active @endif" href="{{ route('laporan.retur-pembelian') }}">Laporan Retur Penjualan</a> --}}
-                        {{-- <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'perubahan-modal') active @endif" href="{{ route('laporan.perubahan-modal') }}">Laporan Perubahan Modal</a> --}}
                         <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'persediaan') active @endif" href="{{ route('laporan.persediaan') }}">Laporan Persediaan</a>
                     </div>
                 </div>
             </li>
 
             @elseif (auth()->user()->level == 'kasir')
-            <li class="nav-item @if($url_menu == "master") active @endif">
+           <li class="nav-item @if($url_menu == "master") active @endif">
                 <a class="nav-link @if($url_menu == "master") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="bi bi-menu-button-wide"></i>
@@ -185,10 +181,8 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'dokter') active @endif" href="{{ route('dokter') }}">Dokter</a>
                         <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'pasien') active @endif" href="{{ route('pasien') }}">Pasien</a>
-                    </div>
                 </div>
             </li>
-
             <li class="nav-item @if($url_menu == "transaksi") active @endif">
                 <a class="nav-link collapsed @if($url_menu == "transaksi") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages2"
                     aria-expanded="true" aria-controls="collapsePages">
@@ -197,16 +191,38 @@
                 </a>
                 <div id="collapsePages2" class="collapse @if($url_menu == "transaksi") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'penjualan') active @endif" href="{{ route('transaksi.penjualan') }}">Penjualan</a>                        
+                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'penjualan') active @endif" href="{{ route('transaksi.penjualan') }}">Penjualan</a>
+                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'pembayaran-tempo') active @endif" href="{{ route('transaksi.pembayaran-tempo') }}">Pembayaran Tempo</a>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item @if($url_menu == "jurnal") active @endif">
+                <a class="nav-link collapsed @if($url_menu == "jurnal") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages3"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Data</span>
+                </a>
+                <div id="collapsePages3" class="collapse @if($url_menu == "jurnal") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penjualan') active @endif" href="{{ route('jurnal.penjualan') }}">Data Penjualan</a>
+                    </div>
+                </div>
+            </li>
+           
+            <li class="nav-item @if($url_menu == "laporan") active @endif">
+                <a class="nav-link collapsed @if($url_menu == "laporan") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages4"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="bi bi-book"></i>
+                    <span>Laporan</span>
+                </a>
+                <div id="collapsePages4" class="collapse @if($url_menu == "laporan") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'penjualan') active @endif" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a>
                     </div>
                 </div>
             </li>
 
-            <li class="nav-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-penjualan') active @endif">
-                <a class="nav-link" href="{{ route('grafik') }}">
-                    <i class="bi bi-journal-bookmark-fill"></i>
-                    <span>Jurnal Penjualan</span></a>
-            </li>
 
             @elseif (auth()->user()->level == 'pembelian')
             <li class="nav-item @if($url_menu == "master") active @endif">
@@ -218,6 +234,8 @@
                 <div id="collapsePages" class="collapse  @if($url_menu == "master") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'barang') active @endif" href="{{ route('barang') }}">Barang</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'supplier') active @endif" href="{{ route('supplier') }}">Supplier</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'obat-racik') active @endif" href="{{ route('obat-racik') }}">Obat Racik</a>
                     </div>
                 </div>
             </li>
@@ -229,14 +247,62 @@
                 </a>
                 <div id="collapsePages2" class="collapse @if($url_menu == "transaksi") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'pembelian') active @endif" href="{{ route('transaksi.pembelian') }}">Pembelian</a>                        
+                        
+                        <a class="collapse-item @if($url_menu == "transaksi" && $url_submenu == 'pembelian') active @endif" href="{{ route('transaksi.pembelian') }}">Pembelian</a>
+                        
+                        
                     </div>
                 </div>
             </li>
+            <li class="nav-item @if($url_menu == "jurnal") active @endif">
+                <a class="nav-link collapsed @if($url_menu == "jurnal") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages3"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Data</span>
+                </a>
+                <div id="collapsePages3" class="collapse @if($url_menu == "jurnal") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        
+                        <a class="collapse-item @if($url_menu == "jurnal" && $url_submenu == 'jurnal-pembelian') active @endif" href="{{ route('jurnal.pembelian') }}">Data Pembelian</a>
+                        
+                        
+                    </div>
+                </div>
+            </li>
+           
+            <li class="nav-item @if($url_menu == "laporan") active @endif">
+                <a class="nav-link collapsed @if($url_menu == "laporan") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages4"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="bi bi-book"></i>
+                    <span>Laporan</span>
+                </a>
+                <div id="collapsePages4" class="collapse @if($url_menu == "laporan") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'pembelian') active @endif" href="{{ route('laporan.pembelian') }}">Laporan Pembelian</a>
+                        <a class="collapse-item @if($url_menu == "laporan" && $url_submenu == 'persediaan') active @endif" href="{{ route('laporan.persediaan') }}">Laporan Persediaan</a>
+                    </div>
+                </div>
+            </li>
+             @elseif (auth()->user()->level == 'apoteker')
+            <li class="nav-item @if($url_menu == "master") active @endif">
+                <a class="nav-link @if($url_menu == "master") active  @else collapsed @endif" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="bi bi-menu-button-wide"></i>
+                    <span>Master</span>
+                </a>
+                <div id="collapsePages" class="collapse  @if($url_menu == "master") show @endif" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'barang') active @endif" href="{{ route('barang') }}">Barang</a>
+                        <a class="collapse-item  @if($url_menu == "master" && $url_submenu == 'obat-racik') active @endif" href="{{ route('obat-racik') }}">Obat Racik</a>
+                    </div>
+                </div>
+            </li>
+
+           
             @endif
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
-
+    
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>

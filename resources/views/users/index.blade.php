@@ -103,6 +103,8 @@
                                 <option value="superadmin">Superadmin</option>
                                 <option value="kasir">Kasir</option>
                                 <option value="pembelian">Pembelian</option>
+                                <option value="apoteker">Apoteker/Dokter</option>
+                                
                             </select>
                               <span class="d-flex text-danger invalid-feedback" id="invalid-level-feedback"></span>
                         </div>
@@ -166,6 +168,8 @@
                             <select name="level" id="level" class="form-control">
                                 <option value="superadmin">Superadmin</option>
                                 <option value="kasir">Kasir</option>
+                                <option value="pembelian">Pembelian</option>
+                                <option value="apoteker">Apoteker/Dokter</option>
                             </select>
                               <span class="d-flex text-danger invalid-feedback" id="invalid-level-feedback"></span>
                         </div>
