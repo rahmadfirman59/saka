@@ -43,22 +43,20 @@ class AuthController extends Controller
             'password'  => $request->input('password'),
         ];
 
-        // auth::attempt($data);
+        auth::attempt($data);
 
-        $user = User::where("email", '=', $request->username)->first();
-        if (empty($user)) {
-        }
-        if (!Hash::check($request->input('password'), $user->password)) {
+        if (Auth::check()) {
+            $user = User::where("email", '=', $request->username)->first();
+            Session::put('useractive', $user);
+
+            return redirect('')
+                ->with('message', 'Login Success')
+                ->with('message_type', 'success');
+        } else {
             return redirect('login')
                 ->with('message', 'Password Salah')
                 ->with('message_type', 'error');
         }
-        Session::put('useractive', $user);
-
-
-        return redirect('')
-            ->with('message', 'Login Success')
-            ->with('message_type', 'success');
     }
 
     public function logout()
