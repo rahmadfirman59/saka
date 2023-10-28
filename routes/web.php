@@ -35,7 +35,6 @@ use App\Http\Controllers\TransaksiPenjualanController;
 
 Route::post('login', [AuthController::class, 'login'])->name('post.login');
 Route::get('login', [AuthController::class, 'index'])->name('login');
-Route::get('contoh/rugi-laba/{month?}', [LaporanController::class, 'testing']);
 
 
 Route::group(['middleware' => ['ceklogin']], function () {
@@ -177,10 +176,12 @@ Route::group(['middleware' => ['ceklogin']], function () {
         Route::prefix('rugi-laba')->group(function () {
             Route::get('/', [LaporanController::class, 'rugi_laba'])->name('laporan.rugiLaba');
             Route::post('/change-priode', [LaporanController::class, 'rugi_laba_change_priode']);
+            Route::get('/pdf/{month?}', [LaporanController::class, 'rugi_laba_pdf']);
         });
         Route::prefix('neraca')->group(function () {
             Route::get('/', [LaporanController::class, 'neraca2'])->name('laporan.neraca');
             Route::post('/change-priode', [LaporanController::class, 'neraca_change_priode'])->name('neraca.filter');
+            Route::get('/pdf', [LaporanController::class, 'neraca_pdf']);
         });
         Route::prefix('persediaan')->group(function () {
             Route::get('/', [LaporanController::class, 'persediaan'])->name('laporan.persediaan');

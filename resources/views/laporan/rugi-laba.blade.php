@@ -43,7 +43,7 @@
                                 <?php
                                     $list_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
                                 ?>
-                                <select  name="priode_bulan" class='form-control form-select mx-2' style='display: inline-block; width: unset'>
+                                <select  name="priode_bulan" id="priode_bulan" class='form-control form-select mx-2' style='display: inline-block; width: unset'>
                                     <option value="null" disabled selected>-- Pilih Bulan --</option>
                                     @foreach ($list_bulan as $key => $item)
                                         {{-- <option value="{{ $key + 1 }}" {{ $key + 1 == date('m') ? 'selected' : '' }}>{{ $item }}</option> --}}
@@ -51,10 +51,9 @@
                                     @endforeach
                                 </select>
                                 <button type="submit" class="btn btn-success">Tampilkan</button>
-                                <button type="button" onclick="reset_date()" class="btn btn-secondary">Reset</button>
-                                <a href="{{ route('laporan.penjualan') }}/pdf" target="_blank">
-                                    <button type="button" class="btn btn-warning">Print PDF</button>
-                                </a>
+                                <button type="button" onclick="window.location.reload()" class="btn btn-secondary">Reset</button>
+                                <button type="button" onclick="print_pdf()" class="btn btn-warning">Print PDF</button>
+                                
                             </form>
                         </div>
 						<table class="table table-hover">
@@ -141,8 +140,9 @@
 		});
 	});
 
-    function reset_date(){
-
+    function print_pdf(){
+        let url = `{{ route('laporan.rugiLaba') }}/pdf/${$('#priode_bulan').val() ?? ''}`;
+        window.open(url, '_blank');
     }
 
     $('#form_rugi_laba').submit(function(e){

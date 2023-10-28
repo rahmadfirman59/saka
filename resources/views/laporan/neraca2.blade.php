@@ -109,6 +109,8 @@
 				<div class="row">
 					<div class="col-lg-12">
                         <div class="row" style="gap: 11px 0; margin: 15px 0">
+                            <input type="hidden" name="tanggal_1" id="tanggal_1">
+                            <input type="hidden" name="tanggal_2" id="tanggal_2">
                             <form id="neraca" method="post" name="postform" style="display: flex; gap: 10px; align-items: center;">
 							@csrf
                             <?php 
@@ -124,25 +126,26 @@
 							
 							S/D
 							<?php 
-								if(isset($_POST['report'])){ 
-									echo 	combotgl(1,31,'tgl_2',$_POST[tgl_2]);
-											combonamabln(1,12,'bln_2',$_POST[bln_2]);
-											combothn(2000,date("Y"),'thn_2',$_POST[thn_2]);  
-									
-								}else{ 
-									echo 	combotgl(1,31,'tgl_2',date('d'));
-											combonamabln(1,12,'bln_2',date('m'));
-											combothn(2000,date("Y"),'thn_2',date("Y"));
-								}?>
+                            if(isset($_POST['report'])){ 
+                                echo 	combotgl(1,31,'tgl_2',$_POST[tgl_2]);
+                                        combonamabln(1,12,'bln_2',$_POST[bln_2]);
+                                        combothn(2000,date("Y"),'thn_2',$_POST[thn_2]);  
+                                
+                            }else{ 
+                                echo 	combotgl(1,31,'tgl_2',date('d'));
+                                        combonamabln(1,12,'bln_2',date('m'));
+                                        combothn(2000,date("Y"),'thn_2',date("Y"));
+                            }?>
 							
 							<input type="submit" class="btn btn-success ml-3" />
-                            <button type="button" class="btn btn-secondary ml-2" onclick="reset_date_action()">Reset</button>
+                            <button type="button" class="btn btn-secondary ml-2" onclick="window.location.reload()">Reset</button>
+                            <button type="button" class="btn btn-warning ml-2" onclick="print_pdf()">Print PDF</button>
 						</form>
                         </div>
 
 						<div class="card">
 							<div class="card-header text-center">
-								<h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Neraca per <?php echo $tanggal;?></h5>
+								<h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Neraca <span id="priode">per <?php echo $tanggal;?></span></h5>
                                 <br>
                                 
 							</div>
@@ -261,35 +264,39 @@
 		});
 	});
 
+    function print_pdf(){
+        let url = `{{ route('laporan.neraca') }}/pdf?tanggal_awal=${$('#tanggal_1').val()}&tanggal_akhir=${$('#tanggal_2').val()}`;
+        window.open(url, '_blank');
+    }
+
     $('#neraca').submit(function(e){
-        console.log("neraca");
         e.preventDefault();
         $("#modal_loading").modal('show');
         $.ajax({
-            url: "{{ route('laporan.neraca') }}/change-priode",
+            url: "{{ route('neraca.filter') }}",
             type: "POST",
             data: $('#neraca').serialize(),
             success: function (response) {
                 setTimeout(function () {
                     $('#modal_loading').modal('hide');
                 }, 500);
-                $('#month-header').text(`${response.month}`);
+                $('#tanggal_1').val(response['tanggal']['tanggal_awal']);
+                $('#tanggal_2').val(response['tanggal']['tanggal_akhir']);
+                $('#priode').text(formatDate(response['tanggal']['tanggal_awal']) + ' - ' + formatDate(response['tanggal']['tanggal_akhir']));
                 $('#tbody_akun_aktiva').empty();
                 response['aktiva'].forEach((element, i) => {
                     $('#tbody_akun_aktiva').append(`
                     <tr class='body'>
-                        <td colspan='9'><div align='left'>${element.nama_akun}</div></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(element.total ?? 0)) +`</td>
-                        <td class='text-center'></td>
+                        <td colspan='3'><div align='left'>${element.nama_akun}</div></td>
+                        <td>`+ fungsiRupiah(parseInt(element.total ?? 0)) +`</td>
 					</tr>	
                     `)
                 });
                 $('#tbody_total_aktiva').empty();
                 $('#tbody_total_aktiva').append(`
                     <tr class='body'>
-                        <td colspan='9'><div align='left'>Total</div></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(response['total_aktiva'] ?? 0)) +`</td>
-                        <td class='text-center'></td>
+                        <td colspan='3'><div align='left'>Total</div></td>
+                        <td align='right'>`+ fungsiRupiah(parseInt(response['total_aktiva'] ?? 0)) +`</td>
 					</tr>	
                     `)
 
@@ -297,9 +304,8 @@
                 response['pasiva'].forEach((element, i) => {
                     $('#tbody_akun_pasiva').append(`
                     <tr class='body'>
-                        <td colspan='9'><div align='left'>${element.nama_akun}</div></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(element.total ?? 0)) +`</td>
-                        <td class='text-center'></td>
+                        <td colspan='3'><div align='left'>${element.nama_akun}</div></td>
+                        <td>`+ fungsiRupiah(parseInt(element.total ?? 0)) +`</td>
 					</tr>	
                     `)
                 });
@@ -307,19 +313,17 @@
                 $('#tbody_laba_rugi').empty();
                 $('#tbody_laba_rugi').append(`
                     <tr class='body'>
-                        <td colspan='9'><div align='left'>Laba rugi tahun berjalan</div></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(response['laba_rugi'] ?? 0)) +`</td>
-                        <td class='text-center'></td>
+                        <td colspan='3'><div align='left'>Laba rugi tahun berjalan</div></td>
+                        <td>`+ fungsiRupiah(parseInt(response['laba_rugi'] ?? 0)) +`</td>
 					</tr>	
                     `)
                 $('#tbody_total_pasiva').empty();
                 $('#tbody_total_pasiva').append(`
                     <tr class='body'>
-                        <td colspan='9'><div align='left'>Total</div></td>
-                        <td style='text-align: right'>`+ fungsiRupiah(parseInt(response['total_pasiva'] ?? 0)) +`</td>
-                        <td class='text-center'></td>
+                        <td colspan='3'><div align='left'>Total</div></td>
+                        <td align='right'>`+ fungsiRupiah(parseInt(response['total_pasiva'] ?? 0)) +`</td>
 					</tr>	
-                    `)
+                `)
                     
                     
             },
