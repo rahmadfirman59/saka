@@ -342,10 +342,11 @@
                 setTimeout(function () {
                     $('#modal_loading').modal('hide');
                 }, 500);
-                let query_barang = response[0]['barang'];
+                let query_barang = response['data'][0]['barang'];
+                console.log(response['stok'][0]);
                 let grosir
                 if(val == 1){grosir = '_grosir';}else{grosir = ''}
-                $('.display_stok' + id).text(query_barang['stok' + grosir]);
+                $('.display_stok' + id).text(response['stok'][0]['barang']['stok' + grosir]);
                 $('.display_harga' + id).text(fungsiRupiah(query_barang['harga_jual' + grosir]));
                 $('.display_harga' + id).attr('price', query_barang['harga_jual' + grosir]);
                 $('#subtotal' + id).text(fungsiRupiah(query_barang['harga_jual' + grosir]));

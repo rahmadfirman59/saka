@@ -308,10 +308,14 @@ class TransaksiPenjualanController extends Controller
         })->orderBy(Barang::select('no_batch')->whereColumn('id_barang', 'barang.id'), 'desc')->get();
         
         if(count($check_batch_prefix) > 1){
-            $data = Keranjang::where('id', $check_batch_prefix[0]['id'])->with('barang')->get();
+            $data['data'] = Keranjang::where('id', $check_batch_prefix[0]['id'])->with('barang')->get();
+            $data['stok'] = Keranjang::where('id', $id)->with('barang', function($query){
+                $query->select('id', 'stok', 'stok_grosir');
+            })->get();
         } else {
-            $data = Keranjang::where('id', $id)->with('barang')->get();
+            $data['data'] = Keranjang::where('id', $id)->with('barang')->get();
         }
+        
         return $data;
     }
 

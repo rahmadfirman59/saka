@@ -103,11 +103,13 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header text-center">
-                    <h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Penjualan Priode <?php echo $tanggal;?></h5>
+                    <h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Penjualan <span id="priode"></span></h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <div class="row" style="gap: 11px 0; margin: 15px 0">
+                            <input type="hidden" name="tanggal_1" id="tanggal_1">
+                            <input type="hidden" name="tanggal_2" id="tanggal_2">
                             <form id="form_penjualan" method="post" name="postform" style="display: flex; gap: 10px; align-items: center;">
                                 @csrf
                                 <?php 
@@ -122,12 +124,11 @@
                                                 combonamabln(1,12,'bln_2',date('m'));
                                                 combothn(2000,date("Y"),'thn_2',date("Y"));
                                 ?>
-                                    <button type="submit" class="btn btn-success">Tampilkan</button>
+                                <button type="submit" class="btn btn-success">Tampilkan</button>
                             </form>
-
-                            <a href="{{ route('laporan.penjualan') }}/pdf" target="_blank" class="mx-3">
-                                <button type="submit" class="btn btn-warning">Print PDF</button>
-                            </a>
+                            
+                            <button type="button" class="btn btn-secondary ml-2" onclick="location.reload()">Reset</button>
+                            <button type="button" class="btn btn-warning ml-2" onclick="print_pdf()">Print PDF</button>
                         </div>
                         <table class="table datatable-primary table-striped table-hover datatable-jquery" width="100%" cellspacing="0">
                             <thead>
@@ -156,7 +157,7 @@
                             <tfoot>
                                 <tr class="footer">
                                     <td style="background: rgb(241 248 255) !important" colspan="5"><div align="center"><strong>TOTAL PENJUALAN</strong></div></td>
-                                    <td style="background: rgb(241 248 255) !important" align="right"><strong><?php echo "Rp.&nbsp" . number_format($Totalpenjualan,2,'.',','); ?></strong></td>
+                                    <td style="background: rgb(241 248 255) !important" align="right"><strong id="total_penjualan"><?php echo "Rp.&nbsp" . number_format($Totalpenjualan,2,'.',','); ?></strong></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -189,6 +190,11 @@
 		});
 	});
 
+    function print_pdf(){
+        let url = `{{ route('laporan.penjualan') }}/pdf?tanggal_awal=${$('#tanggal_1').val()}&tanggal_akhir=${$('#tanggal_2').val()}`;
+        window.open(url, '_blank');
+    }
+
     $('#form_penjualan').submit(function(e){
         e.preventDefault();
         $("#modal_loading").modal('show');
@@ -200,7 +206,10 @@
                 setTimeout(function () {
                     $('#modal_loading').modal('hide');
                 }, 500);
-                console.log(response);
+                $('#tanggal_1').val(response.tanggal_1);
+                $('#tanggal_2').val(response.tanggal_2);
+                $('#total_penjualan').text(fungsiRupiah(response.Totalpenjualan))
+                $('#priode').text('Priode ' + formatDate(response.tanggal_1) + ' - ' + formatDate(response.tanggal_2));
                 $('#tbody-jquery').empty();
                 response['penjualan'].forEach((element, i) => {
                     $('#tbody-jquery').append(`
@@ -214,6 +223,7 @@
                     </tr>
                     `)
                 });
+                
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 setTimeout(function () {

@@ -69,7 +69,7 @@
                     <td align="right"><?php echo "Rp." . number_format($item->harga_beli * $item->stok,2,'.',','); ?></td>
                 </tr>
                 @endforeach
-                <tr>
+                <tr style="background-color: rgba(211, 211, 211, 0.663)">
                   <td colspan="3" align="center">Total Persediaan</td>
                   <td align="center">{{ $total_persediaan['pembelian'] }}</td>
                   <td align="center">{{ $total_persediaan['penjualan'] }}</td>

@@ -36,7 +36,7 @@
 				</div>
 				<div class="card-body mt-3">
 					<div class="table-responsive">
-						 <div class="row" style="gap: 11px 0; margin: 15px 0">
+                        <div class="row justify-content-between" style="gap: 11px 0; margin: 15px 0">
                             <form id="form_rugi_laba" method="post" name="postform" style="display: flex; gap: 10px; align-items: center;">
                                 @csrf
                                 Priode Bulan
@@ -51,11 +51,11 @@
                                     @endforeach
                                 </select>
                                 <button type="submit" class="btn btn-success">Tampilkan</button>
+                                <button type="button" onclick="reset_date()" class="btn btn-secondary">Reset</button>
+                                <a href="{{ route('laporan.penjualan') }}/pdf" target="_blank">
+                                    <button type="button" class="btn btn-warning">Print PDF</button>
+                                </a>
                             </form>
-
-                            {{-- <a href="{{ route('laporan.penjualan') }}/pdf" target="_blank" class="mx-3">
-                                <button type="submit" class="btn btn-warning">Print PDF</button>
-                            </a> --}}
                         </div>
 						<table class="table table-hover">
 							<thead>
@@ -140,6 +140,10 @@
 			],
 		});
 	});
+
+    function reset_date(){
+
+    }
 
     $('#form_rugi_laba').submit(function(e){
         e.preventDefault();

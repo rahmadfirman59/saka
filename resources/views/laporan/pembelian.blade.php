@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\App;
+@endphp
 @extends('layouts.layouts')
 @section('css')
 <style>
@@ -103,11 +106,13 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header text-center">
-                    <h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Pembelian Priode <?php echo $tanggal;?></h5>
+                    <h5 class="card-title p-0" style="display: inline-block"><?php echo"$perusahaan->nm_perusahaan<br>$perusahaan->alamat" ?><br>Laporan Pembelian <span id="priode"></span></h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <div class="row" style="gap: 11px 0; margin: 15px 0">
+                        <div class="row" style="gap: 11px 0; margin: 15px 0 10px 0">
+                            <input type="hidden" name="tanggal_1" id="tanggal_1">
+                            <input type="hidden" name="tanggal_2" id="tanggal_2">
                             <form id="form_pembelian" method="post" name="postform" style="display: flex; gap: 10px; align-items: center;">
                                 @csrf
                                 <?php 
@@ -124,9 +129,8 @@
                                 ?>
                                     <button type="submit" class="btn btn-success">Tampilkan</button>
                                 </form>
-                                <a href="{{ route('laporan.pembelian') }}/pdf" target="_blank" class="mx-3">
-                                    <button type="submit" class="btn btn-warning">Print PDF</button>
-                                </a>
+                                <button type="button" class="btn btn-secondary ml-2" onclick="location.reload()">Reset</button>
+                                <button type="button" class="btn btn-warning ml-2" onclick="print_pdf()">Print PDF</button>
                         </div>
                         <table class="table datatable-primary table-striped table-hover datatable-jquery" width="100%" cellspacing="0">
                             <thead>
@@ -190,6 +194,11 @@
 		});
 	});
 
+    function print_pdf(){
+        let url = `{{ route('laporan.pembelian') }}/pdf?tanggal_awal=${$('#tanggal_1').val()}&tanggal_akhir=${$('#tanggal_2').val()}`;
+        window.open(url, '_blank');
+    }
+
     $('#form_pembelian').submit(function(e){
         e.preventDefault();
         $("#modal_loading").modal('show');
@@ -201,7 +210,10 @@
                 setTimeout(function () {
                     $('#modal_loading').modal('hide');
                 }, 500);
-                console.log(response);
+                $('#tanggal_1').val(response.tanggal_1);
+                $('#tanggal_2').val(response.tanggal_2);
+                $('#priode').text('Priode ' + formatDate(response.tanggal_1) + ' - ' + formatDate(response.tanggal_2));
+                $('total_pembelian').text(fungsiRupiah(response.Totalpembelian));
                 $('#tbody-jquery').empty();
                 response['transaksi'].forEach((element, i) => {
                     $('#tbody-jquery').append(`
@@ -216,8 +228,6 @@
                     </tr>
                     `)
                 });
-
-                $('total_pembelian').text(fungsiRupiah(response.Totalpembelian));
                 // while(response){
                 // }
             },

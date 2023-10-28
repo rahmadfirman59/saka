@@ -416,19 +416,32 @@ class LaporanController extends Controller
         return view('laporan.pembelian', $data);
     }
 
-    public function pembelian_pdf()
+    public function pembelian_pdf(Request $request)
     {
+        if(!isset($request->tanggal_awal) || $request->tanggal_awal === null ){
+            $data['transaksi'] = MasterTransaksi::whereHas('pembelian', function ($query) {
+                $query->where('status', 1);
+            })->with('pembelian', function ($query) {
+                $query->with('supplier')->get();
+            })->get();
+            $data['Totalpembelian'] = MasterTransaksi::whereHas('pembelian', function ($query) {
+                $query->where('status', 1);
+            })->sum('debt');
+        } else {
+            $tanggal_awal = date('Y-m-d', strtotime($request->tanggal_awal));
+            $tanggal_akhir = date('Y-m-d', strtotime($request->tanggal_akhir));
+            $data['transaksi'] = MasterTransaksi::whereHas('pembelian', function ($query) use ($tanggal_awal, $tanggal_akhir) {
+                $query->where('status', 1)->whereBetween('tanggal', [$tanggal_awal, $tanggal_akhir]);
+            })->with('pembelian', function ($query) {
+                $query->with('supplier')->get();
+            })->get();
+            $data['Totalpembelian'] = MasterTransaksi::whereHas('pembelian', function ($query) use ($tanggal_awal, $tanggal_akhir) {
+                $query->where('status', 1)->whereBetween('tanggal', [$tanggal_awal, $tanggal_akhir]);
+            })->sum('debt');
+            $data['tanggal'] = ['tanggal_awal' => $request->tanggal_awal, 'tanggal_akhir' => $request->tanggal_akhir];
+        }
         $data['perusahaan'] = $this->perusahaan;
-        // $data['pembelian'] = Pembelian::where('status', 1)->with('transaksi', 'supplier')->get();
-        $data['transaksi'] = MasterTransaksi::whereHas('pembelian', function ($query) {
-            $query->where('status', 1);
-        })->with('pembelian', function ($query) {
-            $query->with('supplier')->get();
-        })->get();
-        $data['Totalpembelian'] = MasterTransaksi::whereHas('pembelian', function ($query) {
-            $query->where('status', 1);
-        })->sum('debt');
-        $data['tanggal'] = $this->tanggal;
+
         $pdf = PDF::loadView('pdf.pembelianPDF', $data);
         return $pdf->stream();
     }
@@ -445,6 +458,8 @@ class LaporanController extends Controller
         $data['Totalpembelian'] = MasterTransaksi::whereHas('pembelian', function ($query) use ($tanggal1, $tanggal2) {
             $query->where('status', 1)->whereBetween('tanggal', [$tanggal1, $tanggal2]);
         })->sum('debt');
+        $data['tanggal_1'] = $tanggal1;
+        $data['tanggal_2'] = $tanggal2;
         return $data;
     }
 
@@ -458,12 +473,27 @@ class LaporanController extends Controller
         return view('laporan.penjualan', $data);
     }
 
-    public function penjualan_pdf()
+    public function penjualan_pdf(Request $request)
     {
+        if(!isset($request->tanggal_awal) || $request->tanggal_awal === null || !isset($request->tanggal_akhir) || $request->tanggal_akhir === null){
+            $data['perusahaan'] = $this->perusahaan;
+            $data['penjualan'] = Penjualan::with('transaksi', 'dokter')->get();
+            $data['Totalpenjualan'] = Penjualan::sum('subtotal');
+        } else {
+            $tanggal_awal = date('Y-m-d', strtotime($request->tanggal_awal));
+            $tanggal_akhir = date('Y-m-d', strtotime($request->tanggal_akhir));
+            $data['penjualan'] = Penjualan::whereHas('transaksi', function ($query) use ($tanggal_awal, $tanggal_akhir) {
+                $query->whereBetween('tanggal', [$tanggal_awal, $tanggal_akhir]);
+            })->with(['transaksi' => function ($query) use ($tanggal_awal, $tanggal_akhir) {
+                $query->whereBetween('tanggal', [$tanggal_awal, $tanggal_akhir]);
+            }])->with('dokter')->get();
+            $data['Totalpenjualan'] = Penjualan::whereHas('transaksi', function ($query) use ($tanggal_awal, $tanggal_akhir) {
+                $query->whereBetween('tanggal', [$tanggal_awal, $tanggal_akhir]);
+            })->sum('subtotal');
+            $data['tanggal'] = ['tanggal_awal' => $request->tanggal_awal, 'tanggal_akhir' => $request->tanggal_akhir];
+        }
         $data['perusahaan'] = $this->perusahaan;
-        $data['penjualan'] = Penjualan::with('transaksi', 'dokter')->get();
-        $data['Totalpenjualan'] = Penjualan::sum('subtotal');
-        $data['tanggal'] = $this->tanggal;
+
         $pdf = PDF::loadView('pdf.penjualanPDF2', $data);
         return $pdf->stream();
     }
@@ -472,10 +502,16 @@ class LaporanController extends Controller
     {
         $tanggal1 = $request->thn_1 . '-' . $request->bln_1 . '-' . $request->tgl_1;
         $tanggal2 = $request->thn_2 . '-' . $request->bln_2 . '-' . $request->tgl_2;
-        $data['penjualan'] = Penjualan::with(['transaksi' => function ($query) use ($tanggal1, $tanggal2) {
+        $data['penjualan'] = Penjualan::whereHas('transaksi', function ($query) use ($tanggal1, $tanggal2) {
+            $query->whereBetween('tanggal', [$tanggal1, $tanggal2]);
+        })->with(['transaksi' => function ($query) use ($tanggal1, $tanggal2) {
             $query->whereBetween('tanggal', [$tanggal1, $tanggal2]);
         }])->with('dokter')->get();
-        $data['Totalpenjualan'] = Penjualan::whereBetween('created_at', [$tanggal1, $tanggal2])->sum('subtotal');
+        $data['Totalpenjualan'] = Penjualan::whereHas('transaksi', function ($query) use ($tanggal1, $tanggal2) {
+            $query->whereBetween('tanggal', [$tanggal1, $tanggal2]);
+        })->sum('subtotal');
+        $data['tanggal_1'] = $tanggal1;
+        $data['tanggal_2'] = $tanggal2;
         return $data;
     }
 

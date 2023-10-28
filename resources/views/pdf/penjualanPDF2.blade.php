@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\App;
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +28,12 @@
 </head>
 <body>
     <header style="border-bottom: 5px double black; width: 100%">
-        <h3 style="text-align: center; font-family: monospace; letter-spacing: 2px; font-size: 20px">Laporan Penjualan <?php echo $tanggal . '<br>' . $perusahaan->nm_perusahaan ?></h3>
+        <h3 style="text-align: center; font-family: monospace; letter-spacing: 2px; font-size: 20px">Laporan Penjualan <?php echo '<br>' . $perusahaan->nm_perusahaan ?>
+            @if(isset($tanggal))
+                <br>
+                {{ App::tgl_indo($tanggal['tanggal_awal']) . ' - ' . App::tgl_indo($tanggal['tanggal_akhir']) }}
+            @endif
+        </h3>
     </header>
     <main style="margin-top: 30px">
         <table border="2" width="100%" cellspacing="0">

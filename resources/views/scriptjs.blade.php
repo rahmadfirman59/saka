@@ -354,6 +354,15 @@ $.ajaxSetup({
        });
     }
 
+    function formatDate(dateString) {
+      // Add your logic here to format the date in the way App::tgl_indo() does in PHP
+      // For example:
+      // This is just a sample logic, adjust this according to your date formatting logic
+      var date = new Date(dateString);
+      var options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString('id-ID', options);
+   }
+
     function onkeyupUppercase(id){
          var uppercase = document.getElementById(id);
          uppercase.addEventListener('keyup', function(e){
